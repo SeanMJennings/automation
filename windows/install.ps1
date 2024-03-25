@@ -1,7 +1,5 @@
 
-choco install conemu -yr
 choco install 7zip -yr
-choco install slack -yr
 choco install teamviewer -yr
 choco install dotnet-sdk -yr
 choco install jetbrains-rider

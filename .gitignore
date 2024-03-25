@@ -293,6 +293,9 @@ paket-files/
 .idea/
 *.sln.iml
 
+# yarn
+yarn.lock
+
 # CodeRush
 .cr/
 
