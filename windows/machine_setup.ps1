@@ -34,8 +34,8 @@ $content = {(Get-Content "$smRoot\automation\windows\powershell\Microsoft.PowerS
 $content.Insert(0, "`$smHome = `"$smRoot`"") 
 $content | Set-Content $PROFILE
 
-write-host "`nSetup Complete. Please edit Project.ps1 found at (Split-Path $PROFILE)" -fore green
+write-host "`nSetup Complete. Please edit Projects.ps1 found at (Split-Path $PROFILE)" -fore green
 
 refreshEnv
 & $PROFILE
-write-host "Please run .\automation\windows\win10_clean.ps1"
+write-host "Please run .\automation\windows\clean.ps1"
