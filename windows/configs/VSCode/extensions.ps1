@@ -1,6 +1,21 @@
-
 code --install-extension geddski.macros 
 code --install-extension ms-vscode.powershell
-code --install-extension vscodevim.vim
 code --install-extension dbaeumer.vscode-eslint
-code --install-extension jakebecker.elixir-ls
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension eamodio.gitlens
+code --install-extension VisualStudioExptTeam.vscodeintellicode
+code --install-extension ms-python.vscode-pylance
+code --install-extension kamilturek.vscode-pyproject-toml-snippets
+code --install-extension ms-python.python
+code --install-extension donjayamanne.python-extension-pack
+code --install-extension njpwerner.autodocstring
+code --install-extension ms-python.flake8
+code --install-extension github.vscode-github-actions
+code --install-extension GitHub.copilot
+code --install-extension GitHub.copilot-chat
+code --install-extension VisualStudioExptTeam.intellicode-api-usage-examples
+code --install-extension ms-vscode.powershell
+code --install-extension ms-python.debugpy
+code --install-extension donjayamanne.python-environment-manager
+code --install-extension KevinRose.vsc-python-indent
+code --install-extension zeshuaro.vscode-python-poetry
