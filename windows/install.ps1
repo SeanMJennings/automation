@@ -7,8 +7,10 @@ winget install -e --id WhatsApp.WhatsApp
 choco install 7zip -yr
 choco install teamviewer -yr
 choco install dotnet-sdk -yr
+choco install malwarebytes -yr
 choco install jetbrains-rider
 choco install visualstudiocode -yr
+choco install visualstudio2022professional -yr
 choco install sqllocaldb -yr
 choco install sql-server-management-studio -yr
 choco install sqlserver-cmdlineutils -yr

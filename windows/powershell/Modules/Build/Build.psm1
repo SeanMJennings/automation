@@ -37,14 +37,14 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
         git pull
         BreakOnFailure $dir '**************** Pull Failed ****************'
 
-        if ($null -ne $_.Value.VsSolution -and -not $clientOnly) { 
-            & $_.Value.VsSolution 
+        if ($null -ne $_.Value.DotnetSolution -and -not $clientOnly) { 
+            & $_.Value.DotnetSolution 
         } 
 
         if ($null -ne $_.Value.CodeSolution -and -not $serverOnly) { 
             $dir = Get-Location
-            Set-Location $_.Value.CodeSolution  
-            code . 
+            Set-Location ($_.Value.CodeSolution -replace '[^\\]+$')
+            & rider64.exe ($_Value.CodeSolution -replace '.*\\')
         }
 
         Set-Location $dir
@@ -62,9 +62,9 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
         git pull
         BreakOnFailure $dir '**************** Pull Failed ****************'
 
-        if ($null -ne $_.Value.VsSolution -and -not $clientOnly) { 
+        if ($null -ne $_.Value.DotnetSolution -and -not $clientOnly) { 
             Write-Host `nBuilding $targetProject.Key -Fore Green
-            $solutionPath = Resolve-Path ($_.Value.VsSolution)            
+            $solutionPath = Resolve-Path ($_.Value.DotnetSolution)            
             dotnet build $solutionPath --configuration Release -nologo --verbosity q --no-incremental 
             BreakOnFailure $dir '**************** Build Failed ****************'
             Migrate $targetProject.Key
@@ -73,7 +73,7 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
             BreakOnFailure $dir '**************** Tests Failed ****************'
         }         
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly) {
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly and $_.Value.HasJs) {
             Write-Host `nBuilding JavaScript $targetProject.Key `n -Fore Green     
             Set-Location $_.Value.CodeSolution         
             yarn
@@ -90,7 +90,7 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
 
 function Migrate ([Project] $project = [Project]::All) {
     function Migrate-Project($targetProject) {
-        if ($null -ne $_.Value.VsSolution) { 
+        if ($null -ne $_.Value.DotnetSolution) { 
             $dir = Get-Location
             Set-Location $_.Value.Directory
             Get-ChildItem .\ -Recurse | where { $_.Fullname -Like "*bin\Run.exe" } | % {      

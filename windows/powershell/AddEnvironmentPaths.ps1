@@ -1,6 +1,5 @@
 $paths = 
 "${env:programFiles(x86)}\Google\Chrome\Application\", 
-"$env:programFiles\BraveSoftware\Brave-Browser\Application",
 "${env:programFiles}\TeamViewer",
 "$env:programFiles\curl\bin",
 "$env:programFiles\Git\bin",
