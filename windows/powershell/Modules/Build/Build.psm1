@@ -1,4 +1,3 @@
-
 function GoTo ([Project] $project) {
     if ($project -eq [Project]::None) {
         Write-Host "`nNo project provided`n" -Fore Red
@@ -73,7 +72,7 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
             BreakOnFailure $dir '**************** Tests Failed ****************'
         }         
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly and $_.Value.HasJs) {
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.HasJs) {
             Write-Host `nBuilding JavaScript $targetProject.Key `n -Fore Green     
             Set-Location $_.Value.CodeSolution         
             yarn

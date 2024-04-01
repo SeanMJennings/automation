@@ -23,22 +23,26 @@ function global:Get-Projects {
          [Project]::MineGame           = [PSCustomObject]@{ 
              Git        = "git@github.com:SeanMJennings/MineGame.git"; 
              Directory  = "~\MineGame";
-             DotnetSolution = "~\MineGame\MineGame.sln"; 
+             DotnetSolution = "~\MineGame\MineGame.sln";
+             HasJs = $false
          };
          [Project]::mine_game          = [PSCustomObject]@{ 
              Git        = "git@github.com:SeanMJennings/mine_game.git"; 
              Directory  = "~\mine_game"; 
-             CodeSolution = "~\mine_game"; 
+             CodeSolution = "~\mine_game";
+             HasJs = $false
          };
          [Project]::BeautyContest      = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/BeautyContest.git"; 
              Directory    = "~\BeautyContest";
-             DotnetSolution = "~\BeautyContest\BeautyContest.sln"; 
+             DotnetSolution = "~\BeautyContest\BeautyContest.sln";
+             HasJs = $false
          };         
          [Project]::TechnicalDebtWheel = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/TechnicalDebtWheel.git"; 
              Directory    = "~\TechnicalDebtWheel";
-             CodeSolution = "~\TechnicalDebtWheel"; 
+             CodeSolution = "~\TechnicalDebtWheel";
+             HasJs = $false 
          };
     }
 }

@@ -1,5 +1,6 @@
-$smRoot = read-host `nPlease enter the path you want to be the sensemaking root
-mkdir $smRoot -force
+$projectsRoot = read-host `nPlease enter the path you want to be the projects root
+mkdir $projectsRoot -force
+[System.Environment]::SetEnvironmentVariable('ProjectsRoot',$projectsRoot, 'User')
 
 write-host "`nInstalling chocolatey" -fore yellow
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
@@ -17,7 +18,7 @@ write-host "`n$sshdirectory\id_rsa.pub has been generated" -fore green
 write-host "`nAdd the key to your github account" -fore red 
 read-host "`n`nThen press any key"
 
-Set-Location $smRoot
+Set-Location $projectsprojectsRoot
 & "$env:programFiles\Git\usr\bin\ssh-agent.exe" | % {
         if ($_ -match '(?<key>[^=]+)=(?<value>[^;]+);') {
             [void][Environment]::SetEnvironmentVariable($Matches['key'], $Matches['value'])
@@ -28,10 +29,10 @@ Set-Location $smRoot
 git clone git@github.com:sensemaking/automation.git
 Stop-Process -Name 'ssh-agent' -ErrorAction SilentlyContinue
 
-Copy-Item "$smroot\automation\windows\powershell\*" (split-path $PROFILE) -r
+Copy-Item "$projectsRoot\automation\windows\powershell\*" (split-path $PROFILE) -Recurse -Force
 
-$content = {(Get-Content "$smRoot\automation\windows\powershell\Microsoft.PowerShell_profile.ps1")}.Invoke()
-$content.Insert(0, "`$smHome = `"$smRoot`"") 
+$content = {(Get-Content "$projectsRoot\automation\windows\powershell\Microsoft.PowerShell_profile.ps1")}.Invoke()
+$content.Insert(0, "`$smHome = `"$projectsRoot`"") 
 $content | Set-Content $PROFILE
 
 write-host "`nSetup Complete. Please edit Projects.ps1 found at (Split-Path $PROFILE)" -fore green

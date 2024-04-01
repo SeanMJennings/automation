@@ -1,5 +1,5 @@
-set-variable -name HOME -value $smHome -force
-(get-psprovider FileSystem).Home = $smHome
+set-variable -name HOME -value $projectsRoot -force
+(get-psprovider FileSystem).Home = $projectsRoot
 set-location ~
 
 remove-item alias:curl
@@ -20,9 +20,9 @@ function Update-Automation {
   pull Automation
 
   $profileDir = Split-Path $PROFILE
-  Remove-Item "$profileDir\Modules\*" -r -for
-  Copy-Item "$automationDir\windows\powershell\modules" $profileDir -r -fo
-  Copy-Item "$automationDir\windows\powershell\AddEnvironmentPaths.ps1" -Destination "$profileDir\AddEnvironmentPaths.ps1" -fo
+  Remove-Item "$profileDir\Modules\*" -Recurse -Force
+  Copy-Item "$automationDir\windows\powershell\modules" $profileDir -Recurse -Force
+  Copy-Item "$automationDir\windows\powershell\AddEnvironmentPaths.ps1" -Destination "$profileDir\AddEnvironmentPaths.ps1" -Force
   
   Write-Host "`nUpdated automation scripts. Reloading shell`n" -Fore Green
   powershell.exe -nologo
