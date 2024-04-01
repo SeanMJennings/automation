@@ -17,15 +17,16 @@ function SetupProject ([Project] $project) {
             
         if (Test-Path "$($_.Value.Directory)\setupMyProject.ps1") {
             Write-Host "`nRunning $($targetProject.Key) Project setup`n" -ForegroundColor Green
+            Set-Location $_.Value.Directory
             & "$($_.Value.Directory)\setupMyProject.ps1"
-            Write-Host "`n$($targetProject.Key) Project set up & Ready To Go`n" -ForegroundColor Green
+            Write-Host "`n$($targetProject.Key) Project set up and ready to go`n" -ForegroundColor Green
         }
         else { Write-Host "`n$($targetProject.Key) does not have a project setup`n" -ForegroundColor Red }
 
         Build $targetProject.Key
     }
 
-    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Prime-Project $_ }
+    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Setup-Project $_ }
 }
 
 function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Switch] $serverOnly) {
