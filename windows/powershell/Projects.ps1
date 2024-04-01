@@ -11,6 +11,17 @@ public enum Project
     All=Automation + MineGame + mine_game + BeautyContest + TechnicalDebtWheel
 }
 "@
+Add-Type -TypeDefinition @"
+[System.Flags]
+public enum ProjectTypes
+{
+    None=0,
+    Dotnet=1,
+    JavaScript = 2,
+    Python = 4,
+    All=Dotnet + JavaScript + Python
+}
+"@
 
 function global:Get-Projects {
     return @{ 
@@ -18,31 +29,31 @@ function global:Get-Projects {
              Git          = "git@github.com:SeanMJennings/automation.git"; 
              Directory    = "~\automation"; 
              CodeSolution = "~\automation";
-             HasJs = $false
+             ProjectTypes = @([ProjectTypes]::None)
          };
          [Project]::MineGame           = [PSCustomObject]@{ 
              Git        = "git@github.com:SeanMJennings/MineGame.git"; 
              Directory  = "~\MineGame";
              DotnetSolution = "~\MineGame\MineGame.sln";
-             HasJs = $false
+             ProjectTypes = @([ProjectTypes]::Dotnet)
          };
          [Project]::mine_game          = [PSCustomObject]@{ 
              Git        = "git@github.com:SeanMJennings/mine_game.git"; 
              Directory  = "~\mine_game"; 
              CodeSolution = "~\mine_game";
-             HasJs = $false
+             ProjectTypes = @([ProjectTypes]::Python)
          };
          [Project]::BeautyContest      = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/BeautyContest.git"; 
              Directory    = "~\BeautyContest";
              DotnetSolution = "~\BeautyContest\BeautyContest.sln";
-             HasJs = $false
+             ProjectTypes = @([ProjectTypes]::Dotnet)
          };         
          [Project]::TechnicalDebtWheel = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/TechnicalDebtWheel.git"; 
              Directory    = "~\TechnicalDebtWheel";
              CodeSolution = "~\TechnicalDebtWheel";
-             HasJs = $false 
+             ProjectTypes = @([ProjectTypes]::JavaScript)
          };
     }
 }

@@ -10,17 +10,17 @@ function GoTo ([Project] $project) {
     Set-Location (Get-Projects).Get_Item($project).Directory
 }
 
-function Prime ([Project] $project) {
-    function Prime-Project($targetProject) {
+function SetupProject ([Project] $project) {
+    function Setup-Project($targetProject) {
         if (-not(Test-Path "$($_.Value.Directory)")) { Clone $targetProject.key }
         else { pull $targetProject.Key }
             
-        if (Test-Path "$($_.Value.Directory)\primer.ps1") {
-            Write-Host "`nRunning $($targetProject.Key) Primer`n" -ForegroundColor Green
-            & "$($_.Value.Directory)\primer.ps1"
-            Write-Host "`n$($targetProject.Key) Primed & Ready To Go`n" -ForegroundColor Green
+        if (Test-Path "$($_.Value.Directory)\setupMyProject.ps1") {
+            Write-Host "`nRunning $($targetProject.Key) Project setup`n" -ForegroundColor Green
+            & "$($_.Value.Directory)\setupMyProject.ps1"
+            Write-Host "`n$($targetProject.Key) Project set up & Ready To Go`n" -ForegroundColor Green
         }
-        else { Write-Host "`n$($targetProject.Key) does not have a primer`n" -ForegroundColor Red }
+        else { Write-Host "`n$($targetProject.Key) does not have a project setup`n" -ForegroundColor Red }
 
         Build $targetProject.Key
     }
@@ -40,12 +40,18 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
             & $_.Value.DotnetSolution 
         } 
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly) { 
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::JavaScript)) { 
             $dir = Get-Location
             Set-Location ($_.Value.CodeSolution -replace '[^\\]+$')
-            & rider64.exe ($_Value.CodeSolution -replace '.*\\')
+            & rider64.exe ($_.Value.CodeSolution -replace '.*\\')
+        }        
+        
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
+            $dir = Get-Location
+            Set-Location $_.Value.CodeSolution
+            code .
         }
-
+        
         Set-Location $dir
     }
 
@@ -72,12 +78,21 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
             BreakOnFailure $dir '**************** Tests Failed ****************'
         }         
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.HasJs) {
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::JavaScript)) {
             Write-Host `nBuilding JavaScript $targetProject.Key `n -Fore Green     
             Set-Location $_.Value.CodeSolution         
             yarn
             yarn test
             BreakOnFailure $dir '**************** Javascript Build Failed ****************'
+        }         
+        
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
+            Write-Host `nBuilding Python $targetProject.Key `n -Fore Green     
+            Set-Location $_.Value.CodeSolution
+            & "$($_.Value.Directory)\.venv\Scripts\activate.ps1"
+            poetry run pytest
+            deactivate
+            BreakOnFailure $dir '**************** Python Build Failed ****************'
         } 
 
         Set-Location $dir

@@ -9,7 +9,7 @@ function AssociateFileExtensions ($Extensions, $OpenAppPath) {
             catch
             {
                 $var = $_.FileExtension
-                $var2 = $_.Associate
+                $var2 = $_.Associate 
                 $fileType = (cmd /c "assoc .ps1=PS1 File").Split("=")[-1]
                 Write-Host $fileType
             }
