@@ -19,7 +19,7 @@ function SetupProject ([Project] $project) {
             Write-Host "`nRunning $($targetProject.Key) Project setup`n" -ForegroundColor Green
             Set-Location $_.Value.Directory
             & "$($_.Value.Directory)\setupMyProject.ps1"
-            Write-Host "`n$($targetProject.Key) Project set up and ready to go`n" -ForegroundColor Green
+            Write-Host "`n$($targetProject.Key) project set up and ready to go`n" -ForegroundColor Green
         }
         else { Write-Host "`n$($targetProject.Key) does not have a project setup`n" -ForegroundColor Red }
 
