@@ -41,7 +41,7 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
             & $_.Value.DotnetSolution 
         } 
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::JavaScript)) { 
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and ($_.Value.ProjectTypes.contains([ProjectTypes]::Python)) -eq $false) { 
             $dir = Get-Location
             Set-Location ($_.Value.CodeSolution -replace '[^\\]+$')
             & rider64.exe ($_.Value.CodeSolution -replace '.*\\')
