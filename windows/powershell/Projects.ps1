@@ -4,11 +4,11 @@ public enum Project
 {
     None=0,
     Automation=1,
-    MineGame = 2,
-    mine_game = 4,
-    BeautyContest = 8,
-    TechnicalDebtWheel = 16,
-    All=Automation + MineGame + mine_game + BeautyContest + TechnicalDebtWheel
+    BeautyContest = 2,
+    MineGame = 4,
+    mine_game = 8,
+    RuleOfThree = 16,
+    All=Automation + BeautyContest + MineGame + mine_game + RuleOfThree
 }
 "@
 Add-Type -TypeDefinition @"
@@ -31,28 +31,28 @@ function global:Get-Projects {
              CodeSolution = "~\automation";
              ProjectTypes = @([ProjectTypes]::None)
          };
-         [Project]::MineGame           = [PSCustomObject]@{ 
-             Git        = "git@github.com:SeanMJennings/MineGame.git"; 
-             Directory  = "~\MineGame";
-             DotnetSolution = "~\MineGame\MineGame.sln";
-             ProjectTypes = @([ProjectTypes]::Dotnet)
-         };
-         [Project]::mine_game          = [PSCustomObject]@{ 
-             Git        = "git@github.com:SeanMJennings/mine_game.git"; 
-             Directory  = "~\mine_game"; 
-             CodeSolution = "~\mine_game";
-             ProjectTypes = @([ProjectTypes]::Python)
-         };
          [Project]::BeautyContest      = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/BeautyContest.git"; 
              Directory    = "~\BeautyContest";
              DotnetSolution = "~\BeautyContest\BeautyContest.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
-         };         
-         [Project]::TechnicalDebtWheel = [PSCustomObject]@{ 
-             Git          = "git@github.com:SeanMJennings/TechnicalDebtWheel.git"; 
-             Directory    = "~\TechnicalDebtWheel";
-             CodeSolution = "~\TechnicalDebtWheel";
+         };
+         [Project]::MineGame           = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/MineGame.git";
+             Directory  = "~\MineGame";
+             DotnetSolution = "~\MineGame\MineGame.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
+         [Project]::mine_game          = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/mine_game.git";
+             Directory  = "~\mine_game";
+             CodeSolution = "~\mine_game";
+             ProjectTypes = @([ProjectTypes]::Python)
+         };
+         [Project]::RuleOfThree = [PSCustomObject]@{ 
+             Git          = "git@github.com:SeanMJennings/RuleOfThree.git"; 
+             Directory    = "~\RuleOfThree";
+             CodeSolution = "~\RuleOfThree";
              ProjectTypes = @([ProjectTypes]::JavaScript)
          };
     }
