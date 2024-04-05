@@ -1,32 +1,21 @@
 function AssociateFileExtensions ($Extensions, $OpenAppPath) {
     foreach ($Extension in $Extensions) {
-        $Extension | % {
-            try
-            {
-                $var = $_.FileExtension
-                $fileType = (cmd /c "assoc .ps").Split("=")[-1]
-            }
-            catch
-            {
-                $var = $_.FileExtension
-                $var2 = $_.Associate 
-                $fileType = (cmd /c "assoc .ps1=PS1 File").Split("=")[-1]
-                Write-Host $fileType
-            }
-            finally
-            {
-                cmd /c "ftype $fileType=""$OpenAppPath"" ""%1"""
-            }
-        }
+        Register-FTA $OpenAppPath $Extension
+        Write-Host "Associate file extension $Extension with $OpenAppPath"
     }
 }
 
-$jetBrainsExtensions = @( 
-    @{ FileExtension=".ps1"; Associate="PS1 File"; }
-)
-AssociateFileExtensions $jetBrainsExtensions "$env:programFiles(x86)\JetBrains\JetBrains Rider 2023.3.4\bin\rider64.exe"
-#AssociateFileExtensions .py "$env:programFiles\Microsoft VS Code\Code.exe"
-#AssociateFileExtensions .txt, .json "$env:programFiles\Notepad++\notepad++.exe"
+cd $PSScriptRoot
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/DanysysTeam/PS-SFTA/master/SFTA.ps1 -OutFile .\SetFileTypeAssociation.ps1
+. .\SetFileTypeAssociation.ps1
+
+$jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs")
+$vsCodeExtensions = @(".py",".toml")
+$notePadPlusPlusExtensions = @(".txt",".json")
+
+AssociateFileExtensions $jetBrainsExtensions "${Env:ProgramFiles(x86)}\JetBrains\JetBrains Rider 2023.3.4\bin\rider64.exe"
+AssociateFileExtensions $vsCodeExtensions "$env:programFiles\Microsoft VS Code\Code.exe"
+AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\notepad++.exe"
 
 $name = read-host `nPlease enter your name
 $email = read-host `nPlease enter your email address
@@ -39,4 +28,5 @@ git config --global user.email $email
 
 Copy-Item "~\automation\windows\configs\VSCode\*.json" "$env:userprofile\AppData\Roaming\Code\User"
 Read-Host "Computer will restart then please run .\automation\windows\disable_startups.ps1"
+Remove-Item .\SetFileTypeAssociation.ps1 -Force
 Restart-Computer
