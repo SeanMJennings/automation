@@ -52,7 +52,8 @@ function global:Get-Projects {
          [Project]::RuleOfThree = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/RuleOfThree.git"; 
              Directory    = "~\RuleOfThree";
-             CodeSolution = "~\RuleOfThree";
+             DotnetSolution = "~\RuleOfThree\RuleOfThree.sln";
+             CodeSolution = "~\RuleOfThree\Host\Vue";
              ProjectTypes = @([ProjectTypes]::JavaScript)
          };
     }
