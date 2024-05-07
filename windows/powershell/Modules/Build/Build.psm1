@@ -62,7 +62,7 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
 
 function OpenInGitHub ([Project] $project = [Project]::None) {
     function Open-Project($targetProject) {
-        $url = $_.Value.GitHub -replace "git@github.com:" -replace ".git"
+        $url = $_.Value.Git -replace "git@github.com:" -replace ".git"
         Start-Process "https://github.com/${url}"
     }
     (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Open-Project $_ }
