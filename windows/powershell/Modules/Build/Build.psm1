@@ -60,6 +60,14 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
     (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Open-Project $_ }
 }
 
+function OpenInGitHub ([Project] $project = [Project]::None) {
+    function Open-Project($targetProject) {
+        $url = $_.Value.GitHub -replace "git@github.com:" -replace ".git"
+        Start-Process "https://github.com/${url}"
+    }
+    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Open-Project $_ }
+}
+
 function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Switch] $serverOnly) {
     function Build-Project($targetProject) {
         $dir = Get-Location
