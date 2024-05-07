@@ -5,9 +5,10 @@ public enum Project
     None=0,
     Automation=1,
     BeautyContest = 2,
-    MineGame = 4,
-    mine_game = 8,
-    RuleOfThree = 16,
+    LoanInterestCalculator = 4,
+    MineGame = 8,
+    mine_game = 16,
+    RuleOfThree = 32,
     All=Automation + BeautyContest + MineGame + mine_game + RuleOfThree
 }
 "@
@@ -35,6 +36,12 @@ function global:Get-Projects {
              Git          = "git@github.com:SeanMJennings/BeautyContest.git"; 
              Directory    = "~\BeautyContest";
              DotnetSolution = "~\BeautyContest\BeautyContest.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };         
+         [Project]::LoanInterestCalculator      = [PSCustomObject]@{ 
+             Git          = "git@github.com:SeanMJennings/LoanInterestCalculator.git"; 
+             Directory    = "~\LoanInterestCalculator";
+             DotnetSolution = "~\LoanInterestCalculator\LoanInterestCalculator.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
          };
          [Project]::MineGame           = [PSCustomObject]@{
