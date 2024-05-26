@@ -26,7 +26,7 @@ Set-Location $projectsprojectsRoot
     }
 & "$env:programFiles\Git\usr\bin\ssh-add" "$sshdirectory\id_rsa"
 
-git clone git@github.com:sensemaking/automation.git
+git clone git@github.com:SeanMJennings/automation.git
 Stop-Process -Name 'ssh-agent' -ErrorAction SilentlyContinue
 
 Copy-Item "$projectsRoot\automation\windows\powershell\*" (split-path $PROFILE) -Recurse -Force
