@@ -23,7 +23,7 @@ $email = read-host `nPlease enter your email address
 git config --global user.name $name
 git config --global user.email $email
 
-& "~\automation\windows\configs\win10_configure.ps1"
+& "~\automation\windows\configs\configure.ps1"
 & "~\automation\windows\configs\VSCode\extensions.ps1"
 
 Copy-Item "~\automation\windows\configs\VSCode\*.json" "$env:userprofile\AppData\Roaming\Code\User"
