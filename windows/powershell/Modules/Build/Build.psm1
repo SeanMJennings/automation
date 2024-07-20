@@ -176,3 +176,17 @@ function BreakOnFailure([string] $directory, [string] $message = 'It failed!') {
         break
     }
 }
+
+function ClearDotnetBuild([Project] $project = [Project]::None) {
+    function Clear-Dotnet-Project($targetProject) {
+        if ($null -ne $_.Value.DotnetSolution) {
+            $dir = Get-Location
+            Set-Location ($_.Value.Directory)
+            gci -include bin,obj -recurse | remove-item -force -recurse
+            Set-Location $dir
+        }
+    }
+
+    Clear-Host
+    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Clear-Dotnet-Project $_ }
+}
