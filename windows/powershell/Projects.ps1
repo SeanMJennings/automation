@@ -67,7 +67,7 @@ function global:Get-Projects {
              Git          = "git@github.com:SeanMJennings/RuleOfThree.git"; 
              Directory    = "~\RuleOfThree";
              PythonSolution = "~\RuleOfThree\server";
-             CodeSolution = "~\RuleOfThree\client\vue";
+             CodeSolution = "~\RuleOfThree\client";
              ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Python)
          };
     }
