@@ -60,14 +60,15 @@ function global:Get-Projects {
          [Project]::mine_game          = [PSCustomObject]@{
              Git        = "git@github.com:SeanMJennings/mine_game.git";
              Directory  = "~\mine_game";
-             CodeSolution = "~\mine_game";
+             PythonSolution = "~\mine_game";
              ProjectTypes = @([ProjectTypes]::Python)
          };
          [Project]::RuleOfThree = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/RuleOfThree.git"; 
              Directory    = "~\RuleOfThree";
-             CodeSolution = "~\RuleOfThree\Vue";
-             ProjectTypes = @([ProjectTypes]::JavaScript)
+             PythonSolution = "~\RuleOfThree\server";
+             CodeSolution = "~\RuleOfThree\client\vue";
+             ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Python)
          };
     }
 }

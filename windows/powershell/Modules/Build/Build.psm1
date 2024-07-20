@@ -41,16 +41,16 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
             & $_.Value.DotnetSolution 
         } 
 
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and ($_.Value.ProjectTypes.contains([ProjectTypes]::Python)) -eq $false) { 
+        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly) { 
             $dir = Get-Location
             Set-Location ($_.Value.CodeSolution -replace '[^\\]+$')
             & rider64.exe ($_.Value.CodeSolution -replace '.*\\')
         }        
         
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
+        if ($null -ne $_.Value.PythonSolution -and -not $clientOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
             $dir = Get-Location
-            Set-Location $_.Value.CodeSolution
-            code .
+            Set-Location ($_.Value.PythonSolution -replace '[^\\]+$')
+            & pycharm64.exe ($_.Value.PythonSolution -replace '.*\\')
         }
         
         Set-Location $dir
@@ -95,10 +95,10 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
             BreakOnFailure $dir '**************** Javascript Build Failed ****************'
         }         
         
-        if ($null -ne $_.Value.CodeSolution -and -not $serverOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
+        if ($null -ne $_.Value.PythonSolution -and -not $clientOnly -and $_.Value.ProjectTypes.contains([ProjectTypes]::Python)) {
             Write-Host `nBuilding Python $targetProject.Key `n -Fore Green     
-            Set-Location $_.Value.CodeSolution
-            & "$($_.Value.Directory)\.venv\Scripts\activate.ps1"
+            Set-Location $_.Value.PythonSolution
+            & "$($_.Value.PythonSolution)\.venv\Scripts\activate.ps1"
             poetry run pytest
             deactivate
             BreakOnFailure $dir '**************** Python Build Failed ****************'
