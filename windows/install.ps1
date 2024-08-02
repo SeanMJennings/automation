@@ -26,6 +26,8 @@ choco install nordpass -yr
 choco install nordvpn -yr
 choco install python -yr
 
+SqlLocalDb.exe create "MSSQLLocalDB"
+
 yarn global add npm-check-updates
 yarn global add serve
 
