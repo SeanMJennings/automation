@@ -11,6 +11,7 @@ choco install malwarebytes -yr
 choco install jetbrains-rider
 choco install visualstudiocode -yr
 choco install visualstudio2022professional -yr
+choco install sql-server-2022 -yr
 choco install sqllocaldb -yr
 choco install sql-server-management-studio -yr
 choco install sqlserver-cmdlineutils -yr
@@ -25,8 +26,6 @@ choco install brave -yr
 choco install nordpass -yr
 choco install nordvpn -yr
 choco install python -yr
-
-SqlLocalDb.exe create "MSSQLLocalDB"
 
 yarn global add npm-check-updates
 yarn global add serve
