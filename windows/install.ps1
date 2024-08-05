@@ -27,6 +27,14 @@ choco install nordpass -yr
 choco install nordvpn -yr
 choco install python -yr
 
+Invoke-Sqlcmd -Query "USE [master]; EXEC xp_instance_regwrite N'HKEY_LOCAL_MACHINE', N'Software\Microsoft\MSSQLServer\MSSQLServer', N'LoginMode', REG_DWORD, 2;" -ServerInstance "."
+[System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SqlWmiManagement')
+$wmi = New-Object 'Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer' localhost
+$tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Tcp']
+$tcp.IsEnabled = $true
+$tcp.Alter()
+Restart-Service -Name MSSQLSERVER -Force
+
 yarn global add npm-check-updates
 yarn global add serve
 
