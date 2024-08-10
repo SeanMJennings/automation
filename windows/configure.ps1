@@ -6,15 +6,13 @@ function AssociateFileExtensions ($Extensions, $OpenAppPath) {
 }
 
 cd $PSScriptRoot
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/DanysysTeam/PS-SFTA/master/SFTA.ps1 -OutFile .\SetFileTypeAssociation.ps1
-. .\SetFileTypeAssociation.ps1
 
-$jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs")
-$vsCodeExtensions = @(".py",".toml")
+$jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs",".yaml")
+$pyCharmExtensions = @(".py",".toml")
 $notePadPlusPlusExtensions = @(".txt",".json")
 
 AssociateFileExtensions $jetBrainsExtensions "${Env:ProgramFiles(x86)}\JetBrains\JetBrains Rider 2023.3.4\bin\rider64.exe"
-AssociateFileExtensions $vsCodeExtensions "$env:programFiles\Microsoft VS Code\Code.exe"
+AssociateFileExtensions $pyCharmExtensions "$env:programFiles\JetBrains\PyCharm Community Edition 2024.1.4\bin\pycharm64.exe"
 AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\notepad++.exe"
 
 $name = read-host `nPlease enter your name
