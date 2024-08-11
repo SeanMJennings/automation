@@ -3,6 +3,7 @@ winget install -e --id Ditto.Ditto
 winget install -e --id Google.Chrome
 winget install -e --id Greenshot.Greenshot
 winget install -e --id WhatsApp.WhatsApp
+winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
 
 choco install 7zip -yr
 choco install teamviewer -yr

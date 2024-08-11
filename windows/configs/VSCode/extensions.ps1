@@ -19,3 +19,4 @@ code --install-extension ms-python.debugpy
 code --install-extension donjayamanne.python-environment-manager
 code --install-extension KevinRose.vsc-python-indent
 code --install-extension zeshuaro.vscode-python-poetry
+code --install-extension platformio.platformio-ide
