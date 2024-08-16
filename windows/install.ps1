@@ -14,7 +14,6 @@ choco install pycharm-community -yr
 choco install visualstudiocode -yr
 choco install visualstudio2022professional -yr
 choco install sql-server-2022 -yr
-choco install sqllocaldb -yr
 choco install sql-server-management-studio -yr
 choco install sqlserver-cmdlineutils -yr
 choco install azure-cosmosdb-emulator
