@@ -3,31 +3,39 @@ winget install -e --id Ditto.Ditto
 winget install -e --id Google.Chrome
 winget install -e --id Greenshot.Greenshot
 winget install -e --id WhatsApp.WhatsApp
-winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
+winget install -e --id Microsoft.VisualStudio.2022.Professional --override "--add Microsoft.VisualStudio.Component.CoreEditor --add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.NetWeb --add Microsoft.VisualStudio.Workload.Azure --add Microsoft.VisualStudio.Workload.AzureBuildTools --includeRecommended --passive"
+winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
+
+choco install python -yr
+choco install pycharm-community -yr
+py -m pip install --user pipx
+py -m pipx ensurepath
+refreshenv
+pipx install poetry
 
 choco install 7zip -yr
 choco install teamviewer -yr
-choco install dotnet-sdk -yr
 choco install malwarebytes -yr
 choco install jetbrains-rider -yr
-choco install pycharm-community -yr
 choco install visualstudiocode -yr
-choco install visualstudio2022professional -yr
-choco install sql-server-2022 -yr
-choco install sql-server-management-studio -yr
-choco install sqlserver-cmdlineutils -yr
 choco install azure-cosmosdb-emulator
 choco install azure-data-studio -yr
 choco install azure-cli -yr
+choco install azure-functions-core-tools -yr
 choco install servicebusexplorer -yr
 choco install nodejs -yr
 choco install yarn -yr
+choco install nunit-console-runner -yr
 choco install notepadplusplus -yr
 choco install brave -yr
 choco install nordpass -yr
 choco install nordvpn -yr
-choco install python -yr
+choco install zoom -yr
+choco install postman -yr
 
+choco install sql-server-2022 -yr
+choco install sql-server-management-studio -yr
+choco install sqlserver-cmdlineutils -yr
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SqlWmiManagement')
 $wmi = [Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer]::new('localhost')
 $tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Tcp']
@@ -38,8 +46,11 @@ $server.LoginMode = 'Mixed'
 $server.Alter()
 Restart-Service -Name MSSQLSERVER -Force
 
+Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider
+yarn global add azurite
 yarn global add npm-check-updates
 yarn global add serve
+yarn global add vite
 
 Read-Host "Computer will restart then please run .\automation\windows\configure.ps1"
 Restart-Computer
