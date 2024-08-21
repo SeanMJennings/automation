@@ -18,6 +18,7 @@ choco install teamviewer -yr
 choco install malwarebytes -yr
 choco install jetbrains-rider -yr
 choco install visualstudiocode -yr
+choco install nuget.commandline -yr
 choco install azure-cosmosdb-emulator
 choco install azure-data-studio -yr
 choco install azure-cli -yr
