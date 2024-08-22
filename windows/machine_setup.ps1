@@ -1,3 +1,10 @@
+##### PRE REQUISITE #####
+# allow download of chocolatey and setup azure artifacts cred provider
+# Set-ExecutionPolicy -ExecutionPolicy Bypass
+# then set to RemoteSigned at the end of this script
+# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+########################
+
 $projectsRoot = read-host `nPlease enter the path you want to be the projects root
 mkdir $projectsRoot -force
 [System.Environment]::SetEnvironmentVariable('ProjectsRoot',$projectsRoot, 'User')
@@ -39,4 +46,7 @@ write-host "`nSetup Complete. Please edit Projects.ps1 found at (Split-Path $PRO
 
 refreshEnv
 & $PROFILE
-write-host "Please run .\automation\windows\clean.ps1"
+
+Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider
+write-host "`nPlease change the execution policy back to RemoteSigned" -fore yellow
+write-host "`nPlease run .\automation\windows\clean.ps1"

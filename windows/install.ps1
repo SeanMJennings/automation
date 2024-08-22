@@ -36,7 +36,8 @@ choco install postman -yr
 
 choco install sql-server-2022 -yr
 choco install sql-server-management-studio -yr
-choco install sqlserver-cmdlineutils -yr
+choco install sqlcmd -yr
+refreshenv
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SqlWmiManagement')
 $wmi = [Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer]::new('localhost')
 $tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Tcp']
@@ -45,9 +46,9 @@ $tcp.Alter()
 $server = [Microsoft.SqlServer.Management.Smo.Server]::new('localhost')
 $server.LoginMode = 'Mixed'
 $server.Alter()
+sqlcmd -S . -Q "ALTER LOGIN sa DISABLE;"
 Restart-Service -Name MSSQLSERVER -Force
 
-Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider
 yarn global add azurite
 yarn global add npm-check-updates
 yarn global add serve

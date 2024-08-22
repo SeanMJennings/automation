@@ -1,4 +1,3 @@
-
 Get-AppxPackage *3d* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *alarms* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *bing* | Remove-AppxPackage -erroraction 'silentlycontinue'
@@ -49,6 +48,6 @@ choco uninstall MicrosoftWindowsPowerShellV2Root -s windowsfeatures -yr
 choco uninstall MicrosoftWindowsPowerShellV2 -s windowsfeatures -yr
 choco uninstall Internet-Explorer-Optional-amd64 -s windowsfeatures -yr
 
-Write-Host "https://github.com/ChrisTitusTech/win10script"
+Write-Host "https://github.com/ChrisTitusTech/win10script for extra cleaning"
 Read-Host "Computer will restart then please run .\automation\windows\install.ps1"
 Restart-Computer
