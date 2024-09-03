@@ -5,7 +5,7 @@
 # Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 ########################
 
-$projectsRoot = read-host `nPlease enter the path you want to be the projects root
+$projectsRoot = "C:\Users\seanj\repos"
 mkdir $projectsRoot -force
 [System.Environment]::SetEnvironmentVariable('ProjectsRoot',$projectsRoot, 'User')
 
@@ -33,6 +33,7 @@ Set-Location $projectsprojectsRoot
     }
 & "$env:programFiles\Git\usr\bin\ssh-add" "$sshdirectory\id_rsa"
 
+git config --global core.compression 0 repack
 git clone git@github.com:SeanMJennings/automation.git
 Stop-Process -Name 'ssh-agent' -ErrorAction SilentlyContinue
 
