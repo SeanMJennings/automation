@@ -2,11 +2,13 @@ set-variable -name HOME -value $projectsRoot -force
 (get-psprovider FileSystem).Home = $projectsRoot
 set-location ~
 
-remove-item alias:curl
-
 import-module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 & $PSScriptRoot\AddEnvironmentPaths.ps1
 & $PSScriptRoot\Projects.ps1
+
+Get-ChildItem -LiteralPath "$($PROFILE)\..\Modules" -Filter '*.psm1' -Recurse -File | ForEach-Object {
+  Import-Module $PSItem.FullName -DisableNameChecking
+}
 
 function Edit-Profile { code (Split-Path $PROFILE) }
 

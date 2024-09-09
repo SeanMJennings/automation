@@ -43,6 +43,12 @@ $content = {(Get-Content "$projectsRoot\automation\windows\powershell\Microsoft.
 $content.Insert(0, "`$smHome = `"$projectsRoot`"") 
 $content | Set-Content $PROFILE
 
+if($PROFILE -Match "WindowsPowerShell") {
+    Write-Host `nSetting up PowerShell Core `(PowerShell 7`) profile
+    $destination = "$(($PROFILE))\.." -replace "WindowsPowerShell", "PowerShell"
+    Copy-Item "$($PROFILE)\.." $destination -Recurse -Force
+}
+
 write-host "`nSetup Complete. Please edit Projects.ps1 found at (Split-Path $PROFILE)" -fore green
 
 refreshEnv
