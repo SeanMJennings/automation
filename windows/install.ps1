@@ -14,6 +14,7 @@ py -m pip install --user pipx
 py -m pipx ensurepath
 refreshenv
 pipx install poetry
+choco install pyenv-win -yr
 
 choco install 7zip -yr
 choco install teamviewer -yr
