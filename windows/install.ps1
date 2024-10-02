@@ -10,11 +10,7 @@ winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override
 
 choco install python -yr
 choco install pycharm-community -yr
-py -m pip install --user pipx
-py -m pipx ensurepath
-refreshenv
-pipx install poetry
-choco install pyenv-win -yr
+winget install --id=astral-sh.uv  -e
 
 choco install 7zip -yr
 choco install teamviewer -yr
