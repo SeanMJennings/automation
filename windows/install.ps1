@@ -10,7 +10,7 @@ winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override
 
 choco install python -yr
 choco install pycharm-community -yr
-winget install --id=astral-sh.uv  -e
+winget install -e --id=astral-sh.uv
 
 choco install 7zip -yr
 choco install teamviewer -yr
