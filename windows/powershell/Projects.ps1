@@ -58,16 +58,16 @@ function global:Get-Projects {
              ProjectTypes = @([ProjectTypes]::Dotnet)
          };
          [Project]::mine_game          = [PSCustomObject]@{
-             Git        = "git@github.com:SeanMJennings/mine_game.git";
-             Directory  = "~\mine_game";
-             PythonSolution = "~\mine_game";
+             Git        = "git@github.com:SeanMJennings/mine-game.git";
+             Directory  = "~\mine-game";
+             PythonSolution = "~\mine-game";
              ProjectTypes = @([ProjectTypes]::Python)
          };
          [Project]::RuleOfThree = [PSCustomObject]@{ 
-             Git          = "git@github.com:SeanMJennings/RuleOfThree.git"; 
-             Directory    = "~\RuleOfThree";
-             PythonSolution = "~\RuleOfThree\server";
-             CodeSolution = "~\RuleOfThree\client";
+             Git          = "git@github.com:SeanMJennings/rule-of-three.git"; 
+             Directory    = "~\rule-of-three";
+             PythonSolution = "~\rule-of-three\server";
+             CodeSolution = "~\rule-of-three\client";
              ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Python)
          };
     }
