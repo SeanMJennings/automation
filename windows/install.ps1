@@ -16,7 +16,7 @@ choco install 7zip -yr
 choco install teamviewer -yr
 choco install malwarebytes -yr
 choco install jetbrains-rider -yr
-choco install visualstudiocode -yr
+choco install vscode -yr
 choco install nuget.commandline -yr
 choco install azure-cosmosdb-emulator -yr
 choco install azure-data-studio -yr
@@ -31,7 +31,6 @@ choco install brave -yr
 choco install nordpass -yr
 choco install nordvpn -yr
 choco install zoom -yr
-choco install postman -yr
 
 choco install sql-server-2022 -yr
 choco install sql-server-management-studio -yr
