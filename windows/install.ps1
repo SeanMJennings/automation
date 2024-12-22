@@ -31,7 +31,9 @@ choco install brave -yr
 choco install nordpass -yr
 choco install nordvpn -yr
 choco install zoom -yr
+choco install docker-desktop -yr
 
+choco install qgis -yr
 choco install dbeaver -yr
 $password = read-host "Enter password for postgresql"
 choco install postgresql17 --params `/Password:${password}` --ia '--enable-components server,commandlinetools' -yr
