@@ -58,5 +58,9 @@ yarn global add npm-check-updates
 yarn global add serve
 yarn global add vite
 
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
+wsl --install
+wsl --install -d Debian
+
 Read-Host "Computer will restart then please run .\automation\windows\configure.ps1"
 Restart-Computer
