@@ -5,7 +5,6 @@ public enum Project
     Automation,
     BeautyContest,
     CommonLibrary,
-    CrudApi,
     LoanInterestCalculator,
     MessagingLibrary,
     MineGame,
@@ -13,6 +12,7 @@ public enum Project
     ObservabilityLibrary,
     RuleOfThree,
     TestingLibrary,
+    TypicalRestApi,
     WebApiLibrary
 }
 "@
@@ -46,12 +46,6 @@ function global:Get-Projects {
              DotnetSolution = "~\CommonLibrary\Common.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
          };
-         [Project]::CrudApi      = [PSCustomObject]@{ 
-             Git          = "git@github.com:SeanMJennings/CrudApi.git"; 
-             Directory    = "~\CrudApi";
-             DotnetSolution = "~\CrudApi\CrudApi.sln";
-             ProjectTypes = @([ProjectTypes]::Dotnet)
-         };         
          [Project]::LoanInterestCalculator      = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/LoanInterestCalculator.git"; 
              Directory    = "~\LoanInterestCalculator";
@@ -93,6 +87,12 @@ function global:Get-Projects {
              Git        = "git@github.com:SeanMJennings/TestingLibrary.git";
              Directory  = "~\TestingLibrary";
              DotnetSolution = "~\TestingLibrary\Testing.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
+         [Project]::TypicalRestApi = [PSCustomObject]@{
+             Git          = "git@github.com:SeanMJennings/TypicalRestApi.git";
+             Directory    = "~\TypicalRestApi";
+             DotnetSolution = "~\TypicalRestApi\TypicalRestApi.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
          };
          [Project]::WebApiLibrary = [PSCustomObject]@{
