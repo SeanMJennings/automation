@@ -3,10 +3,6 @@ function GoTo ([Project] $project) {
         Write-Host "`nNo project provided`n" -Fore Red
         return
     }
-    if ($project -eq [Project]::All) {
-        Write-Host "`nCan't go to 'All' projects`n" -Fore Red
-        return
-    }
     Set-Location (Get-Projects).Get_Item($project).Directory
 }
 
@@ -26,7 +22,7 @@ function SetupProject ([Project] $project) {
         Build $targetProject.Key
     }
 
-    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Setup-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Setup-Project $_ }
 }
 
 function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Switch] $serverOnly) {
@@ -57,7 +53,7 @@ function Open ([Project] $project = [Project]::None, [Switch] $clientOnly, [Swit
     }
 
     Clear-Host
-    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Open-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Open-Project $_ }
 }
 
 function OpenInGitHub ([Project] $project = [Project]::None) {
@@ -65,10 +61,10 @@ function OpenInGitHub ([Project] $project = [Project]::None) {
         $url = $_.Value.Git -replace "git@github.com:" -replace ".git"
         Start-Process "https://github.com/${url}"
     }
-    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Open-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Open-Project $_ }
 }
 
-function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Switch] $serverOnly) {
+function Build ([Project] $project, [Switch] $clientOnly, [Switch] $serverOnly) {
     function Build-Project($targetProject) {
         $dir = Get-Location
         Set-Location $_.Value.Directory         
@@ -107,11 +103,11 @@ function Build ([Project] $project = [Project]::All, [Switch] $clientOnly, [Swit
         Set-Location $dir
     }
 
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Build-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Build-Project $_ }
     Write-Host `n**************** Build was successful ****************`n -Fore Green
 }
 
-function Migrate ([Project] $project = [Project]::All) {
+function Migrate ([Project] $project) {
     function Migrate-Project($targetProject) {
         if ($null -ne $_.Value.DotnetSolution) { 
             $dir = Get-Location
@@ -125,10 +121,10 @@ function Migrate ([Project] $project = [Project]::All) {
         } 
     }
 
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Migrate-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Migrate-Project $_ }
 }
     
-function Run-Client([Project] $project = [Project]::All) {
+function Run-Client([Project] $project) {
     function Run($targetProject) {
         if ($null -ne $_.Value.CodeSolution) {
             Write-Host `nRunning $targetProject.Key client `n -Fore Green     
@@ -141,7 +137,7 @@ function Run-Client([Project] $project = [Project]::All) {
     (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Run $_ }
 }
 
-function Run-Server([Project] $project = [Project]::All) {
+function Run-Server([Project] $project) {
     function Run($targetProject) {
         if ($null -ne $_.Value.ServerHost) {
             if (!(Get-Process CosmosDB.Emulator -ErrorAction SilentlyContinue)) { CosmosDB.Emulator.exe /NoUi /PartitionCount=50 /NoExplorer /DefaultPartitionCount=50 }
@@ -152,10 +148,10 @@ function Run-Server([Project] $project = [Project]::All) {
     }
 
     Clear-Host
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Run $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Run $_ }
 }
 
-function Watch([Project] $project = [Project]::All) {
+function Watch([Project] $project) {
     function Watch-Project($targetProject) {
         if ($null -ne $_.Value.CodeSolution) {
             Write-Host `nWatching JavaScript $targetProject.Key `n -Fore Green     
@@ -166,7 +162,7 @@ function Watch([Project] $project = [Project]::All) {
     }
 
     Clear-Host
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Watch-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Watch-Project $_ }
 }
 
 function BreakOnFailure([string] $directory, [string] $message = 'It failed!') {
@@ -188,5 +184,5 @@ function ClearDotnetBuild([Project] $project = [Project]::None) {
     }
 
     Clear-Host
-    (Get-Projects).GetEnumerator() | Where { $project.HasFlag($_.Key) } | % { Clear-Dotnet-Project $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Clear-Dotnet-Project $_ }
 }

@@ -1,27 +1,29 @@
 Add-Type -TypeDefinition @"
-[System.Flags]
 public enum Project
 {
-    None=0,
-    Automation=1,
-    BeautyContest = 2,
-    CrudApi = 4,
-    LoanInterestCalculator = 8,
-    MineGame = 16,
-    mine_game = 32,
-    RuleOfThree = 64,
-    All=Automation + BeautyContest + MineGame + mine_game + RuleOfThree
+    None,
+    Automation,
+    BeautyContest,
+    CommonLibrary,
+    CrudApi,
+    LoanInterestCalculator,
+    MessagingLibrary,
+    MineGame,
+    mine_game,
+    ObservabilityLibrary,
+    RuleOfThree,
+    TestingLibrary,
+    WebApiLibrary,
 }
 "@
 Add-Type -TypeDefinition @"
 [System.Flags]
 public enum ProjectTypes
 {
-    None=0,
-    Dotnet=1,
-    JavaScript = 2,
-    Python = 4,
-    All=Dotnet + JavaScript + Python
+    None
+    Dotnet,
+    JavaScript,
+    Python,
 }
 "@
 
@@ -38,7 +40,13 @@ function global:Get-Projects {
              Directory    = "~\BeautyContest";
              DotnetSolution = "~\BeautyContest\BeautyContest.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
-         };              
+         };
+         [Project]::CommonLibrary = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/CommonLibrary.git";
+             Directory  = "~\CommonLibrary";
+             DotnetSolution = "~\CommonLibrary\Common.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
          [Project]::CrudApi      = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/CrudApi.git"; 
              Directory    = "~\CrudApi";
@@ -49,6 +57,12 @@ function global:Get-Projects {
              Git          = "git@github.com:SeanMJennings/LoanInterestCalculator.git"; 
              Directory    = "~\LoanInterestCalculator";
              DotnetSolution = "~\LoanInterestCalculator\LoanInterestCalculator.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
+         [Project]::MessagingLibrary = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/MessagingLibrary.git";
+             Directory  = "~\MessagingLibrary";
+             DotnetSolution = "~\MessagingLibrary\Messaging.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
          };
          [Project]::MineGame           = [PSCustomObject]@{
@@ -63,12 +77,30 @@ function global:Get-Projects {
              PythonSolution = "~\mine-game";
              ProjectTypes = @([ProjectTypes]::Python)
          };
+         [Project]::ObservabilityLibrary = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/ObservabilityLibrary.git";
+             Directory  = "~\ObservabilityLibrary";
+             DotnetSolution = "~\ObservabilityLibrary\Observability.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
          [Project]::RuleOfThree = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/rule-of-three.git"; 
              Directory    = "~\rule-of-three";
              PythonSolution = "~\rule-of-three\server";
              CodeSolution = "~\rule-of-three\client";
              ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Python)
+         };
+         [Project]::TestingLibrary = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/TestingLibrary.git";
+             Directory  = "~\TestingLibrary";
+             DotnetSolution = "~\TestingLibrary\Testing.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
+         [Project]::WebApiLibrary = [PSCustomObject]@{
+             Git        = "git@github.com:SeanMJennings/WebApiLibrary.git";
+             Directory  = "~\WebApiLibrary";
+             DotnetSolution = "~\WebApiLibrary\WebApi.sln";
+             ProjectTypes = @([ProjectTypes]::Dotnet)
          };
     }
 }

@@ -10,7 +10,7 @@ function Ssh-SignIn{
     & "$env:programFiles\Git\usr\bin\ssh-add.exe" $env:USERPROFILE\.ssh\id_rsa
 }
 
-function Status([Project] $project = [Project]::All){
+function Status([Project] $project){
     function Show-Status($targetProject){
         Write-Host `nStatus for $targetProject.Key -Fore Green
         Set-Location $targetProject.Value.Directory
@@ -18,11 +18,11 @@ function Status([Project] $project = [Project]::All){
     } 
 
     $dir = Get-Location
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Show-Status $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Show-Status $_ }
     Set-Location $dir
 }
 
-function Pull ([Project] $project = [Project]::All){
+function Pull ([Project] $project){
     function Git-Pull($targetProject){
         Write-Host `nPulling $targetProject.Key -Fore Green
         Set-Location $targetProject.Value.Directory
@@ -30,7 +30,7 @@ function Pull ([Project] $project = [Project]::All){
     }
 
     $dir = Get-Location
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Git-Pull $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Git-Pull $_ }
     Set-Location $dir
 }
 
@@ -49,7 +49,7 @@ function Push ([Project] $project = [Project]::None, $message, [Switch] $noBuild
 
     Clear-Host
     $dir = Get-Location 
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { 
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { 
         if (!$noBuild) { Build $_.Key -clientOnly:$clientOnly -serverOnly:$serverOnly } else { Pull $_.Key }
         Git-Push $_ 
     }
@@ -68,7 +68,7 @@ function Revert ([Project] $project = [Project]::None){
 
     Clear-Host
     $dir = Get-Location
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Git-Revert $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Git-Revert $_ }
     Pull $project
     Set-Location $dir
 }
@@ -82,6 +82,6 @@ function Clone([Project] $project = [Project]::None) {
 
     Clear-Host
     $dir = Get-Location
-    (Get-Projects).GetEnumerator() | Where-Object { $project.HasFlag($_.Key) } | % { Git-Clone $_ }
+    (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Git-Clone $_ }
     Set-Location $dir
 }
