@@ -13,17 +13,16 @@ public enum Project
     ObservabilityLibrary,
     RuleOfThree,
     TestingLibrary,
-    WebApiLibrary,
+    WebApiLibrary
 }
 "@
 Add-Type -TypeDefinition @"
-[System.Flags]
 public enum ProjectTypes
 {
-    None
+    None,
     Dotnet,
     JavaScript,
-    Python,
+    Python
 }
 "@
 
