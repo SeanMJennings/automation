@@ -1,6 +1,6 @@
 # Development Guidelines for Claude
 
-This file is borrowed directly from https://github.com/citypaul/.dotfiles/blob/main/claude/.claude/CLAUDE.md
+This file is borrowed directly from https://github.com/citypaul
 
 This is used particularly for frontend development as I prefer c#/.NET for backend development
 
