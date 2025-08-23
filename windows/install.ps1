@@ -8,18 +8,21 @@ winget install -e --id Microsoft.PowerShell
 winget install -e --id Microsoft.VisualStudio.2022.Professional --override "--add Microsoft.VisualStudio.Component.CoreEditor --add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.NetWeb --add Microsoft.VisualStudio.Workload.Azure --add Microsoft.VisualStudio.Workload.AzureBuildTools --includeRecommended --passive"
 winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
 
-choco install python -yr
-choco install pycharm-community -yr
+choco install python -yr5
 winget install -e --id=astral-sh.uv
+
+#jetbrains
+choco install datagrip -yr
+choco install dotultimate --params "'/NoTeamCityAddin'" -yr
+choco install pycharm -yr
+choco install webstorm -yr
 
 choco install 7zip -yr
 choco install teamviewer -yr
 choco install malwarebytes -yr
-choco install jetbrains-rider -yr
 choco install vscode -yr
 choco install nuget.commandline -yr
 choco install azure-cosmosdb-emulator -yr
-choco install azure-data-studio -yr
 choco install azure-cli -yr
 choco install azure-functions-core-tools -yr
 choco install servicebusexplorer -yr
