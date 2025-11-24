@@ -58,4 +58,4 @@ refreshEnv
 
 Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider
 write-host "`nPlease change the execution policy back to RemoteSigned" -fore yellow
-write-host "`nPlease run .\automation\windows\clean.ps1"
+write-host "`nPlease run .\automation\windows\02-clean.ps1"

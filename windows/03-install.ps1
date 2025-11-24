@@ -68,5 +68,5 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRes
 wsl --install
 wsl --install -d Debian
 
-Read-Host "Computer will restart then please run .\automation\windows\configure.ps1"
+Read-Host "Computer will restart then please run .\automation\windows\04-configure.ps1"
 Restart-Computer
