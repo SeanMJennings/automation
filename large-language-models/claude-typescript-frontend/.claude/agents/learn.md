@@ -2,7 +2,7 @@
 name: learn
 description: >
   Use this agent proactively during development to identify learning opportunities and reactively after completing work to document insights into CLAUDE.md. Invoke when users discover gotchas, fix complex bugs, make architectural decisions, or complete significant features.
-tools: Read, Edit, Grep
+tools: Read, Edit, Findstr
 model: sonnet
 color: blue
 ---
@@ -78,9 +78,9 @@ Ask the user (or reflect on completed work):
 #### 2. Read Current CLAUDE.md
 
 Before suggesting updates:
-```bash
+```cmd
 # Use Read tool to examine CLAUDE.md
-# Use Grep to search for related keywords
+# Use Findstr to search for related keywords
 ```
 
 - Read the entire CLAUDE.md file (or relevant sections)
@@ -297,9 +297,9 @@ Before proposing documentation, verify:
 
 ### Duplication Check
 Before adding:
-```bash
-# Use Grep to search CLAUDE.md for related keywords
-grep -i "keyword" CLAUDE.md
+```cmd
+# Use findstr to search CLAUDE.md for related keywords
+findstr /s /i /n /c:"pattern" CLAUDE.md
 ```
 - Search CLAUDE.md for related keywords
 - Check if principle is implied by existing guidelines
@@ -372,7 +372,7 @@ const PaymentSchema = z.object({ /* duplicate definition */ });
 ## Commands to Use
 
 - `Read` - Read CLAUDE.md to check existing content
-- `Grep` - Search CLAUDE.md for related keywords
+- `Findstr` - Search CLAUDE.md for related keywords
 - `Edit` - Propose specific edits to CLAUDE.md
 
 ## Your Mandate
