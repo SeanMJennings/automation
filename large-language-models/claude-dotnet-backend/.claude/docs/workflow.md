@@ -28,9 +28,6 @@ Before allowing any commit, verify:
 - ✅ Implementation is minimal (only what's needed)
 - ✅ Refactoring assessment completed (if tests green)
 - ✅ All tests pass
-- ✅ TypeScript strict mode satisfied
-- ✅ No `any` types or unjustified assertions
-- ✅ Factory functions used (no `let`/`beforeEach`)
 
 ## Verifying TDD Compliance Retrospectively
 

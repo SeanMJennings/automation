@@ -514,7 +514,7 @@ public partial class OrderRepositorySpecs
 
 #### When to Use DbSpecification
 
-- **Use `DbSpecification`** for tests that require actual database interactions:
+- **Use `AsyncSpecification` or `TruncateDbSpecification`** for tests that require actual database interactions:
   - Repository integration tests
   - Data access layer testing  
   - End-to-end scenarios involving database operations

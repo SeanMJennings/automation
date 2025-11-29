@@ -61,44 +61,6 @@ You: Launch the tdd-guardian agent to check my recent changes
 
 ---
 
-### `ts-enforcer` - TypeScript Strict Mode Enforcer
-
-**Purpose**: Validates TypeScript code against strict CLAUDE.md guidelines.
-
-**When to invoke**:
-- Before committing TypeScript changes
-- After adding new types or schemas
-- To catch type safety violations
-- When refactoring to ensure immutability
-
-**What it checks**:
-- ❌ `any` types (must use `unknown` or specific types)
-- ❌ Type assertions without justification
-- ❌ `interface` keyword (must use `type`)
-- ✅ Schema-first development (Zod schemas before types)
-- ✅ Immutable data patterns
-- ✅ Options objects over positional parameters
-- ✅ Proper naming conventions
-
-**How to invoke**:
-```
-You: I've added some new TypeScript code. Can you check for type safety violations?
-Claude Code: [Launches ts-enforcer agent]
-```
-
-Or explicitly:
-```
-You: Launch the ts-enforcer agent on my recent TypeScript changes
-```
-
-**Sample output**:
-- Critical violations (any types, missing schemas)
-- High priority issues (mutations, poor structure)
-- Style improvements (naming, parameter patterns)
-- Compliance score with specific fixes
-
----
-
 ### `learn` - CLAUDE.md Learning Integrator
 
 **Purpose**: Captures learnings and updates CLAUDE.md documentation.

@@ -1,8 +1,53 @@
-# Self-Documenting Code Standards
+# Code Quality Standards
 
-## Overview
+This document provides guidelines for creating high-quality, maintainable code in projects.
 
-Self-documenting code is code that clearly expresses its intent, purpose, and behavior through its structure, naming, and design rather than relying heavily on comments or external documentation.
+## Core Principles of Simplicity
+
+These principles are foundational to avoiding unnecessary complexity.
+
+- **Incidental vs. Essential Complexity:** Strive to minimize *incidental complexity* (self-imposed, arising from tools and choices) and focus only on the *essential complexity* (inherent to the problem). For example, choosing a complex framework for a simple task adds incidental complexity.
+- **KISS (Keep It Simple, Stupid):** Prioritize simplicity. If a problem can be solved with a simple function, don't build a multi-layered class hierarchy.
+- **YAGNI (You Ain't Gonna Need It):** Avoid adding functionality until it is absolutely necessary. Don't write a generic "export to CSV/XML/JSON" feature when only CSV is required.
+- **DRY (Don't Repeat Yourself):** Abstract common functionality. If you find yourself copying and pasting code, it's a sign that you need to create a reusable function or component.
+
+## SOLID Principles for Object-Oriented Design
+
+These five principles are the bedrock of building maintainable and scalable object-oriented systems.
+
+- **Single Responsibility Principle (SRP):** A class should have only one reason to change.
+  - *Example:* Instead of a `User` class that handles both user data and database operations, create a `User` class for data and a `UserRepository` class for persistence.
+- **Open/Closed Principle (OCP):** Software entities should be open for extension but closed for modification.
+  - *Example:* Use interfaces and dependency injection. To add a new payment method, create a new class that implements `IPaymentMethod` instead of modifying an existing `PaymentService` class with a large `switch` statement.
+- **Liskov Substitution Principle (LSP):** Subtypes must be substitutable for their base types.
+  - *Example:* If you have a `Bird` class with a `fly()` method, a `Penguin` subclass would violate LSP because penguins can't fly. This suggests a different abstraction is needed, perhaps separating flying birds from non-flying birds.
+- **Interface Segregation Principle (ISP):** Clients should not be forced to depend on interfaces they do not use.
+  - *Example:* Instead of a single `IWorker` interface with `work()` and `eat()` methods, create separate `IWorkable` and `IEatable` interfaces. A robot worker would only implement `IWorkable`.
+- **Dependency Inversion Principle (DIP):** High-level modules should depend on abstractions, not on low-level modules.
+  - *Example:* A `NotificationService` should depend on an `IMessageSender` interface, not a concrete `EmailSender` or `SMSSender` class. This allows you to easily swap out the sending mechanism without changing the service.
+
+## Recognizing and Avoiding Anti-Patterns
+
+Be vigilant for common anti-patterns that degrade code quality.
+
+- **God Object:** A massive class that does everything.
+  - *Symptom:* A class with hundreds of methods and thousands of lines of code.
+  - *Solution:* Break it down into smaller, cohesive classes, each with a single responsibility.
+- **Spaghetti Code:** Code with a tangled, hard-to-follow control structure.
+  - *Symptom:* Deeply nested loops and conditionals, excessive `goto` statements.
+  - *Solution:* Refactor to create clear, linear execution paths using smaller functions and well-defined control flows.
+- **Premature Optimization:** Optimizing code before performance metrics show it is required.
+  - *Symptom:* Complex, hard-to-read code written for a minor or non-existent performance gain.
+  - *Solution:* Write clean, simple code first. Only optimize when profiling reveals a bottleneck.
+- **Magic Numbers/Strings:** Unexplained values in code.
+  - *Symptom:* `if (user.Status == 2)`
+  - *Solution:* Replace with named constants: `if (user.Status == UserStatus.Active)`
+
+## Continuous Improvement
+
+- **Code Reviews:** Go beyond finding bugs. Look for adherence to these principles, opportunities for simplification, and improvements in readability.
+- **Automated Testing:** Use a mix of unit, integration, and end-to-end tests to lock in behavior and prevent regressions. High test coverage is a good indicator of maintainable code.
+- **Documentation:** Document *why* decisions were made, not just *what* the code does. This is crucial for future maintainers.
 
 ### Why Self-Documenting Code Matters
 
@@ -19,9 +64,9 @@ Self-documenting code standards complement and reinforce other development pract
 - **BDD Testing**: Tests serve as living specifications that document expected behavior
 - **Code Quality**: Clean, expressive code is inherently higher quality and more maintainable
 
-## Core Principles
+### Core Principles
 
-### 1. Intent-Revealing Code Over Comments
+#### Intent-Revealing Code Over Comments
 
 **Principle**: The code itself should reveal what it does and why it does it. Comments should explain context, not mechanics.
 
@@ -40,7 +85,7 @@ if (order.Status == 3) // 3 means "shipped"
 if (order.Status == OrderStatus.Shipped)
 ```
 
-### 2. Domain Language Consistency
+#### Domain Language Consistency
 
 **Principle**: Use the same terminology in code that domain experts use in conversation.
 
@@ -58,7 +103,7 @@ public class PrescriptionValidator
 }
 ```
 
-### 3. Fail-Fast with Clear Messages
+#### Fail-Fast with Clear Messages
 
 **Principle**: When something goes wrong, make it immediately obvious what happened and why.
 
@@ -71,7 +116,7 @@ throw new InvalidPrescriptionException(
     $"Prescription {prescriptionId} cannot be dispensed: patient allergy to {allergen} detected");
 ```
 
-### 4. Code Readability Hierarchy
+#### Code Readability Hierarchy
 
 **Principle**: Code should be readable at multiple levels - class, method, and line level.
 
@@ -79,9 +124,9 @@ throw new InvalidPrescriptionException(
 2. **Method Level**: Single responsibility with descriptive name
 3. **Line Level**: Each statement's purpose is obvious
 
-## Naming Standards
+### Naming Standards
 
-### Class Naming
+#### Class Naming
 
 **Classes should clearly indicate their role and responsibility:**
 
@@ -105,7 +150,7 @@ public class Utility { }
 - **Primitives**: Use descriptive domain concepts (`Money`, `PatientId`, `DrugCode`)
 - **Repositories**: Use `Repository` suffix (`PatientRepository`, `PrescriptionRepository`)
 
-### Method Naming
+#### Method Naming
 
 **Methods should clearly express what they do and return:**
 
@@ -129,7 +174,7 @@ public object Validate()
 - **Query methods**: Describe what is returned (`GetEligiblePatients`, `FindActivePrescriptions`)
 - **Avoid abbreviations**: `CalculateCopayment` not `CalcCopay`
 
-### Variable Naming
+#### Variable Naming
 
 **Variables should clearly indicate their purpose and content:**
 
@@ -145,7 +190,7 @@ var max = drug.GetMax();
 var flag = prescription.Check();
 ```
 
-### Constants and Configuration
+#### Constants and Configuration
 
 **Use descriptive names that explain business meaning:**
 
@@ -164,9 +209,9 @@ public const decimal MIN_AMT = 5.00m;
 public const int GRACE = 30;
 ```
 
-## Method Design
+### Method Design
 
-### Single Responsibility Methods
+#### Single Responsibility Methods
 
 **Each method should do one thing and do it well:**
 
@@ -191,7 +236,7 @@ public bool ProcessPatient(Patient patient, Insurance insurance, List<Prescripti
 }
 ```
 
-### Clear Parameter Design
+#### Clear Parameter Design
 
 **Method parameters should be specific and meaningful:**
 
@@ -207,7 +252,7 @@ public void TransferPrescription(
 public void Transfer(string id, string from, string to, int reasonCode)
 ```
 
-### Expressive Return Types
+#### Expressive Return Types
 
 **Return types should clearly indicate what the method provides:**
 
@@ -223,7 +268,7 @@ public object Find(string patientId, string drugId)
 public string Validate(object insurance)
 ```
 
-### Method Length Guidelines
+#### Method Length Guidelines
 
 **Methods should be concise and focused:**
 
@@ -245,11 +290,11 @@ public Money CalculateInsuranceCopay(Prescription prescription, Insurance insura
 // Consider refactoring when methods become too long or have multiple concerns
 ```
 
-## Primitive Obsession
+### Primitive Obsession
 
 Primitive obsession occurs when we use built-in language types (string, int, decimal) to represent domain concepts instead of creating specific types. This practice severely hampers code self-documentation because it removes business meaning from the code.
 
-### The Problem with Primitives
+#### The Problem with Primitives
 
 **Primitive obsession masks domain concepts:**
 
@@ -267,7 +312,7 @@ public void ProcessPayment(string patientId, string pharmacyId, decimal amount, 
 ProcessPayment("12345", "PH789", 25.50m, "USD");
 ```
 
-### Domain Primitives for Clarity
+#### Domain Primitives for Clarity
 
 **Create specific types that express business meaning:**
 
@@ -287,7 +332,7 @@ ProcessPayment(
     Money.Dollars(25.50m));
 ```
 
-### Primitive Implementation Examples
+#### Primitive Implementation Examples
 
 **PatientId Primitive:**
 
@@ -352,7 +397,7 @@ public readonly struct Money : IEquatable<Money>
 }
 ```
 
-### Descriptive Enums Over Magic Values
+#### Descriptive Enums Over Magic Values
 
 **Use enums to make states and options explicit:**
 
@@ -389,7 +434,7 @@ public enum Priority
 }
 ```
 
-### Type Safety Patterns
+#### Type Safety Patterns
 
 **Design types to make illegal states unrepresentable:**
 
@@ -444,7 +489,7 @@ public class DispensedPrescription : Prescription
 }
 ```
 
-### Integration with Domain Models
+#### Integration with Domain Models
 
 **Primitives support rich domain models:**
 
@@ -476,9 +521,9 @@ public class Patient
 }
 ```
 
-## Code Structure & Organization
+### Code Structure & Organization
 
-### File and Namespace Organization
+#### File and Namespace Organization
 
 **Organize code to reflect domain structure:**
 
@@ -514,7 +559,7 @@ namespace  Business.Logic
 namespace  Common.Helpers
 ```
 
-### Class Structure for Discoverability
+#### Class Structure for Discoverability
 
 **Organize class members in a predictable order:**
 
@@ -551,7 +596,7 @@ public class PrescriptionService
 }
 ```
 
-### Logical Grouping Patterns
+#### Logical Grouping Patterns
 
 **Group related functionality together:**
 
@@ -583,9 +628,9 @@ public class Patient
 }
 ```
 
-## Comments vs Self-Documentation
+### Comments vs Self-Documentation
 
-### When Code Should Be Self-Explanatory
+#### When Code Should Be Self-Explanatory
 
 **Most code should be self-explanatory without comments:**
 
@@ -617,7 +662,7 @@ public Money CalculateInsuranceCopay(Prescription prescription, Insurance insura
 }
 ```
 
-### When Comments Are Necessary
+#### When Comments Are Necessary
 
 **Comments should explain WHY, not WHAT:**
 
@@ -651,7 +696,7 @@ public decimal CalculateComplexDosage(Patient patient, Drug drug)
 }
 ```
 
-### Documentation Comments for Public APIs
+#### Documentation Comments for Public APIs
 
 **Use XML documentation for public interfaces:**
 
@@ -674,7 +719,7 @@ public ValidationResult ValidateDispensing(Prescription prescription, Patient pa
 }
 ```
 
-### Obsolete Code Handling
+#### Obsolete Code Handling
 
 **Clearly mark and explain obsolete code:**
 
@@ -696,9 +741,9 @@ public decimal CalculateInsuranceCopay(Prescription prescription)
 }
 ```
 
-## Integration Points
+### Integration Points
 
-### BDD Tests as Living Documentation
+#### BDD Tests as Living Documentation
 
 **Tests should serve as executable specifications:**
 
@@ -738,7 +783,7 @@ public partial class PrescriptionValidationSpecs : Specification
 }
 ```
 
-### DDD Ubiquitous Language Alignment
+#### DDD Ubiquitous Language Alignment
 
 **Ensure code terminology matches domain expert language:**
 
@@ -767,7 +812,7 @@ public class PreAuthRecord
 }
 ```
 
-### Cross-Reference with Existing Standards
+#### Cross-Reference with Existing Standards
 
 **Self-documenting code supports other standards:**
 
@@ -776,9 +821,9 @@ public class PreAuthRecord
 - **Domain-Driven Design**: Expressive types and names support rich domain models
 - **Architectural Standards**: Clear interfaces and responsibilities support clean architecture
 
-## Implementation Guidelines
+### Implementation Guidelines
 
-### Starting with Existing Code
+#### Starting with Existing Code
 
 **Gradually improve code documentation through refactoring:**
 
@@ -800,19 +845,9 @@ public class PreAuthRecord
 - [ ] Error messages are specific and actionable
 - [ ] Code structure reflects domain organization
 
-### Team Adoption
-
-**Encourage team-wide adoption:**
-
-- Include self-documentation discussions in design reviews
-- Share examples of well-documented vs. poorly documented code  
-- Pair program to spread knowledge of domain-specific naming
-- Create team coding standards that emphasize expressiveness
-- Celebrate improvements in code clarity during retrospectives
-
 ## Conclusion
 
-Self-documenting code is not just about writing clear names—it's about creating code that serves as the primary source of truth for how the system works. In healthcare domains where complexity is high and correctness is critical, self-documenting code becomes a safety mechanism that helps prevent misunderstandings and errors.
+The code style is not just about writing clear names—it's about creating code that serves as the primary source of truth for how the system works. In healthcare domains where complexity is high and correctness is critical, self-documenting code becomes a safety mechanism that helps prevent misunderstandings and errors.
 
 By following these standards, projects will have:
 - Code that domain experts can read and validate

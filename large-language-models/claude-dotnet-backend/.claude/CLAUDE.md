@@ -19,16 +19,13 @@ I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven
 
 - Write tests first (TDD)
 - Test behavior, not implementation
-- No `any` types or type assertions
 - Immutable data only
 - Small, pure functions
-- TypeScript strict mode always
-- Use real schemas/types in tests, never redefine them
 
 **Preferred Tools:**
 
-- **Language**: TypeScript (strict mode)
-- **Testing**: Jest/Vitest + React Testing Library
+- **Language**: Dotnet C#
+- **Testing**: NUnit + Moq + Testcontainers
 - **State Management**: Prefer immutable patterns
 
 ## Testing Principles
@@ -38,7 +35,6 @@ I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven
 **Quick reference:**
 - Write tests first (TDD non-negotiable)
 - Test through public API exclusively
-- Use factory functions for test data (no `let`/`beforeEach`)
 - Tests must document expected business behavior
 - No 1:1 mapping between test files and implementation files
 
@@ -46,33 +42,26 @@ For comprehensive testing guidelines including:
 - Behavior-driven testing principles and anti-patterns
 - Test data patterns and factory functions with full examples
 - Achieving 100% coverage through business behavior
-- React component testing strategies
-- Testing tools (Jest, Vitest, React Testing Library)
+- Testing tools (Dotnet test, NUnit, Moq)
 - Validating test data with schemas
 
 See @~/.claude/docs/testing.md
 
-## TypeScript Guidelines
+## Architecture
 
-**Core principle**: Strict mode always. Schema-first at trust boundaries, types for internal logic.
+**Core principle**: Focus on architecture specializing in simplicity and clarity. Eliminate all sources of incidental complexity.
 
 **Quick reference:**
-- No `any` types - ever (use `unknown` if type truly unknown)
-- No type assertions without justification
-- Prefer `type` over `interface` for data structures
-- Reserve `interface` for behavior contracts only
-- Define schemas first, derive types from them (Zod/Standard Schema)
-- Use schemas at trust boundaries, plain types for internal logic
+- Apply hexagonal architecture making use of ports and adapters when needed.
+- Avoid introducing unnecessary abstractions, layers, or dependencies.
+- If a requirement is ambiguous, ask clarifying questions before proceeding.
 
-For comprehensive TypeScript guidelines including:
-- Strict mode requirements and tsconfig setup
-- Type vs interface distinction with examples
-- Schema-first development with Zod
-- Decision framework: when schemas ARE vs AREN'T required (5-question framework)
-- Schema usage in tests (import from shared locations)
-- Branded types for type safety
+For architecture guidelines including:
+- Hexagonal architecture principles and patterns
+- Eliminating incidental complexity
+- Design review features
 
-See @~/.claude/docs/typescript.md
+See @~/.claude/docs/architecture.md
 
 ## Code Style
 
@@ -84,11 +73,9 @@ See @~/.claude/docs/typescript.md
 - No nested if/else - use early returns or composition
 - No comments - code should be self-documenting
 - Prefer options objects over positional parameters
-- Use array methods (`map`, `filter`, `reduce`) over loops
 
 For comprehensive code style guidelines including:
-- Functional programming patterns and when to use heavy FP abstractions
-- Complete immutability violations catalog (arrays, objects, nested structures)
+- OOP programming patterns and when to use heavy abstractions
 - Code structure principles (max 2 levels nesting)
 - Naming conventions (functions, types, constants, files)
 - Self-documenting code patterns (no comments)
@@ -121,14 +108,22 @@ For comprehensive workflow guidelines including:
 
 See @~/.claude/docs/workflow.md
 
-## Example Patterns
+## Domain Driven Design
 
-For complete examples including:
-- Error handling (Result types and early returns)
-- Testing behavior through public APIs
-- Common anti-patterns to avoid (mutations, nested conditionals, large functions)
+**Core principle**: Model the domain accurately using ubiquitous language and bounded contexts.
 
-See @~/.claude/docs/examples.md
+**Quick reference:**
+- Use ubiquitous language consistently in code and tests
+- Define bounded contexts for complex domains
+- Focus on core domain logic, avoid over-engineering
+
+For comprehensive DDD guidelines including:
+- Ubiquitous language patterns
+- Bounded context definitions and examples
+- Aggregates, entities, and value objects
+- Domain events and services
+
+See @~/.claude/docs/ddd-summary.md
 
 ## Working with Claude
 
@@ -150,13 +145,6 @@ For comprehensive guidance including:
 - Communication guidelines
 
 See @~/.claude/docs/working-with-claude.md
-
-## Resources and References
-
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
-- [Testing Library Principles](https://testing-library.com/docs/guiding-principles)
-- [Kent C. Dodds Testing JavaScript](https://testingjavascript.com/)
-- [Functional Programming in TypeScript](https://gcanti.github.io/fp-ts/)
 
 ## Summary
 

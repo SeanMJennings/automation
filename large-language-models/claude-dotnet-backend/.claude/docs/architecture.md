@@ -1,14 +1,38 @@
-# Hexagonal Architecture Standards
+# Architectural Standards
 
-## 1. Overview
+This document outlines the architectural principles and standards for projects, focusing on simplicity and clarity.
+
+## Architectural Principles: Simplicity and Clarity
+
+Act as a senior software architect specializing in simplicity and clarity. For each step of the development process, identify and eliminate all sources of incidental complexity.
+
+- **Only propose solutions that address the essential complexity of the problem.**
+- **Avoid introducing unnecessary abstractions, layers, or dependencies.**
+- **For every design or code suggestion, briefly explain why it is the simplest possible approach and how it avoids accidental complexity.**
+- **If a simpler alternative exists, always recommend it, even if it seems less "clever" or "modern."**
+- **When trade-offs are necessary, prioritize maintainability, readability, and minimalism over premature optimization or feature bloat.**
+- **Provide concrete examples or refactorings that demonstrate the reduction or removal of incidental complexity.**
+- **If a requirement is ambiguous, ask clarifying questions before proceeding.**
+
+As a critical reviewer, your goal is to ensure architectural clarity and minimalism without sacrificing robustness or maintainability.
+
+### Key Design Review Features:
+
+- **Explicitly requests reflection on complexity** rather than only problem-solving.
+- **Invites stepwise, chain-of-thought processing.**
+- **Demands justification for any simplification,** ensuring traceability to standards.
+
+You can further refine the template by specifying which standards or design patterns the model should prioritize, and by encouraging it to output responses in a table that compares the current design vs. proposed simplifications for easier review.
+
+## Hexagonal Architecture Standards
 
 This document defines the hexagonal architecture principles that guide project design. Hexagonal architecture (also known as ports and adapters) provides clean separation between business logic and infrastructure concerns, enabling technology independence, testability, and maintainability.
 
-## 1.1. What is Hexagonal Architecture?
+### What is Hexagonal Architecture?
 
 Hexagonal architecture is an architectural pattern that isolates the core business logic from external concerns. The "hexagon" represents the application core, with each side representing a different way the application can be driven (HTTP, messages, timers) or drive other systems (databases, external APIs, file systems).
 
-### 1.1.1. Core Architecture Diagram
+#### Core Architecture Diagram
 
 ```mermaid
 graph TD
@@ -58,37 +82,37 @@ graph TD
     class REPOS,EXT_SVC,FILE_SYS,NOTIFY secondaryAdapter
 ```
 
-## 1.2. Core Concepts
+### Core Concepts
 
-### Ports
+#### Ports
 **Ports** are interfaces that define how the application can be used or how it uses external systems.
 
 - **Primary Ports** (Driving): Interfaces that allow external systems to use the application
-  - HTTP request handlers
-  - Message handlers
-  - CLI command interfaces
+    - HTTP request handlers
+    - Message handlers
+    - CLI command interfaces
 - **Secondary Ports** (Driven): Interfaces that the application uses to interact with external systems
-  - Repository interfaces
-  - External service interfaces
-  - Notification interfaces
+    - Repository interfaces
+    - External service interfaces
+    - Notification interfaces
 
-### Adapters
+#### Adapters
 **Adapters** are implementations that connect ports to real technologies.
 
 - **Primary Adapters** (Driving): Translate external inputs into application calls
-  - Web API controllers/handlers
-  - Azure Functions (Service Bus, Timer triggers)
-  - Console application main methods
-  - Test harnesses
+    - Web API controllers/handlers
+    - Azure Functions (Service Bus, Timer triggers)
+    - Console application main methods
+    - Test harnesses
 - **Secondary Adapters** (Driven): Implement interfaces needed by the application
-  - Database repositories (Cosmos DB, SQL Server)
-  - External service clients (REST APIs, SOAP services)
-  - File system implementations
-  - Email/SMS notification services
+    - Database repositories (Cosmos DB, SQL Server)
+    - External service clients (REST APIs, SOAP services)
+    - File system implementations
+    - Email/SMS notification services
 
-## 2. Hexagonal Architecture Principles
+### Hexagonal Architecture Principles
 
-### 2.1. Dependency Rule
+#### Dependency Rule
 
 The fundamental rule of hexagonal architecture is the **Dependency Rule**:
 
@@ -103,7 +127,7 @@ External Systems → Adapters → Ports → Application Core
 - Application core defines ports but doesn't know about adapters
 - External systems interact with adapters, not the core directly
 
-### 2.2. Technology Independence
+#### Technology Independence
 
 The application core should be completely independent of:
 - **Frameworks**: No ASP.NET, Entity Framework, or Azure-specific code in the core
@@ -111,18 +135,18 @@ The application core should be completely independent of:
 - **External Services**: Core doesn't know about specific APIs or messaging systems
 - **User Interface**: Business logic works with any presentation layer
 
-### 2.3. Domain-Driven Naming
+#### Domain-Driven Naming
 
 All components should be named to reflect their **domain purpose** and **business intent**, not their technical implementation. Names should be meaningful to healthcare domain experts and express what the component achieves in the business context.
 
-#### 2.3.1. Naming Hierarchy
+##### Naming Hierarchy
 
 **Priority Order for Naming:**
 1. **Domain Concept**: What it represents in healthcare/pharmacy domain
 2. **Communication Pattern**: How it communicates (when relevant)
 3. **Technical Distinction**: Only when absolutely necessary
 
-#### 2.3.2. Communication Pattern Naming
+##### Communication Pattern Naming
 
 When components need to communicate across boundaries, use these established patterns:
 
@@ -174,7 +198,7 @@ public class CreatePatientCommand
 public class ProcessDataCommand
 ```
 
-#### 2.3.3. Service Naming Standards
+##### Service Naming Standards
 
 **Domain Services** (Express business capabilities):
 ```csharp
@@ -205,7 +229,7 @@ public class PatientHandler
 public class ReviewManager
 ```
 
-#### 2.3.4. Method Naming Standards
+##### Method Naming Standards
 
 Methods should express **business operations**, not technical operations:
 
@@ -224,18 +248,18 @@ DeleteRecord()
 ProcessData()
 ```
 
-### 2.4. Testability
+#### Testability
 
 Hexagonal architecture makes testing straightforward:
 - **Unit Tests**: Test application core in isolation using test doubles
 - **Integration Tests**: Test adapters against real external systems
 - **End-to-End Tests**: Test complete system with real adapters
 
-## 3. Service Layer Patterns
+### Service Layer Patterns
 
 We implements a **Hybrid CQRS** approach that separates command (write) operations from query (read) operations while maintaining clean architecture principles.
 
-### 3.1. CQRS Architecture
+#### CQRS Architecture
 
 ```mermaid
 graph TD
@@ -278,9 +302,9 @@ graph TD
     class EVENTS eventFlow
 ```
 
-### 3.2. Service Layer Responsibilities and Access Patterns
+#### Service Layer Responsibilities and Access Patterns
 
-#### **Command Handlers** (Write Operations)
+##### **Command Handlers** (Write Operations)
 **Purpose**: Execute domain operations and maintain aggregate consistency
 **Infrastructure Access**:
 - ✅ **Domain Repositories**: For persisting aggregates to Cosmos DB
@@ -312,7 +336,7 @@ public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
 }
 ```
 
-#### **Query Application Services** (Read Operations)
+##### **Query Application Services** (Read Operations)
 **Purpose**: Provide optimized data access for read scenarios
 **Infrastructure Access**:
 - ✅ **Direct IDb Access**: For optimized SQL queries against read models
@@ -363,7 +387,7 @@ public class RuleQueryService
 }
 ```
 
-#### **Domain Event Handlers** (Application Services)
+##### **Domain Event Handlers** (Application Services)
 **Purpose**: Maintain read model consistency by reacting to domain events
 **Infrastructure Access**:
 - ✅ **Direct IDb Access**: For updating SQL read models
@@ -410,7 +434,7 @@ public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
 }
 ```
 
-### 3.3. Domain Layer (Pure Business Logic)
+#### Domain Layer (Pure Business Logic)
 **Purpose**: Core business logic and domain rules
 **Infrastructure Access**:
 - ✅ **Other Domain Objects**: Entities, value objects, domain services within context
@@ -450,7 +474,7 @@ public class DrugInteractionService
 }
 ```
 
-### 3.4. Cross-Bounded Context Communication
+#### Cross-Bounded Context Communication
 
 **Anti-Corruption Layers**:
 - Application services that translate between bounded contexts
@@ -484,7 +508,7 @@ public class ExternalPrescriptionService : IIntegrateWithExternalSystem
 }
 ```
 
-### 3.5. Implementation Examples
+#### Implementation Examples
 
 Different ways to drive the application core:
 
@@ -543,9 +567,9 @@ public async Task rule_query_service_finds_rule()
 }
 ```
 
-## 4. Benefits in Context
+### Benefits in Context
 
-### 4.1. Technology Flexibility
+#### Technology Flexibility
 
 We can easily:
 - Switch between hosting mechanisms (Web API ↔ Azure Functions)
@@ -553,23 +577,23 @@ We can easily:
 - Add new interfaces (mobile apps, desktop apps) without core changes
 - Migrate to new cloud providers or frameworks
 
-### 4.2. Testing Strategy
+#### Testing Strategy
 
 - **Fast Unit Tests**: Test business logic without any infrastructure
 - **Focused Integration Tests**: Test each adapter independently
 - **Reliable Tests**: Mock external dependencies easily
 - **BDD Alignment**: Test behavior, not implementation details
 
-### 4.3. Team Productivity
+#### Team Productivity
 
 - **Clear Boundaries**: Teams know where to put different types of code
 - **Parallel Development**: Core and adapter development can proceed independently
 - **Easier Refactoring**: Changes to infrastructure don't affect business logic
 - **Domain Focus**: Developers can focus on healthcare domain problems
 
-## 5. Common Implementation Mistakes
+### Common Implementation Mistakes
 
-### 5.1. Leaky Abstractions
+#### Leaky Abstractions
 
 **❌ Wrong:**
 ```csharp
@@ -597,7 +621,7 @@ public class RuleService
 }
 ```
 
-### 5.2. Adapter Coupling
+#### Adapter Coupling
 
 **❌ Wrong:**
 ```csharp
@@ -617,7 +641,7 @@ public class GetRuleHandler
 }
 ```
 
-### 5.3. Business Logic in Adapters
+#### Business Logic in Adapters
 
 **❌ Wrong:**
 ```csharp
@@ -645,6 +669,7 @@ public async Task<IActionResult> CreateRule(CreateRuleRequest request)
 }
 ```
 
-## Conclusion
+### Conclusion
 
 Hexagonal architecture is not just a pattern - it's a mindset that keeps business logic pure and adaptable. By following these principles, applications remain flexible, testable, and aligned with domain-driven design practices. The separation of concerns enables teams to focus on solving healthcare domain problems while keeping infrastructure concerns cleanly isolated.
+
