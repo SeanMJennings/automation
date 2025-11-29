@@ -73,7 +73,7 @@ Per CLAUDE.md: **"Evaluating refactoring opportunities is not optional - it's th
 #### 1. Examine Recent Code
 
 Use git to identify what just changed:
-```bash
+```cmd
 git diff
 git diff --cached
 git log --oneline -1

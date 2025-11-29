@@ -2,7 +2,7 @@
 name: ts-enforcer
 description: >
   Use this agent proactively to guide TypeScript best practices during development and reactively to enforce compliance after code is written. Invoke when defining types/schemas, writing TypeScript code, or reviewing for type safety violations.
-tools: Read, Grep, Glob, Bash
+tools: Read, Findstr, Dir, Cmd
 model: sonnet
 color: red
 ---
@@ -59,12 +59,12 @@ Here's how to do it:
 
 #### 1. Scan TypeScript Files
 
-```bash
+```cmd
 # Find TypeScript files
-glob "**/*.ts" "**/*.tsx"
+dir /S /B *.ts *.tsx
 
 # Focus on recently changed files
-git diff --name-only | grep -E '\.(ts|tsx)$'
+git diff --name-only | findstr /R "\.ts$ \.tsx$"
 git status
 ```
 
@@ -72,7 +72,7 @@ Exclude: `node_modules`, `dist`, `build`
 
 #### 2. Check Compiler Configuration
 
-```bash
+```cmd
 # Verify tsconfig.json
 read tsconfig.json
 ```
@@ -88,25 +88,25 @@ Verify all strict mode flags are enabled:
 For each file, search for:
 
 **Critical Violations:**
-```bash
-# Search for any types
-grep -n ": any\\b" [file]
+```cmd
+REM Search for any types
+findstr /N /R ": any\>" [file]
 
-# Search for type assertions
-grep -n "\\bas\\s+\\w+" [file]
+REM Search for type assertions
+findstr /N /R "\<as " [file]
 
-# Search for ignore directives
-grep -n "@ts-ignore\\|@ts-expect-error" [file]
+REM Search for ignore directives
+findstr /N /C:"@ts-ignore" /C:"@ts-expect-error" [file]
 
-# Search for interface keyword
-grep -n "^interface \\w+" [file]
+REM Search for interface keyword
+findstr /N /R "^interface " [file]
 
-# Search for mutations
-grep -n "\\.push(\\|\\.pop(\\|\\.splice(" [file]
+REM Search for mutations
+findstr /N /R "\.push( \.pop( \.splice(" [file]
 ```
 
 **Style Issues:**
-```bash
+```cmd
 # Search for multiple positional params
 # Look for functions with 3+ parameters
 
@@ -607,15 +607,15 @@ Before approving code, verify:
 
 ## Commands to Use
 
-- `Glob` - Find TypeScript files: `**/*.ts`, `**/*.tsx`
-- `Grep` - Search for violations:
-  - `": any\\b"` - Find any types
-  - `"\\bas\\s+\\w+"` - Find type assertions
-  - `"@ts-ignore"` - Find ignore directives
-  - `"interface \\w+"` - Find interface declarations
-  - `"\\.push\\("` - Find array mutations
+- `Dir` - Find TypeScript files: `dir /S /B *.ts *.tsx`
+- `Findstr` - Search for violations:
+    - `findstr /N /R ": any\>" [file]` - Find any types
+    - `findstr /N /R "\<as " [file]` - Find type assertions
+    - `findstr /N /C:"@ts-ignore" [file]` - Find ignore directives
+    - `findstr /N /R "^interface " [file]` - Find interface declarations
+    - `findstr /N /R "\.push(" [file]` - Find array mutations
 - `Read` - Examine tsconfig.json and specific files
-- `Bash` - Run `tsc --noEmit` for type checking
+- `cmd` - Run `tsc --noEmit` for type checking
 
 ## Your Mandate
 
