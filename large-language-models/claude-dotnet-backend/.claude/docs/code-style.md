@@ -43,12 +43,6 @@ Be vigilant for common anti-patterns that degrade code quality.
   - *Symptom:* `if (user.Status == 2)`
   - *Solution:* Replace with named constants: `if (user.Status == UserStatus.Active)`
 
-## Continuous Improvement
-
-- **Code Reviews:** Go beyond finding bugs. Look for adherence to these principles, opportunities for simplification, and improvements in readability.
-- **Automated Testing:** Use a mix of unit, integration, and end-to-end tests to lock in behavior and prevent regressions. High test coverage is a good indicator of maintainable code.
-- **Documentation:** Document *why* decisions were made, not just *what* the code does. This is crucial for future maintainers.
-
 ### Why Self-Documenting Code Matters
 
 - **Safety**: Clear, unambiguous code reduces misinterpretation that could affect patient care
@@ -134,14 +128,11 @@ throw new InvalidPrescriptionException(
 // GOOD: Clear responsibility
 public class DrugInteractionChecker { }
 public class PatientEligibilityValidator { }
-public class PrescriptionDispenser { }
-public class ClinicalAlertPublisher { }
 
 // AVOID: Vague or technical names
 public class DataHelper { }
 public class Manager { }
 public class Processor { }
-public class Utility { }
 ```
 
 **Naming Patterns:**
@@ -159,7 +150,6 @@ public class Utility { }
 public bool HasAllergiesTo(Drug drug)
 public Money CalculateCopay(Insurance insurance, Drug drug)
 public void DispensePrescription(Prescription prescription)
-public ValidationResult ValidatePreAuthorization()
 
 // AVOID: Vague or abbreviated
 public bool Check(object obj)
@@ -221,10 +211,10 @@ public ValidationResult ValidatePatientEligibility(Patient patient, Insurance in
 {
     if (!patient.IsActive())
         return ValidationResult.Failed("Patient is not active");
-        
+
     if (!insurance.CoversPatient(patient))
         return ValidationResult.Failed("Insurance does not cover this patient");
-        
+
     return ValidationResult.Success();
 }
 
@@ -283,7 +273,7 @@ public Money CalculateInsuranceCopay(Prescription prescription, Insurance insura
     var baseCost = prescription.Drug.Cost;
     var coveragePercentage = insurance.GetCoveragePercentage(prescription.Drug);
     var copayAmount = baseCost * (1 - coveragePercentage);
-    
+
     return Money.FromDecimal(copayAmount, Currency.USD);
 }
 
@@ -334,35 +324,6 @@ ProcessPayment(
 
 #### Primitive Implementation Examples
 
-**PatientId Primitive:**
-
-```csharp
-public readonly struct PatientId : IEquatable<PatientId>
-{
-    private readonly Guid _value;
-    
-    private PatientId(Guid value)
-    {
-        _value = value;
-    }
-    
-    public static PatientId FromGuid(Guid guid)
-    {
-        if (guid == Guid.Empty)
-            throw new ArgumentException("Patient ID cannot be empty", nameof(guid));
-        return new PatientId(guid);
-    }
-    
-    public static PatientId NewId() => new(Guid.NewGuid());
-    
-    public override string ToString() => _value.ToString();
-    
-    public bool Equals(PatientId other) => _value.Equals(other._value);
-    public override bool Equals(object obj) => obj is PatientId other && Equals(other);
-    public override int GetHashCode() => _value.GetHashCode();
-}
-```
-
 **Money Primitive:**
 
 ```csharp
@@ -370,7 +331,7 @@ public readonly struct Money : IEquatable<Money>
 {
     public decimal Amount { get; }
     public Currency Currency { get; }
-    
+
     private Money(decimal amount, Currency currency)
     {
         if (amount < 0)
@@ -378,19 +339,19 @@ public readonly struct Money : IEquatable<Money>
         Amount = amount;
         Currency = currency;
     }
-    
+
     public static Money Dollars(decimal amount) => new(amount, Currency.USD);
     public static Money Zero(Currency currency) => new(0, currency);
-    
+
     public Money Add(Money other)
     {
         if (Currency != other.Currency)
             throw new InvalidOperationException($"Cannot add {Currency} to {other.Currency}");
         return new Money(Amount + other.Amount, Currency);
     }
-    
+
     public override string ToString() => $"{Amount:C} {Currency}";
-    
+
     public bool Equals(Money other) => Amount == other.Amount && Currency == other.Currency;
     public override bool Equals(object obj) => obj is Money other && Equals(other);
     public override int GetHashCode() => HashCode.Combine(Amount, Currency);
@@ -406,14 +367,12 @@ public readonly struct Money : IEquatable<Money>
 public class Prescription
 {
     public int Status { get; set; } // What does 1, 2, 3 mean?
-    public string Priority { get; set; } // "H", "M", "L"?
 }
 
 // PREFER: Self-documenting enums
 public class Prescription
 {
     public PrescriptionStatus Status { get; set; }
-    public Priority Priority { get; set; }
 }
 
 public enum PrescriptionStatus
@@ -423,14 +382,6 @@ public enum PrescriptionStatus
     Dispensed,
     Cancelled,
     Expired
-}
-
-public enum Priority
-{
-    Low,
-    Medium,
-    High,
-    Emergency
 }
 ```
 
@@ -455,7 +406,7 @@ public abstract class Prescription
     public PrescriptionId Id { get; }
     public PatientId PatientId { get; }
     public DrugId DrugId { get; }
-    
+
     protected Prescription(PrescriptionId id, PatientId patientId, DrugId drugId)
     {
         Id = id;
@@ -475,10 +426,10 @@ public class DispensedPrescription : Prescription
     // Dispensed prescriptions must have this information
     public DateTime DispensedAt { get; }
     public PharmacistId DispensedBy { get; }
-    
+
     public DispensedPrescription(
-        PrescriptionId id, 
-        PatientId patientId, 
+        PrescriptionId id,
+        PatientId patientId,
         DrugId drugId,
         DateTime dispensedAt,
         PharmacistId dispensedBy) : base(id, patientId, drugId)
@@ -501,19 +452,19 @@ public class Patient
     public DateOfBirth DateOfBirth { get; }
     public Insurance Insurance { get; }
     private readonly List<Allergy> _allergies = new();
-    
+
     public Patient(PatientId id, PatientName name, DateOfBirth dateOfBirth)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Name = name ?? throw new ArgumentNullException(nameof(name));
         DateOfBirth = dateOfBirth;
     }
-    
+
     public bool IsAllergicTo(Drug drug)
     {
         return _allergies.Any(allergy => allergy.ConflictsWith(drug));
     }
-    
+
     public Age CalculateAge(Date asOfDate)
     {
         return Age.Between(DateOfBirth.Value, asOfDate);
@@ -550,8 +501,7 @@ public class Patient
 ```csharp
 // GOOD: Business domain alignment
 namespace  Prescriptions.Domain.Entities
-namespace  Insurance.Domain.Services  
-namespace  Pharmacy.Application.Commands
+namespace  Insurance.Domain.Services
 
 // AVOID: Technical structure
 namespace  Data.Models
@@ -568,11 +518,11 @@ public class PrescriptionService
 {
     // 1. Constants and static fields
     private const int MaxRetryAttempts = 3;
-    
+
     // 2. Private fields
     private readonly IPrescriptionRepository _repository;
     private readonly IEligibilityChecker _eligibilityChecker;
-    
+
     // 3. Constructor(s)
     public PrescriptionService(
         IPrescriptionRepository repository,
@@ -581,13 +531,13 @@ public class PrescriptionService
         _repository = repository;
         _eligibilityChecker = eligibilityChecker;
     }
-    
+
     // 4. Public methods (primary interface)
     public async Task<PrescriptionResult> CreatePrescription(CreatePrescriptionCommand command)
     {
         // Implementation
     }
-    
+
     // 5. Private methods (implementation details)
     private async Task<ValidationResult> ValidateEligibility(PatientId patientId)
     {
@@ -607,188 +557,35 @@ public class Patient
     public PatientId Id { get; }
     public PatientName Name { get; }
     public DateOfBirth DateOfBirth { get; }
-    
+
     // Insurance-related
     public Insurance PrimaryInsurance { get; private set; }
     public Insurance SecondaryInsurance { get; private set; }
-    
+
     public void UpdatePrimaryInsurance(Insurance insurance) { }
     public void UpdateSecondaryInsurance(Insurance insurance) { }
-    
-    // Allergy-related  
+
+    // Allergy-related
     private readonly List<Allergy> _allergies = new();
-    
+
     public void AddAllergy(Allergy allergy) { }
     public void RemoveAllergy(AllergyId allergyId) { }
     public bool IsAllergicTo(Drug drug) { }
-    
+
     // Prescription-related
     public bool IsEligibleFor(Drug drug) { }
     public Money CalculateCopayFor(Drug drug) { }
 }
 ```
 
-### Comments vs Self-Documentation
-
-#### When Code Should Be Self-Explanatory
-
-**Most code should be self-explanatory without comments:**
-
-```csharp
-// GOOD: No comments needed
-public Money CalculateInsuranceCopay(Prescription prescription, Insurance insurance)
-{
-    var drugCost = prescription.Drug.Cost;
-    var copayPercentage = insurance.GetCopayPercentage(prescription.Drug);
-    var copayAmount = drugCost.MultiplyBy(copayPercentage);
-    
-    return copayAmount.RoundToNearestCent();
-}
-
-// AVOID: Comments explaining obvious code
-public Money CalculateInsuranceCopay(Prescription prescription, Insurance insurance)
-{
-    // Get the cost of the drug
-    var drugCost = prescription.Drug.Cost;
-    
-    // Get the copay percentage from insurance
-    var copayPercentage = insurance.GetCopayPercentage(prescription.Drug);
-    
-    // Multiply cost by percentage
-    var copayAmount = drugCost.MultiplyBy(copayPercentage);
-    
-    // Round to nearest cent and return
-    return copayAmount.RoundToNearestCent();
-}
-```
-
-#### When Comments Are Necessary
-
-**Comments should explain WHY, not WHAT:**
-
-```csharp
-// GOOD: Explains business reasoning
-public bool IsEligibleForRefill(Prescription prescription)
-{
-    var daysSinceLastFill = CalculateDaysSinceLastFill(prescription);
-    
-    // FDA regulation requires 75% of medication to be consumed before refill
-    // This translates to waiting 75% of the prescription duration
-    var minimumWaitDays = prescription.DurationInDays * 0.75;
-    
-    return daysSinceLastFill >= minimumWaitDays;
-}
-
-// GOOD: Explains complex algorithms
-public decimal CalculateComplexDosage(Patient patient, Drug drug)
-{
-    var baseDosage = drug.StandardDosage;
-    
-    // Dosage calculation based on Cockroft-Gault equation for renal adjustment
-    // See: https://www.nejm.org/doi/full/10.1056/NEJM197603042941003
-    if (patient.HasRenalImpairment())
-    {
-        var creatinineClearance = CalculateCreatinineClearance(patient);
-        baseDosage = AdjustForRenalFunction(baseDosage, creatinineClearance);
-    }
-    
-    return baseDosage;
-}
-```
-
-#### Documentation Comments for Public APIs
-
-**Use XML documentation for public interfaces:**
-
-```csharp
-/// <summary>
-/// Validates whether a prescription can be dispensed to a patient.
-/// </summary>
-/// <param name="prescription">The prescription to validate</param>
-/// <param name="patient">The patient receiving the prescription</param>
-/// <returns>
-/// A validation result indicating whether dispensing is allowed,
-/// and any warnings or errors that should be communicated to the pharmacist.
-/// </returns>
-/// <exception cref="ArgumentNullException">
-/// Thrown when prescription or patient is null
-/// </exception>
-public ValidationResult ValidateDispensing(Prescription prescription, Patient patient)
-{
-    // Implementation
-}
-```
-
-#### Obsolete Code Handling
-
-**Clearly mark and explain obsolete code:**
-
-```csharp
-/// <summary>
-/// Calculates insurance copay using legacy formula.
-/// </summary>
-/// <param name="prescription">The prescription</param>
-/// <returns>Copay amount in dollars</returns>
-/// <remarks>
-/// This method uses the pre-2023 insurance calculation formula.
-/// New code should use <see cref="CalculateInsuranceCopayV2"/> instead.
-/// This method is maintained for backward compatibility with legacy systems.
-/// </remarks>
-[Obsolete("Use CalculateInsuranceCopayV2 for new implementations. Will be removed in v3.0.")]
-public decimal CalculateInsuranceCopay(Prescription prescription)
-{
-    // Legacy implementation
-}
-```
-
 ### Integration Points
-
-#### BDD Tests as Living Documentation
-
-**Tests should serve as executable specifications:**
-
-```csharp
-[TestFixture]
-public partial class PrescriptionValidationSpecs : Specification
-{
-    [Test]
-    public void prescription_cannot_be_dispensed_to_allergic_patient()
-    {
-        scenario(() =>
-        {
-            Given(a_patient_allergic_to_penicillin);
-            And(a_prescription_for_amoxicillin); // Penicillin-based antibiotic
-            When(validating_the_prescription_for_dispensing);
-            Then(validation_fails_with_allergy_warning);
-        });
-    }
-    
-    [Test]
-    public void prescription_refill_follows_fda_timing_rules()
-    {
-        scenario(() =>
-        {
-            Given(a_30_day_prescription_filled_20_days_ago);
-            When(checking_refill_eligibility);
-            Then(refill_is_not_yet_allowed);
-        });
-        
-        scenario(() =>
-        {
-            Given(a_30_day_prescription_filled_25_days_ago);
-            When(checking_refill_eligibility);
-            Then(refill_is_allowed);
-        });
-    }
-}
-```
 
 #### DDD Ubiquitous Language Alignment
 
 **Ensure code terminology matches domain expert language:**
 
 ```csharp
-// Code should use the same terms that pharmacists, doctors, and insurance 
+// Code should use the same terms that pharmacists, doctors, and insurance
 // specialists use in their daily work
 
 // GOOD: Matches healthcare terminology
@@ -796,18 +593,18 @@ public class PriorAuthorization
 {
     public AuthorizationStatus Status { get; }
     public DateTime ExpirationDate { get; }
-    
+
     public bool IsValidFor(Drug drug, Patient patient)
     public void Approve(PhysicianId approvingPhysician)
     public void Deny(DenialReason reason)
 }
 
-// AVOID: Technical terms not used by domain experts  
+// AVOID: Technical terms not used by domain experts
 public class PreAuthRecord
 {
     public int StatusCode { get; }
     public DateTime EndDate { get; }
-    
+
     public bool CheckValidity(object drugObj, object patientObj)
 }
 ```
