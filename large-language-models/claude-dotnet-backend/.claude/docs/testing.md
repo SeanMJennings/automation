@@ -402,7 +402,7 @@ public abstract class AsyncSpecification
 
 When writing tests for projects, the recommended approach is:
 
-1. Create a partial class that inherits from `Specification`
+1. Create a partial class that inherits from `AsyncSpecification`
 2. Split specifications and steps into separate files
 3. Use the fluent assertions for validations
 
