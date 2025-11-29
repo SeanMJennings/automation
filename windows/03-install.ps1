@@ -11,13 +11,7 @@ winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override
 choco install python -yr
 winget install -e --id=astral-sh.uv
 
-#jetbrains
 choco install jetbrainstoolbox -yr
-choco install datagrip -yr
-choco install dotultimate --params "'/NoTeamCityAddin'" -yr
-choco install pycharm -yr
-choco install webstorm -yr
-
 choco install 7zip -yr
 choco install teamviewer -yr
 choco install malwarebytes -yr
