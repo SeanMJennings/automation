@@ -158,7 +158,6 @@ This directory contains specifications for specialized Claude Code agents that w
 wip-guardian (orchestrates)
     ├─→ use-case-data-patterns (when analyzing existing patterns)
     ├─→ tdd-guardian (for each step: RED-GREEN-REFACTOR)
-    ├─→ ts-enforcer (before commits/PRs)
     ├─→ refactor-scan (after GREEN tests)
     ├─→ adr (when architectural decision arises)
     ├─→ learn (when significant learning occurs)
@@ -182,7 +181,6 @@ wip-guardian (orchestrates)
    - Invoke `adr`: Create ADR for significant decisions
 
 4. **Before commits/PRs**
-   - Invoke `ts-enforcer`: Verify TypeScript compliance
    - Invoke `tdd-guardian`: Verify TDD compliance
 
 5. **When learning occurs**
@@ -284,7 +282,7 @@ When creating a new agent specification:
 These agents work together to create a comprehensive development workflow:
 
 - **Analysis**: use-case-data-patterns maps use cases to implementation patterns
-- **Quality**: tdd-guardian + ts-enforcer ensure code quality
+- **Quality**: tdd-guardian ensures code quality
 - **Improvement**: refactor-scan optimizes code after tests pass
 - **Knowledge**: learn + adr + docs-guardian preserve knowledge
 - **Progress**: wip-guardian prevents context loss during development
