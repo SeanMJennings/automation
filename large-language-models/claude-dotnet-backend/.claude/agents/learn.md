@@ -80,7 +80,7 @@ Ask the user (or reflect on completed work):
 Before suggesting updates:
 ```bash
 # Use Read tool to examine CLAUDE.md
-# Use Grep to search for related keywords
+# Use Findstr to search for related keywords
 ```
 
 - Read the entire CLAUDE.md file (or relevant sections)
@@ -93,13 +93,13 @@ Before suggesting updates:
 Determine which section(s) the learning belongs to:
 
 **Existing Sections:**
-- **Core Philosophy** - Fundamental principles (TDD, FP, immutability)
+- **Core Philosophy** - Fundamental principles (TDD, OOP, immutability)
 - **Testing Principles** - Test strategy and patterns
-- **TypeScript Guidelines** - Type system usage
-- **Code Style** - Functional patterns, naming, structure
+- **Architecture** - layering, separation of concerns
+- **Code Style** - Naming, structure, immutability
 - **Development Workflow** - TDD process, refactoring, commits
+- **Domain-Driven Design** - Ubiquitous language, bounded contexts
 - **Working with Claude** - Expectations and communication
-- **Example Patterns** - Concrete code examples
 - **Common Patterns to Avoid** - Anti-patterns
 
 **New Sections** (if learning doesn't fit existing):
@@ -125,12 +125,12 @@ Brief explanation of why this matters.
 - Another guideline with example
 - Edge case or gotcha to watch for
 
-```typescript
+```csharp
 // ✅ GOOD - Example following the principle
-const example = "demonstrating correct approach";
+var example = "demonstrating correct approach";
 
 // ❌ BAD - Example showing what not to do
-const bad = "demonstrating wrong approach";
+var bad = "demonstrating wrong approach";
 ```
 ```
 
@@ -142,12 +142,12 @@ const bad = "demonstrating wrong approach";
 **Issue**: What goes wrong
 **Solution**: How to handle it
 
-```typescript
+```csharp
 // ✅ CORRECT - Solution example
-const correct = handleEdgeCase();
+var correct = handleEdgeCase();
 
 // ❌ WRONG - What causes the problem
-const wrong = naiveApproach();
+var wrong = naiveApproach();
 ```
 ```
 
@@ -298,8 +298,8 @@ Before proposing documentation, verify:
 ### Duplication Check
 Before adding:
 ```bash
-# Use Grep to search CLAUDE.md for related keywords
-grep -i "keyword" CLAUDE.md
+# Use findstr to search CLAUDE.md for related keywords
+findstr /s /i /n /c:"pattern" CLAUDE.md
 ```
 - Search CLAUDE.md for related keywords
 - Check if principle is implied by existing guidelines
@@ -312,67 +312,78 @@ grep -i "keyword" CLAUDE.md
 ## CLAUDE.md Learning Integration
 
 ### Summary
-Discovered that Zod schemas must be exported from a shared location for test files to import them, preventing schema duplication in tests.
+Discovered that validation models must be exported from a shared location for test files to import them, preventing model duplication in tests.
 
 ### Proposed Location
-**Section**: Schema-First Development with Zod
-**Position**: Add new subsection "Schema Exports and Imports"
+**Section**: Model Validation
+**Position**: Add new subsection "Validation Model Organization"
 
 ### Proposed Addition
 
 ```markdown
-#### Schema Organization for Tests
+#### Validation Model Organization for Tests
 
-**CRITICAL**: All schemas must be exported from a shared module that both production and test code can import.
+**CRITICAL**: All validation models and validators must be defined in a shared location that both production and test code can reference.
 
-```typescript
-// ✅ CORRECT - Shared schema module
-// src/schemas/payment.schema.ts
-export const PaymentSchema = z.object({
-  amount: z.number().positive(),
-  currency: z.string().length(3),
-});
-export type Payment = z.infer<typeof PaymentSchema>;
+```csharp
+// ✅ CORRECT - Shared validation model
+// src/Models/Payment.cs
+public record Payment
+{
+    public decimal Amount { get; init; }
+    public string Currency { get; init; } = string.Empty;
+}
 
-// src/services/payment.service.ts
-import { PaymentSchema, type Payment } from '../schemas/payment.schema';
+// src/Validators/PaymentValidator.cs (using Shouldly)
+public class PaymentValidator : AbstractValidator<Payment>
+{
+    public PaymentValidator()
+    {
+        RuleFor(x => x.Amount).GreaterThan(0);
+        RuleFor(x => x.Currency).Length(3);
+    }
+}
 
-// src/services/payment.service.test.ts
-import { PaymentSchema, type Payment } from '../schemas/payment.schema';
+// src/Services/PaymentService.cs
+using MyApp.Models;
+using MyApp.Validators;
+
+// tests/Services/PaymentServiceTests.cs
+using MyApp.Models;
+using MyApp.Validators;
 ```
 
 **Why this matters:**
-- Tests must use the exact same schemas as production code
-- Prevents schema drift between tests and production
-- Ensures test data factories validate against real schemas
-- Changes to schemas automatically propagate to tests
+- Tests must use the exact same models and validators as production code
+- Prevents model drift between tests and production
+- Ensures test data factories validate against real models
+- Changes to models automatically propagate to tests
 
 **Common mistake:**
-```typescript
-// ❌ WRONG - Redefining schema in test file
-// payment.service.test.ts
-const PaymentSchema = z.object({ /* duplicate definition */ });
+```csharp
+// ❌ WRONG - Redefining model in test file
+// PaymentServiceTests.cs
+public record Payment { /* duplicate definition */ }
 ```
 ```
 
 ### Rationale
-- Encountered this when tests were failing due to schema mismatch
-- Would have saved 30 minutes if schema export pattern was documented
-- Prevents future schema duplication violations
-- Directly relates to existing "Schema Usage in Tests" section
+- Encountered this when tests were failing due to model mismatch
+- Would have saved 30 minutes if model organization pattern was documented
+- Prevents future model duplication violations
+- Directly relates to existing "Model Usage in Tests" section
 
 ### Verification Checklist
 - [x] Learning is not already documented
-- [x] Fits naturally into Schema-First Development section
+- [x] Fits naturally into Model Validation section
 - [x] Maintains consistent voice with CLAUDE.md
 - [x] Includes concrete examples showing right and wrong approaches
 - [x] Prevents the specific confusion encountered during this task
 ```
-
 ## Commands to Use
 
 - `Read` - Read CLAUDE.md to check existing content
-- `Grep` - Search CLAUDE.md for related keywords
+- `Findtr` - Search CLAUDE.md for related keywords
 - `Edit` - Propose specific edits to CLAUDE.md
 
 ## Your Mandate
