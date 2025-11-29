@@ -75,12 +75,13 @@ Payments must:
 
 ### Example
 
-\`\`\`typescript
-const result = processPayment({ amount: 150 });
-if (!result.success) {
-  console.error(result.error.message);
+```csharp
+var result = paymentProcessor.Process(new Payment { Amount = new Money(150) });
+if (!result.IsSuccess)
+{
+    Console.WriteLine(result.Error.Message);
 }
-\`\`\`
+```
 ```
 
 ## When to Invoke
@@ -171,7 +172,6 @@ When starting significant work, create `WIP.md` in project root:
 ## Agent Checkpoints
 
 - [ ] tdd-guardian: Verify TDD compliance before each commit
-- [ ] ts-enforcer: Check TypeScript strict mode adherence
 - [ ] refactor-scan: Assess refactoring after green tests
 - [ ] adr: Create ADRs for architectural decisions (as they arise)
 - [ ] learn: Document learnings in CLAUDE.md
@@ -258,17 +258,6 @@ The `wip-guardian` references and ensures proper use of all agents:
 - RED: Test written and failing ✅
 - GREEN: Minimal code to pass ❌ (current)
 - REFACTOR: Not started
-```
-
-**ts-enforcer Integration:**
-```markdown
-## Agent Checkpoints
-
-- [x] ts-enforcer: Validated types in payment-validator.ts ✅
-- [ ] **→ Invoke ts-enforcer before PR** - check new code for:
-  - No `any` types
-  - Schema-first development
-  - Immutability compliance
 ```
 
 **refactor-scan Integration:**
@@ -383,12 +372,6 @@ Document and track anything preventing progress:
 - **Action**: Asked team lead for docs
 - **Status**: Waiting for response
 - **Workaround**: Can proceed with steps 1-3 in parallel
-
-### Blocker 2: TypeScript Error in Legacy Code
-- **Impact**: Can't run tests until this is fixed
-- **Action**: Need to fix or add type assertion with justification
-- **Status**: In progress
-- **Next**: Invoke ts-enforcer to find acceptable solution
 ```
 
 ### 6. Identify ADR Opportunities
@@ -452,7 +435,6 @@ At the end of each work session, update the log:
 
 **Agent Actions Taken**:
 - ✅ tdd-guardian: Verified TDD compliance for steps 3-4
-- ✅ ts-enforcer: Validated no `any` types in new code
 - ⏳ refactor-scan: Pending for next session
 - ⏳ learn: Will document Zod pattern when feature completes
 ```
@@ -595,7 +577,6 @@ Add email notification system supporting templated emails, background queueing, 
 ## Agent Checkpoints
 
 - [ ] tdd-guardian: Verify TDD compliance for each step (12 times)
-- [ ] ts-enforcer: Validate types (especially API integration points)
 - [ ] refactor-scan: After each GREEN phase
 - [ ] learn: Document email template patterns, queue setup gotchas
 - [ ] docs-guardian: Update README, add EMAIL_NOTIFICATIONS.md when complete
@@ -686,7 +667,6 @@ assistant: "Let me use the wip-guardian agent to verify completion and prepare f
 **Pre-PR Checklist:**
 - [x] All tests passing ✅
 - [x] tdd-guardian verified TDD compliance ✅
-- [x] ts-enforcer validated types ✅
 - [x] refactor-scan assessed code quality ✅
 - [x] Commits follow conventional format ✅
 - [x] No pending refactoring needed
@@ -722,7 +702,7 @@ assistant: "That's a blocker for merging this PR. Let me use the wip-guardian ag
   2. Add Redis to CI docker-compose if missing
   3. May need to use redis-mock for tests
 - **Status**: Investigating
-- **Workaround**: Continue with step 8 in parallel branch
+- **Workaround**: Continue with step 8 in parallel branch while debugging CI
 
 ## Current Focus
 
@@ -762,7 +742,6 @@ assistant: "All steps complete! Let me use the wip-guardian agent to verify comp
 ## Final Agent Verification
 
 - [x] tdd-guardian: All code written test-first ✅
-- [x] ts-enforcer: No `any` types, strict mode passing ✅
 - [x] refactor-scan: Code quality assessed, refactoring complete ✅
 - [x] adr: Created ADR-001 (SendGrid choice) and ADR-002 (BullMQ queue) ✅
 - [x] learn: Documented 3 gotchas in CLAUDE.md ✅
