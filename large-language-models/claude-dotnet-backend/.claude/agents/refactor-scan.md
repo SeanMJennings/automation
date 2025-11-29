@@ -2,7 +2,7 @@
 name: refactor-scan
 description: >
   Use this agent proactively to guide refactoring decisions during code improvement and reactively to assess refactoring opportunities after tests pass (TDD's third step). Invoke when tests are green, when considering abstractions, or when reviewing code quality.
-tools: Read, Grep, Glob, Bash
+tools: Read, Findstr, Dir, Terminal
 model: sonnet
 color: yellow
 ---
@@ -144,52 +144,58 @@ Use this format:
 ## Refactoring Opportunity Scan
 
 ### 📁 Files Analyzed
-- `src/payment/payment-processor.ts` (45 lines changed)
-- `src/payment/payment-validator.ts` (23 lines changed)
+- `src/Payment/PaymentProcessor.cs` (45 lines changed)
+- `src/Payment/PaymentValidator.cs` (23 lines changed)
 
 ### 🎯 Assessment
 
 #### ✅ Already Clean
 The following code requires no refactoring:
-- **payment-validator.ts** - Clear function names, appropriate abstraction level
+- **PaymentValidator.cs** - Clear function names, appropriate abstraction level
 - Pure validation functions with good separation of concerns
 
 #### 🔴 Critical Refactoring Needed
 
 ##### 1. Knowledge Duplication: Free Shipping Threshold
-**Files**: `order-calculator.ts:23`, `shipping-service.ts:45`, `cart-total.ts:67`
+**Files**: `OrderCalculator.cs:23`, `ShippingService.cs:45`, `CartTotal.cs:67`
 **Issue**: The rule "free shipping over £50" is duplicated in 3 places
 **Impact**: Changes to shipping policy require updates in multiple locations
 **Semantic Analysis**: All three instances represent the same business knowledge
 **Recommendation**:
-```typescript
+```csharp
 // Extract to shared constant and function
-export const FREE_SHIPPING_THRESHOLD = 50;
-export const STANDARD_SHIPPING_COST = 5.99;
+public static class ShippingPolicy
+{
+    public const decimal FreeShippingThreshold = 50m;
+    public static readonly Money StandardShippingCost = new Money(5.99m, "GBP");
 
-export const calculateShippingCost = (itemsTotal: number): number => {
-  return itemsTotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
-};
+    public static Money CalculateShippingCost(Money itemsTotal)
+    {
+        return itemsTotal.Amount > FreeShippingThreshold 
+            ? Money.Zero("GBP") 
+            : StandardShippingCost;
+    }
+}
 ```
-**Files to update**: order-calculator.ts, shipping-service.ts, cart-total.ts
+**Files to update**: OrderCalculator.cs, ShippingService.cs, CartTotal.cs
 
 #### ⚠️ High Value Refactoring
 
 ##### 1. Complex Nested Conditionals
-**File**: `payment-processor.ts:56-78`
+**File**: `PaymentProcessor.cs:56-78`
 **Issue**: 3 levels of nested if statements
 **Recommendation**: Use early returns (see example)
 
 #### 💡 Consider for Next Refactoring Session
 
 ##### 1. Long Function
-**File**: `order-processor.ts:45-89`
+**File**: `OrderProcessor.cs:45-89`
 **Note**: Currently readable, consider splitting if making changes to this area
 
 #### 🚫 Do Not Refactor
 
 ##### 1. Similar Validation Functions
-**Files**: `user-validator.ts:12`, `product-validator.ts:23`
+**Files**: `UserValidator.cs:12`, `ProductValidator.cs:23`
 **Analysis**: Despite structural similarity, these validate different domain entities
 **Semantic Assessment**: Different business concepts will evolve independently
 **Recommendation**: **Keep separate** - appropriate domain separation
@@ -308,44 +314,51 @@ Ready to commit?"
 
 ### Example: Different Concepts - DO NOT ABSTRACT
 
-```typescript
+```csharp
 // Similar structure, DIFFERENT semantic meaning - DO NOT ABSTRACT
-const validatePaymentAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidatePaymentAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
-const validateTransferAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidateTransferAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
 // ❌ WRONG - Abstracting these couples unrelated business rules
-const validateAmount = (amount: number, max: number): boolean => {
-  return amount > 0 && amount <= max;
-};
+public bool ValidateAmount(decimal amount, decimal max)
+{
+    return amount > 0 && amount <= max;
+}
 ```
 
 **Why not abstract?** Payment limits and transfer limits are different business concepts that will likely evolve independently. Payment limits might change based on fraud rules; transfer limits might change based on account type.
 
 ### Example: Same Concept - SAFE TO ABSTRACT
 
-```typescript
+```csharp
 // Similar structure, SAME semantic meaning - SAFE TO ABSTRACT
-const formatUserDisplayName = (firstName: string, lastName: string): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatUserDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
-const formatCustomerDisplayName = (firstName: string, lastName: string): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatCustomerDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
-const formatEmployeeDisplayName = (firstName: string, lastName: string): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatEmployeeDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
 // ✅ CORRECT - These all represent the same concept
-const formatPersonDisplayName = (firstName: string, lastName: string): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatPersonDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 ```
 
 **Why abstract?** These all represent "how we format a person's name for display" - the same semantic meaning.
@@ -356,37 +369,44 @@ const formatPersonDisplayName = (firstName: string, lastName: string): string =>
 
 ### Not a DRY Violation (Different Knowledge)
 
-```typescript
-const validateUserAge = (age: number): boolean => {
-  return age >= 18 && age <= 100;  // Legal requirement + practical limit
-};
+```csharp
+public bool ValidateUserAge(int age)
+{
+    return age >= 18 && age <= 100;  // Legal requirement + practical limit
+}
 
-const validateProductRating = (rating: number): boolean => {
-  return rating >= 1 && rating <= 5;  // Star rating system
-};
+public bool ValidateProductRating(int rating)
+{
+    return rating >= 1 && rating <= 5;  // Star rating system
+}
 
-const validateYearsOfExperience = (years: number): boolean => {
-  return years >= 0 && years <= 50;  // Career span
-};
+public bool ValidateYearsOfExperience(int years)
+{
+    return years >= 0 && years <= 50;  // Career span
+}
 ```
 
 **Assessment**: Similar structure, but each represents different business knowledge. **Do not refactor.**
 
 ### IS a DRY Violation (Same Knowledge)
 
-```typescript
-class Order {
-  calculateTotal(): number {
-    const itemsTotal = this.items.reduce((sum, item) => sum + item.price, 0);
-    const shippingCost = itemsTotal > 50 ? 0 : 5.99; // Knowledge duplicated!
-    return itemsTotal + shippingCost;
-  }
+```csharp
+public class Order
+{
+    public Money CalculateTotal()
+    {
+        var itemsTotal = Items.Aggregate(Money.Zero("GBP"), (sum, item) => sum.Add(item.Price));
+        var shippingCost = itemsTotal.Amount > 50 ? Money.Zero("GBP") : new Money(5.99m, "GBP"); // Knowledge duplicated!
+        return itemsTotal.Add(shippingCost);
+    }
 }
 
-class ShippingCalculator {
-  calculate(orderAmount: number): number {
-    return orderAmount > 50 ? 0 : 5.99; // Same knowledge!
-  }
+public class ShippingCalculator
+{
+    public Money Calculate(Money orderAmount)
+    {
+        return orderAmount.Amount > 50 ? Money.Zero("GBP") : new Money(5.99m, "GBP"); // Same knowledge!
+    }
 }
 ```
 
@@ -416,58 +436,76 @@ Before recommending refactoring, verify:
 ## Common Refactoring Patterns
 
 ### Extract Constant
-```typescript
+```csharp
 // Before
 if (amount > 10000) { ... }
 
 // After
-const MAX_PAYMENT_AMOUNT = 10000;
-if (amount > MAX_PAYMENT_AMOUNT) { ... }
+private const decimal MaxPaymentAmount = 10000m;
+if (amount > MaxPaymentAmount) { ... }
 ```
 
 ### Early Returns
-```typescript
+```csharp
 // Before
-if (user) {
-  if (user.isActive) {
-    if (user.hasPermission) {
-      return doSomething(user);
+public Result ProcessUser(User user)
+{
+    if (user != null)
+    {
+        if (user.IsActive)
+        {
+            if (user.HasPermission)
+            {
+                return DoSomething(user);
+            }
+        }
     }
-  }
+    return Result.Failure();
 }
 
 // After
-if (!user) return;
-if (!user.isActive) return;
-if (!user.hasPermission) return;
-return doSomething(user);
+public Result ProcessUser(User user)
+{
+    if (user == null) return Result.Failure();
+    if (!user.IsActive) return Result.Failure();
+    if (!user.HasPermission) return Result.Failure();
+    
+    return DoSomething(user);
+}
 ```
 
-### Extract Function
-```typescript
+### Extract Method
+```csharp
 // Before
-const processOrder = (order: Order) => {
-  const itemsTotal = order.items.reduce((sum, item) => sum + item.price, 0);
-  const shipping = itemsTotal > 50 ? 0 : 5.99;
-  return itemsTotal + shipping;
-};
+public Money ProcessOrder(Order order)
+{
+    var itemsTotal = order.Items.Aggregate(Money.Zero("GBP"), (sum, item) => sum.Add(item.Price));
+    var shipping = itemsTotal.Amount > 50 ? Money.Zero("GBP") : new Money(5.99m, "GBP");
+    return itemsTotal.Add(shipping);
+}
 
 // After
-const calculateItemsTotal = (items: OrderItem[]): number => {
-  return items.reduce((sum, item) => sum + item.price, 0);
-};
+private Money CalculateItemsTotal(IEnumerable<OrderItem> items)
+{
+    return items.Aggregate(Money.Zero("GBP"), (sum, item) => sum.Add(item.Price));
+}
 
-const calculateShipping = (itemsTotal: number): number => {
-  const FREE_SHIPPING_THRESHOLD = 50;
-  const STANDARD_SHIPPING = 5.99;
-  return itemsTotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING;
-};
+private Money CalculateShipping(Money itemsTotal)
+{
+    const decimal FreeShippingThreshold = 50m;
+    var standardShipping = new Money(5.99m, "GBP");
+    
+    return itemsTotal.Amount > FreeShippingThreshold 
+        ? Money.Zero("GBP") 
+        : standardShipping;
+}
 
-const processOrder = (order: Order): number => {
-  const itemsTotal = calculateItemsTotal(order.items);
-  const shipping = calculateShipping(itemsTotal);
-  return itemsTotal + shipping;
-};
+public Money ProcessOrder(Order order)
+{
+    var itemsTotal = CalculateItemsTotal(order.Items);
+    var shipping = CalculateShipping(itemsTotal);
+    return itemsTotal.Add(shipping);
+}
 ```
 
 ## Commands to Use
@@ -476,8 +514,8 @@ const processOrder = (order: Order): number => {
 - `git status` - Current state
 - `git log --oneline -5` - Recent commits
 - `Read` - Examine files in detail
-- `Grep` - Search for repeated patterns (magic numbers, similar functions, duplicated strings)
-- `Glob` - Find related files that might contain duplication
+- `Findstr` - Search for repeated patterns (magic numbers, similar functions, duplicated strings)
+- `Dir` - Find related files that might contain duplication
 
 ## Your Mandate
 
