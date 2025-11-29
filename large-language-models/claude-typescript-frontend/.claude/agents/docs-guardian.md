@@ -2,7 +2,7 @@
 name: docs-guardian
 description: >
   Use this agent proactively when creating documentation or reactively to review and improve existing docs. Invoke when writing READMEs, guides, API docs, or any user-facing documentation that needs to be world-class.
-tools: Read, Edit, Grep, Glob, Bash
+tools: Read, Edit, FindStr, Dir, Cmd
 model: sonnet
 color: purple
 ---
@@ -187,13 +187,13 @@ const payment = processPayment({
 
 #### 1. Read and Understand
 
-```bash
-# Read the documentation file(s)
+```cmd
+REM Read the documentation file(s)
 Read <file>
 
 # Search for related docs
-Glob "**/*.md"
-Grep "pattern" --type md
+dir `Repository\`*.md /s /b
+findstr /s /i /n /c:"pattern" *.md
 ```
 
 - Read the entire document
@@ -451,7 +451,7 @@ Critical improvements needed:
 
 Get up and running in 5 minutes:
 
-```bash
+```cmd
 # Install
 npm install package-name
 
@@ -767,10 +767,10 @@ Before finalizing documentation, verify:
 ## Commands to Use
 
 - `Read` - Read existing documentation files
-- `Glob` - Find all documentation files (*.md)
-- `Grep` - Search documentation for specific terms
+- `dir` - Find all documentation files (*.md)
+- `findstr` - Search documentation for specific terms
 - `Edit` - Propose specific improvements to docs
-- `Bash` - Run commands to verify examples work
+- `Cmd` - Run Windows cmd commands to verify examples work
 
 ## Your Mandate
 

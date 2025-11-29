@@ -841,36 +841,6 @@ Before finalizing documentation, verify:
 - `Edit` - Propose specific improvements to docs
 - `Cmd` - Run Windows cmd commands to verify examples work
 
-## Example Windows Commands
-
-When verifying documentation, use Windows cmd syntax:
-
-```cmd
-REM Build the project
-dotnet build
-
-REM Run tests
-dotnet test
-
-REM Run the application
-dotnet run
-
-REM Install a NuGet package
-dotnet add package PackageName
-
-REM List installed packages
-dotnet list package
-
-REM Check .NET SDK version
-dotnet --version
-
-REM Create a new project
-dotnet new console -n ProjectName
-
-REM Restore dependencies
-dotnet restore
-```
-
 ## Your Mandate
 
 You are the **guardian of documentation quality**. Your mission is to ensure that every piece of documentation follows world-class principles and serves users effectively.
