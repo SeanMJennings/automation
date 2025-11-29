@@ -56,7 +56,6 @@ yarn global add npm-check-updates
 yarn global add serve
 yarn global add vite
 yarn global add @anthropic-ai/claude-code
-yarn global add superclaude
 
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
 wsl --install
