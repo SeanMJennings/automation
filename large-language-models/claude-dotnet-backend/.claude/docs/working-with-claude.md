@@ -39,7 +39,7 @@ When working with my code:
    **Issue**: What goes wrong
    **Solution**: How to handle it
 
-   ```typescript
+   ```csharp
    // ✅ CORRECT - Solution
    const example = "correct approach";
 

@@ -35,8 +35,8 @@ To verify that code was developed test-first, examine git history:
 
 ```bash
 # Check if test was written before implementation
-git log -p --follow src/features/payment/payment-processor.ts
-git log -p --follow src/features/payment/payment-processor.test.ts
+git log -p --follow src/Domain/Orders/OrderProcessor.cs
+git log -p --follow tests/Domain/Orders/OrderProcessorSpecs.cs
 
 # Look for:
 # ✅ GOOD: Test commit comes BEFORE implementation commit
@@ -64,110 +64,123 @@ feat: add payment validation with tests
 
 ## TDD Example Workflow
 
-```typescript
+```csharp
 // Step 1: Red - Start with the simplest behavior
-describe("Order processing", () => {
-  it("should calculate total with shipping cost", () => {
-    const order = createOrder({
-      items: [{ price: 30, quantity: 1 }],
-      shippingCost: 5.99,
-    });
-
-    const processed = processOrder(order);
-
-    expect(processed.total).toBe(35.99);
-    expect(processed.shippingCost).toBe(5.99);
-  });
-});
+[TestFixture]
+public partial class OrderProcessingSpecs : Specification
+{
+    [Test]
+    public void calculates_total_with_shipping_cost()
+    {
+        Given(an_order_with_items_totaling, 30m);
+        And(a_shipping_cost_of, 5.99m);
+        When(processing_the_order);
+        Then(the_total_should_be, 35.99m);
+        And(the_shipping_cost_should_be, 5.99m);
+    }
+}
 
 // Step 2: Green - Minimal implementation
-const processOrder = (order: Order): ProcessedOrder => {
-  const itemsTotal = order.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+public class OrderProcessor
+{
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = order.Items
+            .Select(item => item.Price * item.Quantity)
+            .Sum();
 
-  return {
-    ...order,
-    shippingCost: order.shippingCost,
-    total: itemsTotal + order.shippingCost,
-  };
-};
+        return new ProcessedOrder
+        {
+            Items = order.Items,
+            ShippingCost = order.ShippingCost,
+            Total = itemsTotal + order.ShippingCost
+        };
+    }
+}
 
 // Step 3: Red - Add test for free shipping behavior
-describe("Order processing", () => {
-  it("should calculate total with shipping cost", () => {
-    // ... existing test
-  });
+[TestFixture]
+public partial class OrderProcessingSpecs : Specification
+{
+    // ...existing test...
 
-  it("should apply free shipping for orders over £50", () => {
-    const order = createOrder({
-      items: [{ price: 60, quantity: 1 }],
-      shippingCost: 5.99,
-    });
-
-    const processed = processOrder(order);
-
-    expect(processed.shippingCost).toBe(0);
-    expect(processed.total).toBe(60);
-  });
-});
+    [Test]
+    public void applies_free_shipping_for_orders_over_50()
+    {
+        Given(an_order_with_items_totaling, 60m);
+        And(a_shipping_cost_of, 5.99m);
+        When(processing_the_order);
+        Then(the_shipping_cost_should_be, 0m);
+        And(the_total_should_be, 60m);
+    }
+}
 
 // Step 4: Green - NOW we can add the conditional because both paths are tested
-const processOrder = (order: Order): ProcessedOrder => {
-  const itemsTotal = order.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+public class OrderProcessor
+{
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = order.Items
+            .Select(item => item.Price * item.Quantity)
+            .Sum();
 
-  const shippingCost = itemsTotal > 50 ? 0 : order.shippingCost;
+        var shippingCost = itemsTotal > 50 ? 0 : order.ShippingCost;
 
-  return {
-    ...order,
-    shippingCost,
-    total: itemsTotal + shippingCost,
-  };
-};
+        return new ProcessedOrder
+        {
+            Items = order.Items,
+            ShippingCost = shippingCost,
+            Total = itemsTotal + shippingCost
+        };
+    }
+}
 
 // Step 5: Add edge case tests to ensure 100% behavior coverage
-describe("Order processing", () => {
-  // ... existing tests
+[TestFixture]
+public partial class OrderProcessingSpecs : Specification
+{
+    // ...existing tests...
 
-  it("should charge shipping for orders exactly at £50", () => {
-    const order = createOrder({
-      items: [{ price: 50, quantity: 1 }],
-      shippingCost: 5.99,
-    });
-
-    const processed = processOrder(order);
-
-    expect(processed.shippingCost).toBe(5.99);
-    expect(processed.total).toBe(55.99);
-  });
-});
+    [Test]
+    public void charges_shipping_for_orders_exactly_at_50()
+    {
+        Given(an_order_with_items_totaling, 50m);
+        And(a_shipping_cost_of, 5.99m);
+        When(processing_the_order);
+        Then(the_shipping_cost_should_be, 5.99m);
+        And(the_total_should_be, 55.99m);
+    }
+}
 
 // Step 6: Refactor - Extract constants and improve readability
-const FREE_SHIPPING_THRESHOLD = 50;
+public class OrderProcessor
+{
+    private const decimal FreeShippingThreshold = 50m;
 
-const calculateItemsTotal = (items: OrderItem[]): number => {
-  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-};
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = CalculateItemsTotal(order.Items);
+        var shippingCost = QualifiesForFreeShipping(itemsTotal)
+            ? 0
+            : order.ShippingCost;
 
-const qualifiesForFreeShipping = (itemsTotal: number): boolean => {
-  return itemsTotal > FREE_SHIPPING_THRESHOLD;
-};
+        return new ProcessedOrder
+        {
+            Items = order.Items,
+            ShippingCost = shippingCost,
+            Total = itemsTotal + shippingCost
+        };
+    }
 
-const processOrder = (order: Order): ProcessedOrder => {
-  const itemsTotal = calculateItemsTotal(order.items);
-  const shippingCost = qualifiesForFreeShipping(itemsTotal)
-    ? 0
-    : order.shippingCost;
+    private static decimal CalculateItemsTotal(IEnumerable<OrderItem> items)
+    {
+        return items.Select(item => item.Price * item.Quantity).Sum();
+    }
 
-  return {
-    ...order,
-    shippingCost,
-    total: itemsTotal + shippingCost,
-  };
+    private static bool QualifiesForFreeShipping(decimal itemsTotal)
+    {
+        return itemsTotal > FreeShippingThreshold;
+    }
 };
 ```
 
@@ -219,13 +232,22 @@ Not all refactoring is equally valuable. Classify issues by severity:
 
 **Example Assessment:**
 
-```typescript
+```csharp
 // After achieving green:
-const processOrder = (order: Order): ProcessedOrder => {
-  const itemsTotal = order.items.reduce((sum, item) => sum + item.price, 0);
-  const shipping = itemsTotal > 50 ? 0 : 5.99;
-  return { ...order, total: itemsTotal + shipping, shippingCost: shipping };
-};
+public class OrderProcessor
+{
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = order.Items.Select(item => item.Price).Sum();
+        var shipping = itemsTotal > 50 ? 0 : 5.99m;
+        return new ProcessedOrder 
+        { 
+            Items = order.Items, 
+            Total = itemsTotal + shipping, 
+            ShippingCost = shipping 
+        };
+    }
+}
 
 // ASSESSMENT:
 // 🔴 Critical: None
@@ -233,7 +255,7 @@ const processOrder = (order: Order): ProcessedOrder => {
 //   - Magic number 50 (FREE_SHIPPING_THRESHOLD)
 //   - Magic number 5.99 (STANDARD_SHIPPING_COST)
 // 💡 Nice to Have:
-//   - Could extract calculateItemsTotal helper
+//   - Could extract CalculateItemsTotal helper
 // ✅ Skip:
 //   - Overall structure is clear enough
 
@@ -256,15 +278,17 @@ git commit -m "feat: add payment validation"
 
 Create abstractions only when code shares the same semantic meaning and purpose. Don't abstract based on structural similarity alone - **duplicate code is far cheaper than the wrong abstraction**.
 
-```typescript
+```csharp
 // Similar structure, DIFFERENT semantic meaning - DO NOT ABSTRACT
-const validatePaymentAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidatePaymentAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
-const validateTransferAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidateTransferAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
 // These might have the same structure today, but they represent different
 // business concepts that will likely evolve independently.
@@ -273,73 +297,62 @@ const validateTransferAmount = (amount: number): boolean => {
 // Abstracting them couples unrelated business rules.
 
 // Similar structure, SAME semantic meaning - SAFE TO ABSTRACT
-const formatUserDisplayName = (firstName: string, lastName: string): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatUserDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
-const formatCustomerDisplayName = (
-  firstName: string,
-  lastName: string
-): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatCustomerDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
-const formatEmployeeDisplayName = (
-  firstName: string,
-  lastName: string
-): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatEmployeeDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
 // These all represent the same concept: "how we format a person's name for display"
 // They share semantic meaning, not just structure
-const formatPersonDisplayName = (
-  firstName: string,
-  lastName: string
-): string => {
-  return `${firstName} ${lastName}`.trim();
-};
+public string FormatPersonDisplayName(string firstName, string lastName)
+{
+    return $"{firstName} {lastName}".Trim();
+}
 
 // Replace all call sites throughout the codebase:
 // Before:
-// const userLabel = formatUserDisplayName(user.firstName, user.lastName);
-// const customerName = formatCustomerDisplayName(customer.firstName, customer.lastName);
-// const employeeTag = formatEmployeeDisplayName(employee.firstName, employee.lastName);
+// var userLabel = FormatUserDisplayName(user.FirstName, user.LastName);
+// var customerName = FormatCustomerDisplayName(customer.FirstName, customer.LastName);
+// var employeeTag = FormatEmployeeDisplayName(employee.FirstName, employee.LastName);
 
 // After:
-// const userLabel = formatPersonDisplayName(user.firstName, user.lastName);
-// const customerName = formatPersonDisplayName(customer.firstName, customer.lastName);
-// const employeeTag = formatPersonDisplayName(employee.firstName, employee.lastName);
+// var userLabel = FormatPersonDisplayName(user.FirstName, user.LastName);
+// var customerName = FormatPersonDisplayName(customer.FirstName, customer.LastName);
+// var employeeTag = FormatPersonDisplayName(employee.FirstName, employee.LastName);
 
 // Then remove the original functions as they're no longer needed
 ```
-
-**Questions to ask before abstracting:**
-
-- Do these code blocks represent the same concept or different concepts that happen to look similar?
-- If the business rules for one change, should the others change too?
-- Would a developer reading this abstraction understand why these things are grouped together?
-- Am I abstracting based on what the code IS (structure) or what it MEANS (semantics)?
-
-**Remember**: It's much easier to create an abstraction later when the semantic relationship becomes clear than to undo a bad abstraction that couples unrelated concepts.
 
 #### 3. Understanding DRY - It's About Knowledge, Not Code
 
 DRY (Don't Repeat Yourself) is about not duplicating **knowledge** in the system, not about eliminating all code that looks similar.
 
-```typescript
+```csharp
 // This is NOT a DRY violation - different knowledge despite similar code
-const validateUserAge = (age: number): boolean => {
-  return age >= 18 && age <= 100;
-};
+public bool ValidateUserAge(int age)
+{
+    return age >= 18 && age <= 100;
+}
 
-const validateProductRating = (rating: number): boolean => {
-  return rating >= 1 && rating <= 5;
-};
+public bool ValidateProductRating(int rating)
+{
+    return rating >= 1 && rating <= 5;
+}
 
-const validateYearsOfExperience = (years: number): boolean => {
-  return years >= 0 && years <= 50;
-};
+public bool ValidateYearsOfExperience(int years)
+{
+    return years >= 0 && years <= 50;
+}
 
 // These functions have similar structure (checking numeric ranges), but they
 // represent completely different business rules:
@@ -350,57 +363,72 @@ const validateYearsOfExperience = (years: number): boolean => {
 // changes harder. What if ratings change to 1-10? What if legal age changes?
 
 // Another example of code that looks similar but represents different knowledge:
-const formatUserDisplayName = (user: User): string => {
-  return `${user.firstName} ${user.lastName}`.trim();
-};
+public string FormatUserDisplayName(User user)
+{
+    return $"{user.FirstName} {user.LastName}".Trim();
+}
 
-const formatAddressLine = (address: Address): string => {
-  return `${address.street} ${address.number}`.trim();
-};
+public string FormatAddressLine(Address address)
+{
+    return $"{address.Street} {address.Number}".Trim();
+}
 
-const formatCreditCardLabel = (card: CreditCard): string => {
-  return `${card.type} ${card.lastFourDigits}`.trim();
-};
+public string FormatCreditCardLabel(CreditCard card)
+{
+    return $"{card.Type} {card.LastFourDigits}".Trim();
+}
 
 // Despite the pattern "combine two strings with space and trim", these represent
 // different domain concepts with different future evolution paths
 
 // This IS a DRY violation - same knowledge in multiple places
-class Order {
-  calculateTotal(): number {
-    const itemsTotal = this.items.reduce((sum, item) => sum + item.price, 0);
-    const shippingCost = itemsTotal > 50 ? 0 : 5.99; // Knowledge duplicated!
-    return itemsTotal + shippingCost;
-  }
+public class Order
+{
+    public decimal CalculateTotal()
+    {
+        var itemsTotal = Items.Sum(item => item.Price);
+        var shippingCost = itemsTotal > 50 ? 0 : 5.99m; // Knowledge duplicated!
+        return itemsTotal + shippingCost;
+    }
 }
 
-class OrderSummary {
-  getShippingCost(itemsTotal: number): number {
-    return itemsTotal > 50 ? 0 : 5.99; // Same knowledge!
-  }
+public class OrderSummary
+{
+    public decimal GetShippingCost(decimal itemsTotal)
+    {
+        return itemsTotal > 50 ? 0 : 5.99m; // Same knowledge!
+    }
 }
 
-class ShippingCalculator {
-  calculate(orderAmount: number): number {
-    if (orderAmount > 50) return 0; // Same knowledge again!
-    return 5.99;
-  }
+public class ShippingCalculator
+{
+    public decimal Calculate(decimal orderAmount)
+    {
+        if (orderAmount > 50) return 0; // Same knowledge again!
+        return 5.99m;
+    }
 }
 
 // Refactored - knowledge in one place
-const FREE_SHIPPING_THRESHOLD = 50;
-const STANDARD_SHIPPING_COST = 5.99;
+public static class ShippingRules
+{
+    private const decimal FreeShippingThreshold = 50m;
+    private const decimal StandardShippingCost = 5.99m;
 
-const calculateShippingCost = (itemsTotal: number): number => {
-  return itemsTotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
-};
+    public static decimal CalculateShippingCost(decimal itemsTotal)
+    {
+        return itemsTotal > FreeShippingThreshold ? 0 : StandardShippingCost;
+    }
+}
 
 // Now all classes use the single source of truth
-class Order {
-  calculateTotal(): number {
-    const itemsTotal = this.items.reduce((sum, item) => sum + item.price, 0);
-    return itemsTotal + calculateShippingCost(itemsTotal);
-  }
+public class Order
+{
+    public decimal CalculateTotal()
+    {
+        var itemsTotal = Items.Sum(item => item.Price);
+        return itemsTotal + ShippingRules.CalculateShippingCost(itemsTotal);
+    }
 }
 ```
 
@@ -426,15 +454,17 @@ Questions to ask before abstracting:
 
 **Example Application:**
 
-```typescript
+```csharp
 // CASE 1: Structural similarity, different semantics
-const validatePaymentAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidatePaymentAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
-const validateTransferAmount = (amount: number): boolean => {
-  return amount > 0 && amount <= 10000;
-};
+public bool ValidateTransferAmount(decimal amount)
+{
+    return amount > 0 && amount <= 10000;
+}
 
 // ANALYSIS:
 // 1. Semantic: Different concepts (payment limits vs. transfer limits)
@@ -444,12 +474,20 @@ const validateTransferAmount = (amount: number): boolean => {
 // DECISION: ❌ DO NOT ABSTRACT - Keep separate
 
 // CASE 2: Structural similarity, same semantics
-const formatUserDisplayName = (first: string, last: string) =>
-  `${first} ${last}`.trim();
-const formatCustomerDisplayName = (first: string, last: string) =>
-  `${first} ${last}`.trim();
-const formatEmployeeDisplayName = (first: string, last: string) =>
-  `${first} ${last}`.trim();
+public string FormatUserDisplayName(string first, string last)
+{
+    return $"{first} {last}".Trim();
+}
+
+public string FormatCustomerDisplayName(string first, string last)
+{
+    return $"{first} {last}".Trim();
+}
+
+public string FormatEmployeeDisplayName(string first, string last)
+{
+    return $"{first} {last}".Trim();
+}
 
 // ANALYSIS:
 // 1. Semantic: Same concept (how we display person names)
@@ -458,8 +496,10 @@ const formatEmployeeDisplayName = (first: string, last: string) =>
 // 4. Coupling: Based on meaning (all represent "person name display")
 // DECISION: ✅ SAFE TO ABSTRACT
 
-const formatPersonDisplayName = (first: string, last: string) =>
-  `${first} ${last}`.trim();
+public string FormatPersonDisplayName(string first, string last)
+{
+    return $"{first} {last}".Trim();
+}
 ```
 
 **Remember:** Duplicate code is far cheaper than the wrong abstraction. When in doubt, wait for a third instance to confirm the pattern.
@@ -468,44 +508,59 @@ const formatPersonDisplayName = (first: string, last: string) =>
 
 Refactoring must never break existing consumers of your code:
 
-```typescript
+```csharp
 // Original implementation
-export const processPayment = (payment: Payment): ProcessedPayment => {
-  // Complex logic all in one function
-  if (payment.amount <= 0) {
-    throw new Error("Invalid amount");
-  }
+public class PaymentProcessor
+{
+    public ProcessedPayment ProcessPayment(Payment payment)
+    {
+        // Complex logic all in one function
+        if (payment.Amount <= 0)
+        {
+            throw new InvalidOperationException("Invalid amount");
+        }
 
-  if (payment.amount > 10000) {
-    throw new Error("Amount too large");
-  }
+        if (payment.Amount > 10000)
+        {
+            throw new InvalidOperationException("Amount too large");
+        }
 
-  // ... 50 more lines of validation and processing
+        // ... 50 more lines of validation and processing
 
-  return result;
-};
+        return result;
+    }
+}
 
 // Refactored - external API unchanged, internals improved
-export const processPayment = (payment: Payment): ProcessedPayment => {
-  validatePaymentAmount(payment.amount);
-  validatePaymentMethod(payment.method);
+public class PaymentProcessor
+{
+    public ProcessedPayment ProcessPayment(Payment payment)
+    {
+        ValidatePaymentAmount(payment.Amount);
+        ValidatePaymentMethod(payment.Method);
 
-  const authorizedPayment = authorizePayment(payment);
-  const capturedPayment = capturePayment(authorizedPayment);
+        var authorizedPayment = AuthorizePayment(payment);
+        var capturedPayment = CapturePayment(authorizedPayment);
 
-  return generateReceipt(capturedPayment);
-};
+        return GenerateReceipt(capturedPayment);
+    }
 
-// New internal functions - not exported
-const validatePaymentAmount = (amount: number): void => {
-  if (amount <= 0) {
-    throw new Error("Invalid amount");
-  }
+    // New internal methods - not public
+    private void ValidatePaymentAmount(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            throw new InvalidOperationException("Invalid amount");
+        }
 
-  if (amount > 10000) {
-    throw new Error("Amount too large");
-  }
-};
+        if (amount > 10000)
+        {
+            throw new InvalidOperationException("Amount too large");
+        }
+    }
+
+    // ...other private methods...
+}
 
 // Tests continue to pass without modification because external API unchanged
 ```
@@ -520,9 +575,8 @@ const validatePaymentAmount = (amount: number): void => {
 
 ```bash
 # After refactoring
-npm test          # All tests must pass
-npm run lint      # All linting must pass
-npm run typecheck # TypeScript must be happy
+dotnet test          # All tests must pass
+dotnet format        # Code formatting must be correct
 
 # Only then commit
 git add .
@@ -544,26 +598,45 @@ Before considering refactoring complete, verify:
 
 ### Example Refactoring Session
 
-```typescript
+```csharp
 // After getting tests green with minimal implementation:
-describe("Order processing", () => {
-  it("calculates total with items and shipping", () => {
-    const order = { items: [{ price: 30 }, { price: 20 }], shipping: 5 };
-    expect(calculateOrderTotal(order)).toBe(55);
-  });
+[TestFixture]
+public partial class OrderProcessingSpecs : Specification
+{
+    [Test]
+    public void calculates_total_with_items_and_shipping()
+    {
+        Given(an_order_with_items_totaling, 55m);
+        And(a_shipping_cost_of, 5m);
+        When(processing_the_order);
+        Then(the_total_should_be, 60m);
+    }
 
-  it("applies free shipping over £50", () => {
-    const order = { items: [{ price: 30 }, { price: 25 }], shipping: 5 };
-    expect(calculateOrderTotal(order)).toBe(55);
-  });
-});
+    [Test]
+    public void applies_free_shipping_over_50()
+    {
+        Given(an_order_with_items_totaling, 55m);
+        And(a_shipping_cost_of, 5m);
+        When(processing_the_order);
+        Then(the_total_should_be, 55m);
+    }
+}
 
 // Green implementation (minimal):
-const calculateOrderTotal = (order: Order): number => {
-  const itemsTotal = order.items.reduce((sum, item) => sum + item.price, 0);
-  const shipping = itemsTotal > 50 ? 0 : order.shipping;
-  return itemsTotal + shipping;
-};
+public class OrderProcessor
+{
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = order.Items.Sum(item => item.Price);
+        var shipping = itemsTotal > 50 ? 0 : order.ShippingCost;
+        return new ProcessedOrder
+        {
+            Items = order.Items,
+            Total = itemsTotal + shipping,
+            ShippingCost = shipping
+        };
+    }
+}
 
 // Commit the working version
 // git commit -m "feat: implement order total calculation with free shipping"
@@ -574,28 +647,36 @@ const calculateOrderTotal = (order: Order): number => {
 // - The calculation logic could be extracted for clarity
 // These improvements would add value, so proceed with refactoring:
 
-const FREE_SHIPPING_THRESHOLD = 50;
+public class OrderProcessor
+{
+    private const decimal FreeShippingThreshold = 50m;
 
-const calculateItemsTotal = (items: OrderItem[]): number => {
-  return items.reduce((sum, item) => sum + item.price, 0);
-};
+    public ProcessedOrder Process(Order order)
+    {
+        var itemsTotal = CalculateItemsTotal(order.Items);
+        var shipping = CalculateShipping(order.ShippingCost, itemsTotal);
+        
+        return new ProcessedOrder
+        {
+            Items = order.Items,
+            Total = itemsTotal + shipping,
+            ShippingCost = shipping
+        };
+    }
 
-const calculateShipping = (
-  baseShipping: number,
-  itemsTotal: number
-): number => {
-  return itemsTotal > FREE_SHIPPING_THRESHOLD ? 0 : baseShipping;
-};
+    private static decimal CalculateItemsTotal(IEnumerable<OrderItem> items)
+    {
+        return items.Sum(item => item.Price);
+    }
 
-const calculateOrderTotal = (order: Order): number => {
-  const itemsTotal = calculateItemsTotal(order.items);
-  const shipping = calculateShipping(order.shipping, itemsTotal);
-  return itemsTotal + shipping;
-};
+    private static decimal CalculateShipping(decimal baseShipping, decimal itemsTotal)
+    {
+        return itemsTotal > FreeShippingThreshold ? 0 : baseShipping;
+    }
+}
 
 // Run tests - they still pass!
-// Run linting - all clean!
-// Run type checking - no errors!
+// Run code formatting - all clean!
 
 // Now commit the refactoring
 // git commit -m "refactor: extract order total calculation helpers"
@@ -605,24 +686,33 @@ const calculateOrderTotal = (order: Order): number => {
 
 **Important:** When code doesn't need refactoring, explicitly document this assessment:
 
-```typescript
+```csharp
 // After getting this test green:
-describe("Discount calculation", () => {
-  it("should apply 10% discount", () => {
-    const originalPrice = 100;
-    const discountedPrice = applyDiscount(originalPrice, 0.1);
-    expect(discountedPrice).toBe(90);
-  });
-});
+[TestFixture]
+public partial class DiscountCalculationSpecs : Specification
+{
+    [Test]
+    public void applies_10_percent_discount()
+    {
+        Given(an_original_price_of, 100m);
+        And(a_discount_rate_of, 0.1m);
+        When(applying_the_discount);
+        Then(the_discounted_price_should_be, 90m);
+    }
+}
 
 // Green implementation:
-const applyDiscount = (price: number, discountRate: number): number => {
-  return price * (1 - discountRate);
-};
+public class DiscountCalculator
+{
+    public decimal ApplyDiscount(decimal price, decimal discountRate)
+    {
+        return price * (1 - discountRate);
+    }
+}
 
 // REFACTORING ASSESSMENT:
 // ✅ Already clean:
-//   - Function name clearly expresses intent
+//   - Method name clearly expresses intent
 //   - Implementation is straightforward calculation
 //   - No magic numbers or unclear logic
 //   - Pure function with clear inputs/outputs
