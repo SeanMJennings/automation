@@ -55,7 +55,7 @@ What behavior should we test?"
 **Analysis Process:**
 
 #### 1. Examine Recent Changes
-```bash
+```cmd
 git diff
 git status
 git log --oneline -5
@@ -79,7 +79,6 @@ Check that tests follow principles:
 - ✅ Tests have descriptive names documenting business behavior
 - ❌ Tests do NOT have names like "should call X method"
 - ✅ Tests use factory functions for test data
-- ❌ Tests do NOT use `let` declarations or `beforeEach`
 
 #### 4. Check for TDD Violations
 
@@ -90,8 +89,6 @@ Check that tests follow principles:
 - ❌ Adding features "while you're there" without tests
 - ❌ Tests examining implementation details
 - ❌ Missing edge case tests
-- ❌ Using `any` types or type assertions in tests
-- ❌ Using `let` or `beforeEach` (should use factories)
 - ❌ Skipping refactoring assessment when green
 
 #### 5. Generate Structured Report
@@ -110,19 +107,19 @@ Use this format:
 ### ⚠️ Issues Found
 
 #### 1. Test written after production code
-**File**: `src/payment/payment-processor.ts:45-67`
-**Issue**: Function `calculateDiscount` was implemented without a failing test first
+**File**: `Src/Payment/PaymentProcessor.cs:45-67`
+**Issue**: Function `CalculateDiscount` was implemented without a failing test first
 **Impact**: Violates fundamental TDD principle - no production code without failing test
 **Git Evidence**: `git log -p` shows implementation committed before test
 **Recommendation**:
-1. Remove or comment out the `calculateDiscount` function
+1. Remove or comment out the `CalculateDiscount` function
 2. Write a failing test describing the discount behavior
 3. Implement minimal code to pass the test
 4. Refactor if needed
 
 #### 2. Implementation-focused test
-**File**: `src/payment/payment-processor.test.ts:89-95`
-**Test**: "should call validatePaymentAmount"
+**File**: `Src/Payment/PaymentProcessor.cs:89-95`
+**Test**: "should call ValidatePaymentAmount"
 **Issue**: Test checks if internal method is called (implementation detail)
 **Impact**: Test is brittle and doesn't verify actual behavior
 **Recommendation**:
@@ -132,7 +129,7 @@ Replace with behavior-focused tests:
 Test the outcome, not the internal call
 
 #### 3. Missing edge case coverage
-**File**: `src/order/order-processor.ts:23-31`
+**File**: `Src/Payment/PaymentProcessor.cs:23-31`
 **Issue**: Free shipping logic has no test for exactly £50 boundary
 **Impact**: Boundary condition untested - may have off-by-one error
 **Recommendation**: Add test case for order total exactly at £50 threshold
@@ -162,25 +159,81 @@ Test the outcome, not the internal call
 - Write descriptive test names
 
 **Example:**
-```typescript
-// ✅ GOOD - Behavior-focused, uses factory
-it("should reject payments with negative amounts", () => {
-  const payment = getMockPayment({ amount: -100 });
-  const result = processPayment(payment);
-  expect(result.success).toBe(false);
-  expect(result.error.message).toBe("Invalid amount");
-});
 
-// ❌ BAD - Implementation-focused, uses let
-let payment: Payment;
-beforeEach(() => {
-  payment = { amount: 100 };
-});
-it("should call validateAmount", () => {
-  const spy = jest.spyOn(validator, 'validateAmount');
-  processPayment(payment);
-  expect(spy).toHaveBeenCalled();
-});
+```csharp
+// ✅ GOOD - Behavior-focused, splits specs and steps up
+// PaymentSpecs.cs
+[TestFixture]
+public partial class PaymentSpecs : Specification
+{
+    [Test]
+    public void rejects_payments_with_negative_amounts()
+    {
+        Given(a_payment_with_negative_amount);
+        When(processing_the_payment);
+        Then(() => the_payment_is_rejected());
+        And(() => informs("Invalid amount"));
+    }
+}
+
+// PaymentSteps.cs
+public partial class PaymentSpecs
+{
+    private Payment payment;
+    private PaymentResult result;
+    
+    private void a_payment_with_negative_amount()
+    {
+        payment = PaymentFactory.Create(amount: new Money(-100));
+    }
+    
+    private void processing_the_payment()
+    {
+        result = payment_processor.Process(payment);
+    }
+    
+    private void the_payment_is_rejected()
+    {
+        result.IsSuccess.Should().BeFalse();
+    }
+}
+
+// ❌ BAD - Implementation-focused, doesn't split specs and steps
+[TestFixture]
+public class PaymentProcessorTests
+{
+    private Payment _payment;
+    private Mock<IPaymentValidator> _validatorMock;
+    private PaymentProcessor _processor;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _payment = new Payment { Amount = new Money(100) };
+        _validatorMock = new Mock<IPaymentValidator>();
+        _processor = new PaymentProcessor(_validatorMock.Object);
+    }
+
+    [Test]
+    public void Process_CallsValidateAmount_WhenPaymentProvided()
+    {
+        _processor.Process(_payment);
+        
+        _validatorMock.Verify(v => v.ValidateAmount(It.IsAny<Money>()), Times.Once);
+    }
+
+    [Test]
+    public void Process_ReturnsFailure_WhenAmountIsNegative()
+    {
+        _payment = new Payment { Amount = new Money(-100) };
+        
+        var result = _processor.Process(_payment);
+        
+        Assert.IsFalse(result.IsSuccess);
+        Assert.AreEqual("Invalid amount", result.Error.Message);
+    }
+}
+
 ```
 
 ### GREEN PHASE (Implementing)
@@ -275,19 +328,10 @@ Before allowing any commit, verify:
 - ✅ Implementation is minimal (only what's needed)
 - ✅ Refactoring assessment completed (if tests green)
 - ✅ All tests pass
-- ✅ TypeScript strict mode satisfied
-- ✅ No `any` types or unjustified assertions
-- ✅ Factory functions used (no `let`/`beforeEach`)
 
 ## Project-Specific Guidelines
 
 From CLAUDE.md:
-
-**Type System:**
-- Use `type` for data structures (with `readonly`)
-- Use `interface` only for behavior contracts/ports
-- Prefer options objects over positional parameters
-- Schema-first development with Zod
 
 **Code Style:**
 - No comments (code should be self-documenting)
@@ -296,21 +340,26 @@ From CLAUDE.md:
 - Factory functions for test data
 
 **Test Data Pattern:**
-```typescript
-// ✅ CORRECT - Factory with optional overrides
-const getMockPayment = (
-  overrides?: Partial<Payment>
-): Payment => {
-  return {
-    amount: 100,
-    currency: "GBP",
-    cardId: "card_123",
-    ...overrides,
-  };
-};
+```csharp
+// ✅ CORRECT - Factory with optional parameters using builder pattern
+public static class PaymentFactory
+{
+    public static Payment Create(
+        decimal? amount = null,
+        string currency = null,
+        string cardId = null)
+    {
+        return new Payment
+        {
+            Amount = new Money(amount ?? 100),
+            Currency = currency ?? "GBP",
+            CardId = cardId ?? "card_123"
+        };
+    }
+}
 
 // Usage
-const payment = getMockPayment({ amount: -100 });
+var payment = PaymentFactory.Create(amount: -100);
 ```
 
 ## Commands to Use
@@ -319,9 +368,9 @@ const payment = getMockPayment({ amount: -100 });
 - `git status` - See current state
 - `git log --oneline -n 20` - Recent commits
 - `git log -p <file>` - File history to verify test-first
-- `Grep` - Search for test patterns
+- `Findtr` - Search for test patterns
 - `Read` - Examine specific files
-- `Glob` - Find test files
+- `Dir` - Find test files
 
 ## Your Mandate
 
