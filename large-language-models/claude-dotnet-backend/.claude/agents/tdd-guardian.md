@@ -2,7 +2,7 @@
 name: tdd-guardian
 description: >
   Use this agent proactively to guide Test-Driven Development throughout the coding process and reactively to verify TDD compliance. Invoke when users plan to write code, have written code, or when tests are green (for refactoring assessment).
-tools: Read, Grep, Glob, Bash
+tools: Read, Findstr, Dir, Cmd
 model: sonnet
 color: red
 ---

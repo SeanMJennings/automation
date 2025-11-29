@@ -2,7 +2,7 @@
 name: refactor-scan
 description: >
   Use this agent proactively to guide refactoring decisions during code improvement and reactively to assess refactoring opportunities after tests pass (TDD's third step). Invoke when tests are green, when considering abstractions, or when reviewing code quality.
-tools: Read, Findstr, Dir, Terminal
+tools: Read, Findstr, Dir, Cmd
 model: sonnet
 color: yellow
 ---

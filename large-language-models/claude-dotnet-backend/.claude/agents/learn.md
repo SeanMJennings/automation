@@ -2,7 +2,7 @@
 name: learn
 description: >
   Use this agent proactively during development to identify learning opportunities and reactively after completing work to document insights into CLAUDE.md. Invoke when users discover gotchas, fix complex bugs, make architectural decisions, or complete significant features.
-tools: Read, Edit, Grep
+tools: Read, Edit, Findstr
 model: sonnet
 color: blue
 ---
