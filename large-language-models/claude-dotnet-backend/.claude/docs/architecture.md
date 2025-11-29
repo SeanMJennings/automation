@@ -1,38 +1,33 @@
 # Architectural Standards
 
-This document outlines the architectural principles and standards for projects, focusing on simplicity and clarity.
+A practical, concise guide to architecture focused on simplicity, clarity, and hexagonal (ports & adapters) design. Keep business logic pure, interfaces explicit, and adapters thin.
 
-## Architectural Principles: Simplicity and Clarity
+## What this doc is for
 
-Act as a senior software architect specializing in simplicity and clarity. For each step of the development process, identify and eliminate all sources of incidental complexity.
+- Capture the minimal, repeatable architectural decisions we follow across services.
+- Explain why hexagonal architecture is used and how it maps to code.
+- Preserve clear naming, testability, and separation of concerns.
 
-- **Only propose solutions that address the essential complexity of the problem.**
-- **Avoid introducing unnecessary abstractions, layers, or dependencies.**
-- **For every design or code suggestion, briefly explain why it is the simplest possible approach and how it avoids accidental complexity.**
-- **If a simpler alternative exists, always recommend it, even if it seems less "clever" or "modern."**
-- **When trade-offs are necessary, prioritize maintainability, readability, and minimalism over premature optimization or feature bloat.**
-- **Provide concrete examples or refactorings that demonstrate the reduction or removal of incidental complexity.**
-- **If a requirement is ambiguous, ask clarifying questions before proceeding.**
+## Core Principles (concise)
 
-As a critical reviewer, your goal is to ensure architectural clarity and minimalism without sacrificing robustness or maintainability.
+- Address essential complexity only; remove incidental complexity.
+- Avoid needless layers, abstractions, or third-party lock-in in the core.
+- Prefer readable, intention-revealing code over cleverness.
+- When trade-offs are necessary, prioritize maintainability and clarity.
+- If requirements are ambiguous, ask for clarification rather than guessing.
 
-### Key Design Review Features:
+## Hexagonal Architecture (Ports & Adapters)
 
-- **Explicitly requests reflection on complexity** rather than only problem-solving.
-- **Invites stepwise, chain-of-thought processing.**
-- **Demands justification for any simplification,** ensuring traceability to standards.
+Hexagonal architecture isolates the application core (domain + use cases) from frameworks and infrastructure. The core defines ports (interfaces) and contains business rules; adapters implement ports and translate external protocols.
 
-You can further refine the template by specifying which standards or design patterns the model should prioritize, and by encouraging it to output responses in a table that compares the current design vs. proposed simplifications for easier review.
+- Primary (driving) ports: HTTP handlers, message handlers, CLIs, test harnesses.
+- Secondary (driven) ports: repositories, external service clients, file storage, notification services.
 
-## Hexagonal Architecture Standards
+Dependency rule (central): dependencies point inward — adapters -> ports -> core. The core must not reference infrastructure, frameworks, or providers.
 
-This document defines the hexagonal architecture principles that guide project design. Hexagonal architecture (also known as ports and adapters) provides clean separation between business logic and infrastructure concerns, enabling technology independence, testability, and maintainability.
+Keep ports small, intention-focused, and domain-named so the core reads like the domain language.
 
-### What is Hexagonal Architecture?
-
-Hexagonal architecture is an architectural pattern that isolates the core business logic from external concerns. The "hexagon" represents the application core, with each side representing a different way the application can be driven (HTTP, messages, timers) or drive other systems (databases, external APIs, file systems).
-
-#### Core Architecture Diagram
+### Core diagram
 
 ```mermaid
 graph TD
@@ -82,236 +77,49 @@ graph TD
     class REPOS,EXT_SVC,FILE_SYS,NOTIFY secondaryAdapter
 ```
 
-### Core Concepts
+## Ports and Adapters (practical notes)
 
-#### Ports
-**Ports** are interfaces that define how the application can be used or how it uses external systems.
+- Primary adapters translate external inputs into application use-cases — they should be thin and delegate to application services.
+- Secondary adapters implement persistence, external APIs, and other infrastructure concerns; they implement repository and client interfaces defined by the core.
+- Keep translation/anti-corruption logic in adapters or dedicated anti-corruption services, not scattered through the core.
 
-- **Primary Ports** (Driving): Interfaces that allow external systems to use the application
-    - HTTP request handlers
-    - Message handlers
-    - CLI command interfaces
-- **Secondary Ports** (Driven): Interfaces that the application uses to interact with external systems
-    - Repository interfaces
-    - External service interfaces
-    - Notification interfaces
+## Domain-driven Naming (rules)
 
-#### Adapters
-**Adapters** are implementations that connect ports to real technologies.
+Name components by domain intent first, then communication pattern, then technical detail. This improves discoverability and reduces cognitive load.
 
-- **Primary Adapters** (Driving): Translate external inputs into application calls
-    - Web API controllers/handlers
-    - Azure Functions (Service Bus, Timer triggers)
-    - Console application main methods
-    - Test harnesses
-- **Secondary Adapters** (Driven): Implement interfaces needed by the application
-    - Database repositories (Cosmos DB, SQL Server)
-    - External service clients (REST APIs, SOAP services)
-    - File system implementations
-    - Email/SMS notification services
+Priority examples:
+1. Domain concept (what it represents)
+2. Communication pattern (Publisher/Synchronizer/Command)
+3. Technical descriptor only when necessary
 
-### Hexagonal Architecture Principles
-
-#### Dependency Rule
-
-The fundamental rule of hexagonal architecture is the **Dependency Rule**:
-
-> **Dependencies point inward toward the application core. Outer layers depend on inner layers, but inner layers never depend on outer layers.**
-
-```
-External Systems → Adapters → Ports → Application Core
-```
-
-**This means:**
-- Adapters depend on ports (interfaces)
-- Application core defines ports but doesn't know about adapters
-- External systems interact with adapters, not the core directly
-
-#### Technology Independence
-
-The application core should be completely independent of:
-- **Frameworks**: No ASP.NET, Entity Framework, or Azure-specific code in the core
-- **Databases**: Business logic doesn't know if data comes from SQL Server, Cosmos DB, or files
-- **External Services**: Core doesn't know about specific APIs or messaging systems
-- **User Interface**: Business logic works with any presentation layer
-
-#### Domain-Driven Naming
-
-All components should be named to reflect their **domain purpose** and **business intent**, not their technical implementation. Names should be meaningful to healthcare domain experts and express what the component achieves in the business context.
-
-##### Naming Hierarchy
-
-**Priority Order for Naming:**
-1. **Domain Concept**: What it represents in healthcare/pharmacy domain
-2. **Communication Pattern**: How it communicates (when relevant)
-3. **Technical Distinction**: Only when absolutely necessary
-
-##### Communication Pattern Naming
-
-When components need to communicate across boundaries, use these established patterns:
-
-**Synchronization**: Inter-connected component coordination
+Good:
 ```csharp
-// GOOD: Domain + Communication Pattern
 public class PrescriptionSynchronizer
 public class PatientDataSynchronizer
-public class FormularySynchronizer
-
-// AVOID: Technical focus
-public class DataSyncService
-public class MessageProcessor
-```
-
-**Publication**: Broader messaging (one-to-many distribution)
-```csharp
-// GOOD: Domain + Publication Pattern
 public class ClinicalAlertPublisher
 public class DrugInteractionPublisher
-public class ComplianceReportPublisher
-
-// AVOID: Generic messaging terms
-public class EventPublisher
-public class MessageBroadcaster
-```
-
-**QC'd (Quality Controlled)**: External world notifications
-```csharp
-// GOOD: Domain + QC Pattern
 public class PatientSafetyNotificationQC
-public class RegulatoryReportQC
-public class PharmacyAlertQC
-
-// AVOID: Generic notification terms
-public class ExternalNotifier
-public class OutboundMessageHandler
-```
-
-**Commands**: Specific component-to-component instructions
-```csharp
-// GOOD: Domain + Command Pattern
 public class EnrollPatientCommand
-public class DispenseMedicationCommand  
-public class ValidatePrescriptionCommand
-
-// AVOID: CRUD or generic operations
-public class CreatePatientCommand
-public class ProcessDataCommand
 ```
+Avoid: generic names like `DataSyncService`, `EventPublisher`, `ProcessDataCommand`.
 
-##### Service Naming Standards
+Method naming: prefer business intent — `EnrollNewPatient()`, `DispensePrescription()`, `ReviewClinicalAlert()`.
 
-**Domain Services** (Express business capabilities):
-```csharp
-// GOOD: Clear domain responsibility
-public class DrugInteractionEngine
-public class PrescriptionValidator
-public class ClinicalRuleEngine
-public class PatientEligibilityChecker
-public class FormularyManager
+## Testability (short)
 
-// AVOID: Generic "Service" suffix
-public class ValidationService
-public class RuleService  
-public class DataService
-```
+- Unit test the core with test doubles for ports.
+- Integration test adapters against real infra (or local emulators).
+- Use end-to-end tests to validate cross-adapter flows and real messaging or DB interactions.
 
-**Application Services** (Express use cases):
-```csharp
-// GOOD: Business use case focus
-public class PrescriptionDispenser
-public class PatientEnroller
-public class ClinicalReviewCoordinator
-public class DrugSafetyAnalyzer
+## Service Layer & Hybrid CQRS (summary)
 
-// AVOID: Technical operation focus
-public class PrescriptionProcessor
-public class PatientHandler
-public class ReviewManager
-```
+We separate command (write) and query (read) responsibilities to optimize each side while keeping the core framework-agnostic.
 
-##### Method Naming Standards
+- Command side: command handlers, domain aggregates, repositories (write store), domain events.
+- Query side: read-model projections, SQL/read-optimized stores, query handlers, caching.
+- Domain events propagate changes from the write side to read projections and external systems.
 
-Methods should express **business operations**, not technical operations:
-
-```csharp
-// GOOD: Healthcare domain operations
-EnrollNewPatient()
-DispensePrescription()
-ValidateDrugInteractions()
-GenerateComplianceReport()
-ReviewClinicalAlert()
-
-// AVOID: Technical CRUD operations
-CreatePatient()
-UpdatePrescription()
-DeleteRecord()
-ProcessData()
-```
-
-#### Testability
-
-Hexagonal architecture makes testing straightforward:
-- **Unit Tests**: Test application core in isolation using test doubles
-- **Integration Tests**: Test adapters against real external systems
-- **End-to-End Tests**: Test complete system with real adapters
-
-### Service Layer Patterns
-
-We implements a **Hybrid CQRS** approach that separates command (write) operations from query (read) operations while maintaining clean architecture principles.
-
-#### CQRS Architecture
-
-```mermaid
-graph TD
-    %% Client Applications
-    CLIENTS[Client Applications<br/>Web UI, Mobile Apps, APIs]
-    
-    %% Command and Query Sides
-    CLIENTS --> CMD_SIDE
-    CLIENTS --> QUERY_SIDE
-    
-    subgraph CMD_SIDE[Command Side - Write Operations]
-        CMD_HANDLERS[Command Handlers]
-        DOMAIN_MODEL[Domain Model<br/>Aggregates]
-        COSMOS[Cosmos DB<br/>Event Store]
-        
-        CMD_HANDLERS --> DOMAIN_MODEL
-        DOMAIN_MODEL --> COSMOS
-    end
-    
-    subgraph QUERY_SIDE[Query Side - Read Operations]
-        QUERY_HANDLERS[Query Handlers]
-        READ_MODELS[Read Models<br/>Optimized Views]
-        SQL[SQL Database<br/>Query Store]
-        
-        QUERY_HANDLERS --> READ_MODELS
-        READ_MODELS --> SQL
-    end
-    
-    %% Domain Events
-    DOMAIN_MODEL --> EVENTS[Domain Events]
-    EVENTS --> READ_MODELS
-    
-    %% Styling
-    classDef commandSide fill:#c2185b,color:#ffffff
-    classDef querySide fill:#388e3c,color:#ffffff
-    classDef eventFlow fill:#f57c00,color:#ffffff
-    
-    class CMD_HANDLERS,DOMAIN_MODEL,COSMOS commandSide
-    class QUERY_HANDLERS,READ_MODELS,SQL querySide
-    class EVENTS eventFlow
-```
-
-#### Service Layer Responsibilities and Access Patterns
-
-##### **Command Handlers** (Write Operations)
-**Purpose**: Execute domain operations and maintain aggregate consistency
-**Infrastructure Access**:
-- ✅ **Domain Repositories**: For persisting aggregates to Cosmos DB
-- ✅ **Domain Services**: For complex business logic
-- ✅ **Domain Event Publishing**: To notify read-side updates
-- ❌ **Direct SQL Access**: Use repositories for data persistence
-- ❌ **Read Model Queries**: Commands shouldn't query read models
+### Command Handler (write-side)
 
 ```csharp
 // Example: Web API handler for commands
@@ -336,15 +144,7 @@ public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
 }
 ```
 
-##### **Query Application Services** (Read Operations)
-**Purpose**: Provide optimized data access for read scenarios
-**Infrastructure Access**:
-- ✅ **Direct IDb Access**: For optimized SQL queries against read models
-- ✅ **Read Model DTOs**: Work with SQL-based projections
-- ✅ **Cross-aggregate Queries**: Join data from multiple sources efficiently
-- ✅ **Caching Infrastructure**: For performance optimization
-- ❌ **Domain Repositories**: Don't access write-side storage
-- ❌ **Domain Entities**: Work with read models, not domain objects
+### Query Application Service (read-side)
 
 ```csharp
 // Example: Query application service
@@ -387,18 +187,9 @@ public class RuleQueryService
 }
 ```
 
-##### **Domain Event Handlers** (Application Services)
-**Purpose**: Maintain read model consistency by reacting to domain events
-**Infrastructure Access**:
-- ✅ **Direct IDb Access**: For updating SQL read models
-- ✅ **Domain Event Processing**: Consume events from write side
-- ✅ **External Service Integration**: For cross-system synchronization
-- ✅ **Message Publishing**: For cross-bounded context integration
-- ❌ **Domain Repositories**: Don't access write-side storage
-- ❌ **Command Operations**: Event handlers are read-side concerns
+### Domain Event Handler (read model updates)
 
 ```csharp
-// Example: Domain event handler maintaining read model consistency
 public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
 {
     private readonly IDbConnectionFactory _connectionFactory;
@@ -434,15 +225,10 @@ public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
 }
 ```
 
-#### Domain Layer (Pure Business Logic)
-**Purpose**: Core business logic and domain rules
-**Infrastructure Access**:
-- ✅ **Other Domain Objects**: Entities, value objects, domain services within context
-- ✅ **Domain Events**: Can raise events about business state changes
-- ✅ **Domain Specifications**: Business rules and validation logic
-- ❌ **Any Infrastructure**: No databases, external services, or technical concerns
-- ❌ **Cross-Context Access**: Stay within bounded context boundaries
-- ❌ **Application Layer Concerns**: No transaction or persistence logic
+## Domain Layer (pure business logic)
+
+- Entities, value objects, domain services, domain events and specifications live here.
+- No persistence, no EF/ORM usage, and no framework references. The layer is testable and deterministic.
 
 ```csharp
 // Example: Pure domain service
@@ -474,17 +260,10 @@ public class DrugInteractionService
 }
 ```
 
-#### Cross-Bounded Context Communication
+## Cross-bounded Context Communication
 
-**Anti-Corruption Layers**:
-- Application services that translate between bounded contexts
-- Protect domain integrity by converting external models
-- Can have infrastructure access for external system integration
-
-**Domain Event Integration**:
-- Events cross context boundaries through infrastructure
-- Event handlers update local read models based on external events
-- Maintains loose coupling between contexts
+- Use anti-corruption layers (ACL) to translate external models into internal domain models and protect bounded contexts.
+- Domain events are the primary mechanism to integrate between contexts; handlers update local read models or call integration adapters.
 
 ```csharp
 // Example: Anti-corruption layer
@@ -508,13 +287,10 @@ public class ExternalPrescriptionService : IIntegrateWithExternalSystem
 }
 ```
 
-#### Implementation Examples
+## Implementation Adapters (examples)
 
-Different ways to drive the application core:
-
-**Web API Adapter (Command):**
 ```csharp
-// HTTP handler that uses repository for commands
+// Web API Adapter (Command)
 public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
 {
     private readonly IRuleRepository _repository;
@@ -526,11 +302,8 @@ public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
         return new PostResponse(HttpStatusCode.Created, rule);
     }
 }
-```
 
-**Web API Adapter (Query):**
-```csharp
-// HTTP handler that uses query service for reads
+// Web API Adapter (Query)
 public class GetRuleHandler : IHandleGetRequests
 {
     private readonly RuleQueryService _queryService;
@@ -540,11 +313,8 @@ public class GetRuleHandler : IHandleGetRequests
         return await _queryService.GetRuleAsync(request.RuleId());
     }
 }
-```
 
-**Message Adapter:**
-```csharp
-// Service Bus function that uses same application service
+// Message Adapter
 [Function("ProcessRuleUpdate")]
 public async Task ProcessRuleUpdate([ServiceBusTrigger("rules")] RuleUpdateMessage message)
 {
@@ -553,11 +323,8 @@ public async Task ProcessRuleUpdate([ServiceBusTrigger("rules")] RuleUpdateMessa
     rule.Update(message.Changes);
     await repository.UpdateAsync(rule);
 }
-```
 
-**Test Adapter:**
-```csharp
-// Direct test of application service
+// Test Adapter
 [Test]
 public async Task rule_query_service_finds_rule()
 {
@@ -567,35 +334,18 @@ public async Task rule_query_service_finds_rule()
 }
 ```
 
-### Benefits in Context
+## Benefits & Team Productivity (concise)
 
-#### Technology Flexibility
+- Technology flexibility: change hosting or storage without touching core logic.
+- Parallel development: domain and adapters can be developed independently.
+- Easier refactoring and clearer ownership boundaries.
+- Tests focus on behavior rather than implementation details.
 
-We can easily:
-- Switch between hosting mechanisms (Web API ↔ Azure Functions)
-- Change databases (SQL Server ↔ Cosmos DB) without changing business logic
-- Add new interfaces (mobile apps, desktop apps) without core changes
-- Migrate to new cloud providers or frameworks
+## Common Implementation Mistakes (short)
 
-#### Testing Strategy
+Leaky abstractions and embedding business logic in adapters are typical pitfalls.
 
-- **Fast Unit Tests**: Test business logic without any infrastructure
-- **Focused Integration Tests**: Test each adapter independently
-- **Reliable Tests**: Mock external dependencies easily
-- **BDD Alignment**: Test behavior, not implementation details
-
-#### Team Productivity
-
-- **Clear Boundaries**: Teams know where to put different types of code
-- **Parallel Development**: Core and adapter development can proceed independently
-- **Easier Refactoring**: Changes to infrastructure don't affect business logic
-- **Domain Focus**: Developers can focus on healthcare domain problems
-
-### Common Implementation Mistakes
-
-#### Leaky Abstractions
-
-**❌ Wrong:**
+❌ Wrong:
 ```csharp
 // Business logic depends on Entity Framework
 public class RuleService
@@ -607,7 +357,7 @@ public class RuleService
 }
 ```
 
-**✅ Correct:**
+✅ Correct:
 ```csharp
 // Business logic uses repository interface
 public class RuleService
@@ -621,9 +371,7 @@ public class RuleService
 }
 ```
 
-#### Adapter Coupling
-
-**❌ Wrong:**
+❌ Wrong:
 ```csharp
 // Web handler directly using database context
 public class GetRuleHandler
@@ -632,7 +380,7 @@ public class GetRuleHandler
 }
 ```
 
-**✅ Correct:**
+✅ Correct:
 ```csharp
 // Web handler uses application service
 public class GetRuleHandler
@@ -641,26 +389,22 @@ public class GetRuleHandler
 }
 ```
 
-#### Business Logic in Adapters
-
-**❌ Wrong:**
+❌ Wrong (business logic in controller):
 ```csharp
-// Business logic in controller
 [HttpPost]
 public async Task<IActionResult> CreateRule(CreateRuleRequest request)
 {
-    if (string.IsNullOrEmpty(request.Name)) return BadRequest(); // Validation in adapter
+    if (string.IsNullOrEmpty(request.Name)) return BadRequest();
     if (request.Name.Length > 100) return BadRequest();
     
     var rule = new Rule(request.Name);
-    await _repository.AddAsync(rule); // Direct repository usage
+    await _repository.AddAsync(rule);
     return Ok(rule);
 }
 ```
 
-**✅ Correct:**
+✅ Correct (delegate to core):
 ```csharp
-// Clean adapter delegates to application core
 [HttpPost]
 public async Task<IActionResult> CreateRule(CreateRuleRequest request)
 {
@@ -669,7 +413,6 @@ public async Task<IActionResult> CreateRule(CreateRuleRequest request)
 }
 ```
 
-### Conclusion
+## Conclusion
 
-Hexagonal architecture is not just a pattern - it's a mindset that keeps business logic pure and adaptable. By following these principles, applications remain flexible, testable, and aligned with domain-driven design practices. The separation of concerns enables teams to focus on solving healthcare domain problems while keeping infrastructure concerns cleanly isolated.
-
+Hexagonal architecture is a practical discipline: keep the core pure, prefer domain-first names, separate commands and queries, and keep adapters thin and testable.
