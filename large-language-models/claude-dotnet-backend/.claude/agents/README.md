@@ -21,22 +21,6 @@ This directory contains specifications for specialized Claude Code agents that w
 
 ---
 
-#### `ts-enforcer`
-**Purpose**: Enforces TypeScript strict mode and best practices.
-
-**Use proactively when**:
-- Defining new types or schemas
-- Planning TypeScript code structure
-
-**Use reactively when**:
-- Code written with potential type issues
-- Detecting mutations or `any` types
-- Reviewing TypeScript compliance
-
-**Core responsibility**: No `any` types, schema-first development, immutability.
-
----
-
 #### `refactor-scan`
 **Purpose**: Assesses refactoring opportunities after tests pass (TDD's third step).
 

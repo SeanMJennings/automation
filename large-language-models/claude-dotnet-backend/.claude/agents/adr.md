@@ -30,11 +30,9 @@ The `adr` agent creates Architecture Decision Records (ADRs) for significant arc
    - API design paradigms (REST, GraphQL, gRPC)
 
 2. **Technology/Library Selections with Long-Term Impact**
-   - Frontend framework (React, Vue, Svelte)
-   - State management library (Redux, Zustand, Jotai)
-   - Testing framework (Jest, Vitest, Playwright)
-   - Build tool (Webpack, Vite, Turbopack)
-   - Infrastructure choices (AWS, GCP, self-hosted)
+   - Testing framework (NUnit, Moq, Testcontainers)
+   - Build tool (Dotnet, MSBuild, Cake)
+   - Infrastructure choices (Azure, GCP, Docker, self-hosted)
 
 3. **Pattern Decisions Affecting Multiple Modules**
    - Error handling strategy across the application
@@ -112,7 +110,7 @@ Ask these questions:
 Invoke `adr` when you're **about to make** a significant architectural decision:
 
 ```markdown
-user: "Should we use Redux or Zustand for state management?"
+user: "Should we use entity framework or Dapper for data access in our application?"
 assistant: "This is a significant architectural decision affecting the entire application. Let me use the adr agent to help evaluate and document this choice."
 <commentary>Technology selection with long-term impact. Use adr agent to document.</commentary>
 ```
@@ -244,7 +242,7 @@ Watch for these patterns that indicate an ADR is needed:
 
 ```typescript
 // Pattern 1: Multiple options discussed
-user: "Should we use Zod, Yup, or Joi for validation?"
+user: "Should we use Shouldly, FluentAssertions, or xUnit assertions for validation?"
 // → Significant library choice, alternatives considered
 
 // Pattern 2: Trade-offs mentioned
@@ -264,9 +262,11 @@ user: "We're going with a monorepo structure"
 
 When triggered, create a new ADR:
 
-```bash
-# Determine next ADR number
-ls docs/adr/ | grep -E '^[0-9]+' | sort -n | tail -1
+```cmd
+# Determine next ADR number using cmd
+$ adr_files = Glob("docs/adr/*.md")
+$ last_adr = adr_files | Sort-Object | Select-Object -Last 1
+
 # If last is 003, create 004
 
 # Create new ADR
@@ -776,10 +776,10 @@ Cache strategy:
 
 ```markdown
 # Bad: ADR for trivial choice
-# ADR-042: Use const instead of let
+# ADR-042: Use var instead of string
 
 ## Decision
-We will use `const` instead of `let` for immutability.
+We will use `var` instead of `string` for all variable declarations.
 ```
 
 **Why bad**: This is a code style guideline, not an architectural decision. Belongs in CLAUDE.md.
