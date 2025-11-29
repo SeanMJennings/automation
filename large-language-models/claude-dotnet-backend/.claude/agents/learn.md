@@ -78,7 +78,7 @@ Ask the user (or reflect on completed work):
 #### 2. Read Current CLAUDE.md
 
 Before suggesting updates:
-```cmd
+```bash
 # Use Read tool to examine CLAUDE.md
 # Use Findstr to search for related keywords
 ```
@@ -297,7 +297,7 @@ Before proposing documentation, verify:
 
 ### Duplication Check
 Before adding:
-```cmd
+```bash
 # Use findstr to search CLAUDE.md for related keywords
 findstr /s /i /n /c:"pattern" CLAUDE.md
 ```
