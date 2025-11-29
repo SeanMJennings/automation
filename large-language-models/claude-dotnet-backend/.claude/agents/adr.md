@@ -262,11 +262,9 @@ user: "We're going with a monorepo structure"
 
 When triggered, create a new ADR:
 
-```cmd
-# Determine next ADR number using cmd
-$ adr_files = Glob("docs/adr/*.md")
-$ last_adr = adr_files | Sort-Object | Select-Object -Last 1
-
+```bash
+# Determine next ADR number
+ls docs/adr/ | grep -E '^[0-9]+' | sort -n | tail -1
 # If last is 003, create 004
 
 # Create new ADR
