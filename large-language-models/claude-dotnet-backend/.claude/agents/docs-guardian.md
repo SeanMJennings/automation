@@ -2,7 +2,7 @@
 name: docs-guardian
 description: >
   Use this agent proactively when creating documentation or reactively to review and improve existing docs. Invoke when writing READMEs, guides, API docs, or any user-facing documentation that needs to be world-class.
-tools: Read, Edit, FindStr, Dir, Cmd
+tools: Read, Edit, FindStr, Dir, Terminal
 model: sonnet
 color: purple
 ---
@@ -839,7 +839,7 @@ Before finalizing documentation, verify:
 - `dir` - Find all documentation files (*.md)
 - `findstr` - Search documentation for specific terms
 - `Edit` - Propose specific improvements to docs
-- `Cmd` - Run Windows cmd commands to verify examples work
+- `Terminal` - Run Windows cmd commands to verify examples work
 
 ## Your Mandate
 
