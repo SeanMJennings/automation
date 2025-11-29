@@ -303,10 +303,6 @@ public abstract class Specification
     // Validation helpers
     protected void validating(Action action)
     protected void informs(string message)
-    protected void it_is_valid()
-    
-    // Helper methods
-    protected string text_of_length(uint chars)
 }
 ```
 
@@ -366,265 +362,109 @@ public partial class FormularyStatusSpecs
 }
 ```
 
-## Database Integration Testing
+### AsyncSpecification Base Class
 
-When testing code that interacts with databases, the `DbSpecification` class provides automatic transaction management that eliminates the need for manual test data cleanup.
-
-### DbSpecification Base Class
-
-The `DbSpecification` class extends the standard `Specification` class and adds automatic transaction management:
+The `AsyncSpecification` abstract class serves as the foundation for BDD-style tests that need asynchronous operations:
 
 ```csharp
-public abstract class DbSpecification : Specification
+public abstract class AsyncSpecification
 {
-    private TransactionScope? scope;
+    // BDD step methods
+    protected Task Given(Action action) { action.Invoke(); }
+    protected Task When(Action action) { action.Invoke(); }
+    protected Task Then(Action action) { action.Invoke(); }
+    protected Task And(Action action) { action.Invoke(); }
+    
+    // Multiple scenario support
+    protected void scenario(Action test)
+    
+    // Validation helpers
+    protected void validating(Action action)
+    protected void informs(string message)
+    
+    // BDD async step methods
+    protected static async Task Given(Func<Task> testAction) { await testAction.Invoke(); }
+    protected static async Task And(Func<Task> testAction) { await testAction.Invoke(); }
+    protected static async Task When(Func<Task> testAction) { await testAction.Invoke(); }
+    protected static async Task Then(Func<Task> testAction) { await testAction.Invoke(); }
+    
+    // ASync Multiple scenario support
+    protected static async Task Scenario(Func<Task> testAction){ await testAction.Invoke(); }
 
-    protected override void before_each()
+    // Async Validation helpers
+    protected static Func<Task> Validating(Func<Task> testAction)
+    protected static Func<Task> InformsAsync(string message)
+}
+```
+
+
+### Usage in Projects
+
+When writing tests for projects, the recommended approach is:
+
+1. Create a partial class that inherits from `Specification`
+2. Split specifications and steps into separate files
+3. Use the fluent assertions for validations
+
+Example using the framework:
+
+```csharp
+// AsyncExampleShould.cs
+[TestFixture]
+public partial class AsyncExampleShould : AsyncSpecification
+{
+    [Test]
+    public async Task pass_our_first_behavioural_test_async()
+    {
+        await Given(two_numbers_from_a_remote_source);
+              When(we_give_them_to_our_complex_system);
+        await Then(we_get_the_sum_from_a_remote_source);
+              And(we_can_validate_something_else);
+    }
+}
+
+// AsyncExampleSteps.cs
+public partial class AsyncExampleShould
+{
+    private int sum;
+    private ComplexSystem complex_system;
+    private int first_number;
+    private int second_number;
+
+    protected override Task before_each()
     {
         base.before_each();
-        scope?.Dispose();
-
-        var transactionOptions = new TransactionOptions 
-        { 
-            IsolationLevel = IsolationLevel.ReadCommitted, 
-            Timeout = TimeSpan.FromMinutes(2) 
-        };
-        scope = new TransactionScope(TransactionScopeOption.RequiresNew, 
-            transactionOptions, TransactionScopeAsyncFlowOption.Enabled);
+        sum = 0;
+        first_number = 0;
+        second_number = 0;
+        complex_system = new ComplexSystem(new MagicDependency());
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    private Task two_numbers_from_a_remote_source()
     {
-        base.after_each();
-        scope?.Dispose();
+        first_number = 0;
+        second_number = 2;
+        return Task.CompletedTask;
     }
+
+    private void we_give_them_to_our_complex_system()
+    {
+        sum = complex_system.Sum(first_number, second_number);
+    }
+
+    private Task we_get_the_sum_from_a_remote_source()
+    {
+        sum = first_number + second_number;
+        return Task.CompletedTask;
+    }
+    
+    private static void we_can_validate_something_else(){}
 }
 ```
-
-### Key Features
-
-1. **Automatic Transaction Management**: Each test runs within its own transaction scope
-2. **Automatic Rollback**: All database changes are automatically rolled back after each test
-3. **Test Isolation**: Tests don't interfere with each other's data
-4. **Async Support**: Transactions flow properly through async operations
-5. **No Manual Cleanup**: Eliminates the need for complex setup/teardown logic
-
-### Usage Examples
-
-#### Basic Database Integration Test
-
-```csharp
-[TestFixture]
-public partial class CustomerRepositorySpecs : DbSpecification
-{
-    [Test]
-    public void creating_and_retrieving_customer()
-    {
-        scenario(() =>
-        {
-            Given(a_new_customer);
-            When(saving_the_customer);
-            Then(the_customer_can_be_retrieved);
-        });
-    }
-}
-
-public partial class CustomerRepositorySpecs
-{
-    private Customer _customer;
-    private ICustomerRepository _repository;
-    private Guid _savedCustomerId;
-
-    private void a_new_customer()
-    {
-        _customer = new Customer("John Doe", "john@example.com");
-        _repository = new CustomerRepository(connectionFactory);
-    }
-
-    private async Task saving_the_customer()
-    {
-        await _repository.AddAsync(_customer);
-        _savedCustomerId = _customer.Id;
-    }
-
-    private async Task the_customer_can_be_retrieved()
-    {
-        var retrieved = await _repository.GetByIdAsync(_savedCustomerId);
-        retrieved.Should().NotBeNull();
-        retrieved.Name.Should().Be("John Doe");
-    }
-}
-```
-
-#### Repository Integration Testing
-
-```csharp
-[TestFixture]
-public partial class OrderRepositorySpecs : DbSpecification
-{
-    [Test]
-    public void order_operations_maintain_data_integrity()
-    {
-        scenario(() =>
-        {
-            Given(an_order_with_items);
-            When(saving_the_complete_order);
-            Then(all_order_data_is_persisted_correctly);
-        });
-
-        scenario(() =>
-        {
-            Given(an_existing_order);
-            When(adding_items_to_the_order);
-            Then(the_order_total_is_updated_correctly);
-        });
-    }
-}
-
-public partial class OrderRepositorySpecs
-{
-    private Order _order;
-    private IOrderRepository _orderRepository;
-    private readonly IDbConnectionFactory _connectionFactory = Services.TestDatabase;
-
-    private void an_order_with_items()
-    {
-        _order = new Order();
-        _order.AddItem(new Product("Product A", 10.00m), 2);
-        _order.AddItem(new Product("Product B", 15.00m), 1);
-        _orderRepository = new OrderRepository(_connectionFactory);
-    }
-
-    private async Task saving_the_complete_order()
-    {
-        await _orderRepository.AddAsync(_order);
-    }
-
-    private async Task all_order_data_is_persisted_correctly()
-    {
-        var retrieved = await _orderRepository.GetByIdAsync(_order.Id);
-        retrieved.Should().NotBeNull();
-        retrieved.Items.Should().HaveCount(2);
-        retrieved.TotalAmount.Should().Be(35.00m);
-    }
-}
-```
-
-### Best Practices
-
-#### When to Use DbSpecification
-
-- **Use `AsyncSpecification` or `TruncateDbSpecification`** for tests that require actual database interactions:
-  - Repository integration tests
-  - Data access layer testing  
-  - End-to-end scenarios involving database operations
-  - Testing complex queries and stored procedures
-
-- **Use `Specification`** for unit tests that don't require database access:
-  - Domain model validation
-  - Business logic testing
-  - Service layer tests with mocked repositories
-
-#### Database Test Guidelines
-
-1. **Test Real Database Behavior**: Use actual database connections, not in-memory substitutes
-2. **Focus on Integration Points**: Test how your code interacts with the database schema
-3. **Verify Data Integrity**: Ensure transactions, constraints, and relationships work correctly
-4. **Test Complex Scenarios**: Multi-table operations, cascading deletes, concurrent access
-
-#### Performance Considerations
-
-```csharp
-[TestFixture]
-public partial class PerformanceCriticalSpecs : DbSpecification
-{
-    [Test]
-    public void bulk_operations_complete_within_acceptable_time()
-    {
-        scenario(() =>
-        {
-            Given(a_large_dataset);
-            When(performing_bulk_insert);
-            Then(operation_completes_within_time_limit);
-        });
-    }
-
-    private void operation_completes_within_time_limit()
-    {
-        // The transaction timeout (2 minutes) ensures tests don't run indefinitely
-        // Consider the automatic rollback cost for very large datasets
-    }
-}
-```
-
-### Integration with Repository Patterns
-
-The `DbSpecification` class works seamlessly with repository patterns and the CQRS approach:
-
-```csharp
-[TestFixture] 
-public partial class ProductCatalogSpecs : DbSpecification
-{
-    [Test]
-    public void product_lifecycle_operations()
-    {
-        scenario(() =>
-        {
-            Given(a_product_catalog_service);
-            When(adding_a_new_product);
-            Then(the_product_appears_in_search_results);
-            And(product_audit_trail_is_created);
-        });
-    }
-}
-
-public partial class ProductCatalogSpecs
-{
-    private ProductCatalogService _service;
-    private Product _newProduct;
-
-    private void a_product_catalog_service()
-    {
-        var writeRepository = new ProductRepository(_connectionFactory);
-        var readRepository = new ProductQueryRepository(_connectionFactory);
-        var eventPublisher = new DomainEventPublisher();
-        
-        _service = new ProductCatalogService(writeRepository, readRepository, eventPublisher);
-        _newProduct = new Product("Test Product", "Description", 99.99m);
-    }
-
-    private async Task adding_a_new_product()
-    {
-        await _service.AddProductAsync(_newProduct);
-    }
-
-    private async Task the_product_appears_in_search_results()
-    {
-        var results = await _service.SearchProductsAsync("Test Product");
-        results.Should().Contain(p => p.Id == _newProduct.Id);
-    }
-
-    private async Task product_audit_trail_is_created()
-    {
-        var auditEntries = await _service.GetAuditTrailAsync(_newProduct.Id);
-        auditEntries.Should().Contain(e => e.Action == "ProductAdded");
-    }
-}
-```
-
-### Transaction Scope Configuration
-
-The `DbSpecification` class uses these transaction settings:
-
-- **Isolation Level**: `ReadCommitted` - Prevents dirty reads while allowing concurrent access
-- **Timeout**: 2 minutes - Sufficient for most test scenarios while preventing runaway tests  
-- **Scope Option**: `RequiresNew` - Each test gets its own transaction
-- **Async Flow**: `Enabled` - Transactions flow correctly through async/await operations
-
-These settings balance test isolation, performance, and reliability for database integration testing.
 
 ## Conclusion
 
 These testing standards aim to ensure that the codebase maintains a consistent approach to testing that aligns with domain-driven design principles. The BDD-style testing approach with clear separation of specifications and step implementations improves readability and helps focus tests on domain behaviors rather than implementation details. 
 
-The `Testing.Bdd` package provides utilities that support these standards and make it easier to write clean, expressive tests. For database integration scenarios, the `DbSpecification` class eliminates the complexity of test data management through automatic transaction rollback, enabling reliable and isolated database testing.
+The `Testing.Bdd` package provides utilities that support these standards and make it easier to write clean, expressive tests.
