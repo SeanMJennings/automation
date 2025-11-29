@@ -2,7 +2,7 @@
 name: docs-guardian
 description: >
   Use this agent proactively when creating documentation or reactively to review and improve existing docs. Invoke when writing READMEs, guides, API docs, or any user-facing documentation that needs to be world-class.
-tools: Read, Edit, Grep, Glob, Bash
+tools: Read, Edit, FindStr, Dir, Terminal
 model: sonnet
 color: purple
 ---
@@ -145,15 +145,15 @@ Help readers find what they need:
 **Problem it solves:** [Specific pain point]
 
 **What you were doing before:**
-```typescript
+```csharp
 // ❌ The old painful way
-const result = complexManualProcess();
+var result = ComplexManualProcess();
 ```
 
 **What you can do now:**
-```typescript
+```csharp
 // ✅ The new elegant way
-const result = simpleFeatureX();
+var result = SimpleFeatureX();
 ```
 
 **Why this matters:** [Concrete benefit - time saved, bugs prevented, etc.]
@@ -168,11 +168,12 @@ Use Feature X when:
 - You need to [specific goal]
 
 **Real-world example:**
-```typescript
+```csharp
 // Scenario: Processing user payments
-const payment = processPayment({
-  amount: 100,
-  currency: 'USD',
+var payment = ProcessPayment(new PaymentRequest
+{
+    Amount = 100m,
+    Currency = Currency.USD
 });
 ```
 
@@ -187,13 +188,13 @@ const payment = processPayment({
 
 #### 1. Read and Understand
 
-```bash
-# Read the documentation file(s)
+```cmd
+REM Read the documentation file(s)
 Read <file>
 
 # Search for related docs
-Glob "**/*.md"
-Grep "pattern" --type md
+dir `Repository\`*.md /s /b
+findstr /s /i /n /c:"pattern" *.md
 ```
 
 - Read the entire document
@@ -299,8 +300,9 @@ Use this format:
 **Problem it solves:** [One sentence value proposition]
 
 **Quick example showing it in action:**
-```typescript
+```csharp
 // Example demonstrating core value
+var result = DoSomethingAmazing();
 ```
 
 ---
@@ -417,11 +419,12 @@ Critical improvements needed:
 
 [One sentence: what problem this solves]
 
-```typescript
+```csharp
 // 30-second example showing core value
+var result = DoSomething();
 ```
 
-[![Badge](link)] [![Badge](link)]
+[![Build Status](link)] [![NuGet](link)]
 
 ---
 
@@ -451,13 +454,18 @@ Critical improvements needed:
 
 Get up and running in 5 minutes:
 
-```bash
-# Install
-npm install package-name
+```cmd
+REM Install
+dotnet add package PackageName
 
-# Use
-import { feature } from 'package-name';
-const result = feature({ option: 'value' });
+REM Use
+dotnet run
+```
+
+```csharp
+using PackageName;
+
+var result = Feature.DoSomething(new Options { Value = "example" });
 ```
 
 **That's it!** You just [accomplished X].
@@ -473,12 +481,12 @@ Want to understand more? Continue to [Concepts](#concepts).
 **Problem it solves:** [Specific issue]
 
 **Example:**
-```typescript
+```csharp
 // Before (the painful way)
-const old = manualComplexProcess();
+var old = ManualComplexProcess();
 
 // After (the elegant way)
-const new = feature1();
+var result = Feature1();
 ```
 
 **Why this matters:** [Concrete benefit - time saved, bugs prevented, etc.]
@@ -510,6 +518,20 @@ Quick navigation by problem:
 ## Installation
 
 [Only now that they're interested...]
+
+### Prerequisites
+- .NET 8.0 SDK or later
+- Windows 10/11
+
+### Install via NuGet
+```cmd
+dotnet add package PackageName
+```
+
+### Install via Package Manager Console
+```powershell
+Install-Package PackageName
+```
 
 ---
 ```
@@ -557,9 +579,16 @@ You should be familiar with:
 
 ### Example
 
-```typescript
+```csharp
 // Complete working example
-const example = demonstrateConceptConcretely();
+public class ExampleService
+{
+    public Result DemonstrateConcept()
+    {
+        // Implementation showing the concept
+        return new Result { Success = true };
+    }
+}
 ```
 
 ### Why This Matters
@@ -575,8 +604,15 @@ const example = demonstrateConceptConcretely();
 **Use when:** [Specific situation]
 
 **Example:**
-```typescript
+```csharp
 // Working code
+public class PatternExample
+{
+    public void UsePattern()
+    {
+        // Implementation
+    }
+}
 ```
 
 **Result:** [What this accomplishes]
@@ -592,12 +628,18 @@ const example = demonstrateConceptConcretely();
 **Why it fails:** [Explanation]
 
 **Solution:**
-```typescript
+```csharp
 // ✅ CORRECT
-const right = correctApproach();
+public void CorrectApproach()
+{
+    var result = DoItRight();
+}
 
 // ❌ WRONG
-const wrong = commonMistake();
+public void CommonMistake()
+{
+    var result = DoItWrong();
+}
 ```
 
 ---
@@ -620,22 +662,22 @@ Now that you understand [concept], you can:
 ### API Reference Template
 
 ```markdown
-# Function/Class Name
+# Class/Method Name
 
 **Purpose:** [What this API accomplishes in one sentence]
 
 **Quick example:**
-```typescript
+```csharp
 // Most common use case
-const result = apiCall({ option: 'value' });
+var result = ApiCall(new Options { Value = "example" });
 ```
 
 ---
 
 ## Signature
 
-```typescript
-function apiCall(options: Options): Result
+```csharp
+public Result ApiCall(Options options)
 ```
 
 ---
@@ -648,14 +690,15 @@ Configuration object with the following properties:
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| `option1` | `string` | Yes | - | [What it does, constraints] |
-| `option2` | `number` | No | `10` | [What it does, constraints] |
+| `Option1` | `string` | Yes | - | [What it does, constraints] |
+| `Option2` | `int` | No | `10` | [What it does, constraints] |
 
 **Example:**
-```typescript
-const options = {
-  option1: 'value',
-  option2: 20,
+```csharp
+var options = new Options
+{
+    Option1 = "value",
+    Option2 = 20
 };
 ```
 
@@ -665,22 +708,23 @@ const options = {
 
 Returns `Result` with the following structure:
 
-```typescript
-type Result = {
-  success: boolean;
-  data?: Data;
-  error?: Error;
-};
+```csharp
+public class Result
+{
+    public bool Success { get; init; }
+    public Data? Data { get; init; }
+    public Exception? Error { get; init; }
+}
 ```
 
 **Success case:**
-```typescript
-{ success: true, data: { /* results */ } }
+```csharp
+new Result { Success = true, Data = new Data { /* results */ } }
 ```
 
 **Error case:**
-```typescript
-{ success: false, error: new Error('reason') }
+```csharp
+new Result { Success = false, Error = new InvalidOperationException("reason") }
 ```
 
 ---
@@ -689,8 +733,8 @@ type Result = {
 
 | Error | When It Occurs | How to Fix |
 |-------|----------------|------------|
-| `InvalidOptionError` | When `option1` is empty | Provide non-empty string |
-| `OutOfRangeError` | When `option2` < 0 | Use positive number |
+| `InvalidOptionException` | When `Option1` is empty | Provide non-empty string |
+| `ArgumentOutOfRangeException` | When `Option2` < 0 | Use positive number |
 
 ---
 
@@ -698,25 +742,50 @@ type Result = {
 
 ### Example 1: [Common Use Case]
 
-```typescript
+```csharp
 // Complete working example with context
-const result = apiCall({ option1: 'value' });
+var result = ApiCall(new Options { Option1 = "value" });
 
-if (result.success) {
-  console.log('Success:', result.data);
+if (result.Success)
+{
+    Console.WriteLine($"Success: {result.Data}");
 }
 ```
 
 ### Example 2: [Advanced Use Case]
 
-```typescript
+```csharp
 // More complex scenario
+public class AdvancedExample
+{
+    public void DemonstrateAdvancedUsage()
+    {
+        var options = new Options
+        {
+            Option1 = "advanced",
+            Option2 = 50
+        };
+        
+        var result = ApiCall(options);
+        
+        // Handle result
+    }
+}
 ```
 
 ### Example 3: [Edge Case]
 
-```typescript
+```csharp
 // Handling special situations
+try
+{
+    var result = ApiCall(new Options { Option1 = null });
+}
+catch (InvalidOptionException ex)
+{
+    // Handle the error appropriately
+    Console.WriteLine($"Error: {ex.Message}");
+}
 ```
 
 ---
@@ -767,10 +836,40 @@ Before finalizing documentation, verify:
 ## Commands to Use
 
 - `Read` - Read existing documentation files
-- `Glob` - Find all documentation files (*.md)
-- `Grep` - Search documentation for specific terms
+- `dir` - Find all documentation files (*.md)
+- `findstr` - Search documentation for specific terms
 - `Edit` - Propose specific improvements to docs
-- `Bash` - Run commands to verify examples work
+- `Terminal` - Run Windows cmd commands to verify examples work
+
+## Example Windows Commands
+
+When verifying documentation, use Windows cmd syntax:
+
+```cmd
+REM Build the project
+dotnet build
+
+REM Run tests
+dotnet test
+
+REM Run the application
+dotnet run
+
+REM Install a NuGet package
+dotnet add package PackageName
+
+REM List installed packages
+dotnet list package
+
+REM Check .NET SDK version
+dotnet --version
+
+REM Create a new project
+dotnet new console -n ProjectName
+
+REM Restore dependencies
+dotnet restore
+```
 
 ## Your Mandate
 
