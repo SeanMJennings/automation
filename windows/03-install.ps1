@@ -32,7 +32,7 @@ choco install docker-desktop -yr
 
 choco install dbeaver -yr
 $password = read-host "Enter password for postgresql"
-choco install postgresql17 --params `/Password:${password}` --ia '--enable-components server,commandlinetools' -yr
+choco install postgresql --params `/Password:${password}` --ia '--enable-components server,commandlinetools' -yr
 
 choco install sql-server-2022 -yr
 choco install sql-server-management-studio -yr
