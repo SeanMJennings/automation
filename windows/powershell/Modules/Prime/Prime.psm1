@@ -1,5 +1,3 @@
-Import-Module C:\Windows\System32\WindowsPowerShell\v1.0\Modules\WebAdministration\WebAdministration.psd1
-
 function Add-LocalDb($dbName, $location){
     if((SqlLocalDB.exe info) -contains $dbName) {
         SqlLocalDB.exe stop $dbName 
