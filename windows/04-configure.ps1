@@ -11,8 +11,8 @@ $jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs",".yaml")
 $pyCharmExtensions = @(".py",".toml")
 $notePadPlusPlusExtensions = @(".txt",".json")
 
-AssociateFileExtensions $jetBrainsExtensions "${Env:ProgramFiles(x86)}\JetBrains\JetBrains Rider 2023.3.4\bin\rider64.exe"
-AssociateFileExtensions $pyCharmExtensions "$env:programFiles\JetBrains\PyCharm Community Edition 2024.1.4\bin\pycharm64.exe"
+AssociateFileExtensions $jetBrainsExtensions "${Env:APPDATA}\Local\Programs\Rider\bin\rider64.exe"
+AssociateFileExtensions $pyCharmExtensions "${Env:APPDATA}\Local\Programs\PyCharm\bin\pycharm64.exe"
 AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\notepad++.exe"
 
 $name = read-host `nPlease enter your name
