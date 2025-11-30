@@ -17,7 +17,6 @@ choco install teamviewer -yr
 choco install malwarebytes -yr
 choco install vscode -yr
 choco install nuget.commandline -yr
-choco install azure-cosmosdb-emulator -yr
 choco install azure-cli -yr
 choco install azure-functions-core-tools -yr
 choco install servicebusexplorer -yr
@@ -31,7 +30,6 @@ choco install nordvpn -yr
 choco install zoom -yr
 choco install docker-desktop -yr
 
-choco install qgis -yr
 choco install dbeaver -yr
 $password = read-host "Enter password for postgresql"
 choco install postgresql17 --params `/Password:${password}` --ia '--enable-components server,commandlinetools' -yr
