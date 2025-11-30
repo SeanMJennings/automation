@@ -22,7 +22,6 @@ Get-AppxPackage *powerautomate* | Remove-AppxPackage -erroraction 'silentlyconti
 Get-AppxPackage *skype* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *solit* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *soundrec* | Remove-AppxPackage -erroraction 'silentlycontinue'
-Get-AppxPackage *sticky* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *tunein* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *twitter* | Remove-AppxPackage -erroraction 'silentlycontinue'
 Get-AppxPackage *microsoft.whiteboard* | Remove-AppxPackage -erroraction 'silentlycontinue'
