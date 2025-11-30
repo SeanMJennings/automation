@@ -1,4 +1,4 @@
-winget install -e --id Google.Drive
+winget install -e --id Google.GoogleDrive
 winget install -e --id Ditto.Ditto
 winget install -e --id Google.Chrome
 winget install -e --id Greenshot.Greenshot
@@ -9,10 +9,9 @@ winget install -e --id Microsoft.VisualStudio.2022.Professional --override "--ad
 winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
 winget install -e --id NordSecurity.NordPass
 winget install -e --id NordSecurity.NordVPN
-
-choco install python -yr
 winget install -e --id=astral-sh.uv
 
+choco install python -yr
 choco install jetbrainstoolbox -yr
 choco install 7zip -yr
 choco install teamviewer -yr
