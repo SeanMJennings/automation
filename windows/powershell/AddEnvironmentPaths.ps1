@@ -6,8 +6,8 @@ $paths =
 "$env:programFiles\Microsoft VS Code",
 "$env:programFiles\Microsoft Visual Studio\2022\Proffesional\Common7\IDE",
 "$env:programFiles\Azure Data Studio",
-"$env:APPDATA\Local\Programs\Rider\bin",
-"$env:APPDATA\Local\Programs\PyCharm\bin"
+"$env:LOCALAPPDATA\Programs\Rider\bin",
+"$env:LOCALAPPDATA\Programs\PyCharm\bin"
 
 $paths | % {
 	if (-not (($env:path -split ';') -contains $_)) {
