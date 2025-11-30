@@ -27,7 +27,7 @@ write-host "`n$sshdirectory\id_rsa.pub has been generated" -fore green
 write-host "`nAdd the key to your github account" -fore red 
 read-host "`n`nThen press any key"
 
-Set-Location $projectsprojectsRoot
+Set-Location $projectsRoot
 & "$env:programFiles\Git\usr\bin\ssh-agent.exe" | % {
         if ($_ -match '(?<key>[^=]+)=(?<value>[^;]+);') {
             [void][Environment]::SetEnvironmentVariable($Matches['key'], $Matches['value'])
@@ -53,7 +53,6 @@ if($PROFILE -Match "WindowsPowerShell") {
 
 write-host "`nSetup Complete. Please edit Projects.ps1 found at (Split-Path $PROFILE)" -fore green
 
-refreshEnv
 & $PROFILE
 
 Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider
