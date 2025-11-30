@@ -24,30 +24,13 @@ choco install nodejs -yr
 choco install yarn -yr
 choco install nunit-console-runner -yr
 choco install notepadplusplus -yr
-choco install brave -yr
 choco install nordpass -yr
 choco install nordvpn -yr
 choco install zoom -yr
 choco install docker-desktop -yr
-
 choco install dbeaver -yr
-$password = read-host "Enter password for postgresql"
-choco install postgresql --params `/Password:${password}` --ia '--enable-components server,commandlinetools' -yr
-
-choco install sql-server-2022 -yr
 choco install sql-server-management-studio -yr
 choco install sqlcmd -yr
-refreshenv
-[System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SqlWmiManagement')
-$wmi = [Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer]::new('localhost')
-$tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Tcp']
-$tcp.IsEnabled = $true
-$tcp.Alter()
-$server = [Microsoft.SqlServer.Management.Smo.Server]::new('localhost')
-$server.LoginMode = 'Mixed'
-$server.Alter()
-sqlcmd -S . -Q "ALTER LOGIN sa DISABLE;"
-Restart-Service -Name MSSQLSERVER -Force
 
 yarn global add azurite
 yarn global add npm-check-updates
@@ -56,7 +39,6 @@ yarn global add vite
 yarn global add @anthropic-ai/claude-code
 
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
-wsl --install
 wsl --install -d Debian
 
 Read-Host "Computer will restart then please run .\automation\windows\04-configure.ps1"
