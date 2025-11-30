@@ -6,13 +6,14 @@ function AssociateFileExtensions ($Extensions, $OpenAppPath) {
 }
 
 cd $PSScriptRoot
+. .\SetFileTypeAssociation.ps1
 
 $jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs",".yaml")
 $pyCharmExtensions = @(".py",".toml")
 $notePadPlusPlusExtensions = @(".txt",".json")
 
-AssociateFileExtensions $jetBrainsExtensions "${Env:APPDATA}\Local\Programs\Rider\bin\rider64.exe"
-AssociateFileExtensions $pyCharmExtensions "${Env:APPDATA}\Local\Programs\PyCharm\bin\pycharm64.exe"
+AssociateFileExtensions $jetBrainsExtensions "$env:LOCALAPPDATA\Programs\Rider\bin\rider64.exe"
+AssociateFileExtensions $pyCharmExtensions "$env:LOCALAPPDATA\Programs\PyCharm\bin\pycharm64.exe"
 AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\notepad++.exe"
 
 $name = read-host `nPlease enter your name
@@ -25,6 +26,6 @@ git config --global user.email $email
 & "~\automation\windows\configs\VSCode\extensions.ps1"
 
 Copy-Item "~\automation\windows\configs\VSCode\*.json" "$env:userprofile\AppData\Roaming\Code\User"
-Read-Host "Computer will restart then please run .\automation\windows\05-disable_startups.ps1"
+Read-Host "Computer will restart then please run .\automation\windows\05-disable-startups.ps1"
 Remove-Item .\SetFileTypeAssociation.ps1 -Force
 Restart-Computer
