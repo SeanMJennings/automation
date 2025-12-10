@@ -7,3 +7,6 @@ You will need to temporarily change your execution policy to run the script for 
 
 ## Linux / WSL2
 Start with 01-git.sh and follow the instructions to set up your development environment.
+
+## Large Language Models (LLMs)
+This repository also includes scripts to set up environments for working with Large Language Models (LLMs).
