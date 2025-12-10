@@ -40,6 +40,8 @@ npm install -g @anthropic-ai/claude-code
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
 wsl --install -d Debian
 wsl --set-default Debian
+wsl chmod +x ../linux/debian/01-git.sh
+wsl chmod +x ../linux/debian/02-install.sh
 
 Read-Host "Computer will restart then please run .\automation\windows\05-configure.ps1"
 Restart-Computer
