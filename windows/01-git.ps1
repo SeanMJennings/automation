@@ -44,7 +44,7 @@ git config --global user.email $email
 winget install -e --id GitHub.cli
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 read-host `nIn the next step, authenticate with GitHub using web browser with SSH. Skip uploading SSH key as it was done earlier. Press any key to continue.
-gh auth login --scopes read:packages,write:packages
+gh auth login --scopes read:packages
 $token = gh auth token
 dotnet nuget remove source github
 dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password $token --store-password-in-clear-text
