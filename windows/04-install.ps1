@@ -23,7 +23,6 @@ choco install azure-cli -yr
 choco install azure-functions-core-tools -yr
 choco install servicebusexplorer -yr
 choco install nodejs -yr
-choco install yarn -yr
 choco install nunit-console-runner -yr
 choco install notepadplusplus -yr
 choco install zoom -yr
@@ -32,11 +31,11 @@ choco install dbeaver -yr
 choco install sql-server-management-studio -yr
 choco install sqlcmd -yr
 
-yarn global add azurite
-yarn global add npm-check-updates
-yarn global add serve
-yarn global add vite
-yarn global add @anthropic-ai/claude-code
+npm install -g azurite
+npm install -g npm-check-updates
+npm install -g serve
+npm install -g vite
+npm install -g @anthropic-ai/claude-code
 
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
 wsl --install -d Debian
