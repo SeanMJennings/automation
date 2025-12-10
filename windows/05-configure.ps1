@@ -20,6 +20,6 @@ AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\
 & "~\automation\windows\configs\VSCode\extensions.ps1"
 
 Copy-Item "~\automation\windows\configs\VSCode\*.json" "$env:userprofile\AppData\Roaming\Code\User"
-Read-Host "Computer will restart then please run .\automation\windows\05-disable-startups.ps1"
+Read-Host "Computer will restart then please run .\automation\windows\06-disable-startups.ps1"
 Remove-Item .\SetFileTypeAssociation.ps1 -Force
 Restart-Computer

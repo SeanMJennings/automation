@@ -45,5 +45,5 @@ choco uninstall SmbDirect -s windowsfeatures -yr
 choco uninstall Internet-Explorer-Optional-amd64 -s windowsfeatures -yr
 
 Write-Host "https://github.com/ChrisTitusTech/win10script for extra cleaning"
-Read-Host "Computer will restart then please run .\automation\windows\03-install.ps1"
+Read-Host "Computer will restart then please run .\automation\windows\04-install.ps1"
 Restart-Computer
