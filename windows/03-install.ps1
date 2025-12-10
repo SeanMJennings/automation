@@ -11,6 +11,7 @@ winget install -e --id NordSecurity.NordPass
 winget install -e --id NordSecurity.NordVPN
 winget install -e --id=astral-sh.uv
 
+dotnet tool install -g Aspire.Cli --prerelease
 choco install python -yr
 choco install jetbrainstoolbox -yr
 choco install 7zip -yr
