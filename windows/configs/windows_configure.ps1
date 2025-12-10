@@ -2,7 +2,6 @@ choco install boxstarter
 
 import-module "$env:ALLUSERSPROFILE\Boxstarter\Boxstarter.Chocolatey"
 Disable-GameBarTips
-Disable-BingSearch
 
 Set-WindowsExplorerOptions -EnableShowHiddenFilesFoldersDrives -EnableShowFileExtensions -EnableShowFullPathInTitleBar
 Set-BoxstarterTaskbarOptions -Unlock -Dock Bottom -Combine Always -Size Small
