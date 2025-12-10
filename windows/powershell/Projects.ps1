@@ -12,6 +12,7 @@ public enum Project
     ObservabilityLibrary,
     RuleOfThree,
     TestingLibrary,
+    TicketBuddy_ModularMonolith
     TypicalRestApi,
     WebApiLibrary
 }
@@ -88,6 +89,13 @@ function global:Get-Projects {
              Directory  = "~\TestingLibrary";
              DotnetSolution = "~\TestingLibrary\Testing.sln";
              ProjectTypes = @([ProjectTypes]::Dotnet)
+         };
+         [Project]::TicketBuddy_ModularMonolith = [PSCustomObject]@{ 
+             Git          = "git@github.com:SeanMJennings/TicketBuddy_ModularMonolith.git"; 
+             Directory    = "~\TicketBuddy_ModularMonolith";
+             DotnetSolution = "~\TicketBuddy_ModularMonolith\ModularMonolith";
+             CodeSolution = "~\TicketBuddy_ModularMonolith\UI";
+             ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Dotnet)
          };
          [Project]::TypicalRestApi = [PSCustomObject]@{
              Git          = "git@github.com:SeanMJennings/TypicalRestApi.git";
