@@ -39,12 +39,12 @@ brew install azure-cli
 sudo snap install azuredatastudio
 sudo snap install storage-explorer
 brew install node
-brew install yarn
-brew install postgresql@17
+brew install postgresql
 sudo snap install dbeaver-ce
 brew install sqlcmd
 
-yarn global add azurite
-yarn global add npm-check-updates
-yarn global add serve
-yarn global add vite
+npm install -g azurite
+npm install -g npm-check-updates
+npm install -g serve
+npm install -g vite
+npm install -g @anthropic-ai/claude-code
