@@ -39,6 +39,12 @@ git config --global core.compression 0 repack
 git clone git@github.com:SeanMJennings/automation.git
 Stop-Process -Name 'ssh-agent' -ErrorAction SilentlyContinue
 
+$name = read-host `nPlease enter your name for git
+$email = read-host `nPlease enter your email address for git
+
+git config --global user.name $name
+git config --global user.email $email
+
 Copy-Item "$projectsRoot\automation\windows\powershell\*" (split-path $PROFILE) -Recurse -Force
 
 $content = {(Get-Content "$projectsRoot\automation\windows\powershell\Microsoft.PowerShell_profile.ps1")}.Invoke()
