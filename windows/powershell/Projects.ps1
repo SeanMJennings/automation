@@ -12,7 +12,7 @@ public enum Project
     ObservabilityLibrary,
     RuleOfThree,
     TestingLibrary,
-    TicketBuddy_ModularMonolith
+    TicketBuddy_ModularMonolith,
     TypicalRestApi,
     WebApiLibrary
 }
