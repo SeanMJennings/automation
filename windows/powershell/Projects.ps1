@@ -93,7 +93,7 @@ function global:Get-Projects {
          [Project]::TicketBuddy_ModularMonolith = [PSCustomObject]@{ 
              Git          = "git@github.com:SeanMJennings/TicketBuddy_ModularMonolith.git"; 
              Directory    = "~\TicketBuddy_ModularMonolith";
-             DotnetSolution = "~\TicketBuddy_ModularMonolith\ModularMonolith";
+             DotnetSolution = "~\TicketBuddy_ModularMonolith\ModularMonolith\TicketBuddy.sln";
              CodeSolution = "~\TicketBuddy_ModularMonolith\UI";
              ProjectTypes = @([ProjectTypes]::JavaScript,[ProjectTypes]::Dotnet)
          };
