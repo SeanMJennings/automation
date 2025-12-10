@@ -158,11 +158,8 @@ You: Launch the refactor-scan agent to assess my code quality
    Claude Code: [Launches refactor-scan agent]
    [Suggests extracting discount constants]
 7. You: [Refactors with tests still green]
-8. You: Validate TypeScript compliance
-   Claude Code: [Launches ts-enforcer agent]
-   [Validates TypeScript compliance]
-9. You: [Commits changes]
-10. You: Help me document what I learned
+8. You: [Commits changes]
+9. You: Help me document what I learned
     Claude Code: [Launches learn agent]
     [Captures learning about discount edge cases]
 ```
@@ -173,12 +170,10 @@ You: Launch the refactor-scan agent to assess my code quality
 1. You: I've finished implementing the feature. Can you do a full review?
 2. Claude Code: [Launches tdd-guardian agent]
    [Checks TDD compliance]
-3. Claude Code: [Launches ts-enforcer agent]
-   [Validates TypeScript standards]
-4. Claude Code: [Launches refactor-scan agent]
+3. Claude Code: [Launches refactor-scan agent]
    [Assesses code quality]
-5. You: [Fixes any violations]
-6. Claude Code: [Launches learn agent]
+4. You: [Fixes any violations]
+5. Claude Code: [Launches learn agent]
    [Documents key learnings]
 ```
 
@@ -188,7 +183,6 @@ You: Launch the refactor-scan agent to assess my code quality
 You: Run all quality checks on my recent changes
 Claude Code: [Launches agents in parallel]
 - tdd-guardian
-- ts-enforcer
 - refactor-scan
 ```
 
@@ -197,7 +191,6 @@ Claude Code: [Launches agents in parallel]
 These agents enforce the principles defined in CLAUDE.md:
 
 - **TDD Guardian** → Enforces "TEST-DRIVEN DEVELOPMENT IS NON-NEGOTIABLE"
-- **TS Enforcer** → Enforces TypeScript Guidelines and Strict Mode
 - **Refactor Scan** → Implements the "assess refactoring after every green" requirement
 - **Learn** → Implements "update CLAUDE.md with anything useful you wished you'd known at the start"
 
@@ -214,19 +207,18 @@ To modify these agents:
 
 **Use liberally**: These agents are designed to be invoked frequently
 - `tdd-guardian` - After every feature implementation
-- `ts-enforcer` - Before every commit
 - `refactor-scan` - After every green test
 - `learn` - After every significant learning
 
 **Invoke multiple agents**: You can request multiple agents in one message:
 ```
-You: Run TDD, TypeScript, and refactoring checks on my recent changes
+You: Run TDD and refactoring checks on my recent changes
 Claude Code: [Launches tdd-guardian, ts-enforcer, and refactor-scan agents in parallel]
 ```
 
 **Context-aware**: Agents automatically examine recent git changes, but you can also specify files:
 ```
-You: Run TypeScript enforcement on src/payment/payment-processor.ts
+You: Run refactor scan on src/payment/payment-processor.cs
 ```
 
 ## Troubleshooting
