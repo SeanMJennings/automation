@@ -47,8 +47,9 @@ brew install nuget
 sudo apt-get install -y powershell
 
 if ! asdf plugin list | grep -q python; then
-    asdf plugin-add python
+    asdf plugin add python
 fi
+
 asdf install python latest
 asdf global python latest
 
@@ -61,8 +62,9 @@ brew install unixodbc
 brew install freetds
 
 if ! asdf plugin list | grep -q nodejs; then
-    asdf plugin-add nodejs
+    asdf plugin add nodejs
 fi
+
 asdf install nodejs latest
 asdf global nodejs latest
 
@@ -86,3 +88,9 @@ sudo snap install code --classic
 sudo snap install postman
 sudo snap install storage-explorer
 sudo snap install dbeaver-ce
+
+if ! grep -q "systemd=true" /etc/wsl.conf 2>/dev/null; then
+    echo "[boot]" | sudo tee -a /etc/wsl.conf > /dev/null
+    echo "systemd=true" | sudo tee -a /etc/wsl.conf > /dev/null
+    echo "WSL systemd has been enabled. You need to restart WSL by running 'wsl --shutdown' from Windows."
+fi
