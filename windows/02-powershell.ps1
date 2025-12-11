@@ -16,6 +16,17 @@ if($PROFILE -Match "WindowsPowerShell") {
     Copy-Item "$($PROFILE)\.." $destination -Recurse -Force
 }
 
+$settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+$settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
+
+foreach ($profile in $settings.profiles.list) {
+    if ($profile.name -match "PowerShell") {
+        $profile | Add-Member -NotePropertyName "elevate" -NotePropertyValue $true -Force
+    }
+}
+
+$settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
+
 & $PROFILE
 
 write-host "`nPlease run .\automation\windows\03-clean.ps1"
