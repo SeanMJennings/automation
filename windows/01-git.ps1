@@ -41,14 +41,6 @@ $email = read-host `nPlease enter your email address for git
 git config --global user.name $name
 git config --global user.email $email
 
-winget install -e --id GitHub.cli
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-read-host `nIn the next step, authenticate with GitHub using web browser with SSH. Skip uploading SSH key as it was done earlier. Press any key to continue.
-gh auth login --scopes read:packages
-$token = gh auth token
-dotnet nuget remove source github
-dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password $token --store-password-in-clear-text
-
 Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider whilst remote signed off
 write-host "`nPlease change the execution policy back to RemoteSigned" -fore yellow
 write-host "`nPlease run .\automation\windows\02-powershell.ps1"

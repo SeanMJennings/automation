@@ -5,7 +5,6 @@ set -e
 if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     
-    theUser=$(whoami)
     echo "" >> "$HOME/.bashrc"
     echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> "$HOME/.bashrc"
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -28,7 +27,19 @@ wget https://packages.microsoft.com/config/debian/$(cat /etc/debian_version | cu
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 sudo apt-get update
-sudo apt-get install -y dotnet-sdk-8.0
+sudo apt-get install -y dotnet-sdk
+sudo apt update
+sudo apt install -y libpci3 libegl1 libgl1 dbus-x11
+sudo apt install firefox-esr
+sudo apt install gh -y
+
+sudo service dbus start
+gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key --web
+sudo service dbus stop
+
+token=$(gh auth token)
+dotnet nuget remove source github 2>/dev/null || true
+dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password "$token" --store-password-in-clear-text
 
 brew install nuget
 
@@ -54,7 +65,7 @@ fi
 asdf install nodejs latest
 asdf global nodejs latest
 
-brew install postgresql@15
+brew install postgresql
 
 brew install azure-cli
 
