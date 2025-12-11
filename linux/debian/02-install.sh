@@ -46,13 +46,6 @@ brew install nuget
 
 sudo apt-get install -y powershell
 
-if ! asdf plugin list | grep -q python; then
-    asdf plugin add python
-fi
-
-asdf install python latest
-asdf global python latest
-
 curl -sSL https://install.python-poetry.org | python3 -
 if ! grep -q "poetry" "$HOME/.bashrc"; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
@@ -66,7 +59,8 @@ if ! asdf plugin list | grep -q nodejs; then
 fi
 
 asdf install nodejs latest
-asdf global nodejs latest
+asdf set nodejs latest
+asdf reshim nodejs
 
 brew install azure-cli
 brew install sqlcmd
