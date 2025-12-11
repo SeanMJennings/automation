@@ -8,7 +8,7 @@ if ! command -v brew &> /dev/null; then
     echo "" >> "$HOME/.bashrc"
     echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> "$HOME/.bashrc"
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    
+    export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
     sudo apt-get install -y build-essential
     brew install gcc
 else
@@ -16,6 +16,7 @@ else
 fi
 
 if ! command -v asdf &> /dev/null; then
+    curl -sL https://raw.githubusercontent.com/wslutilities/wslu/master/extras/scripts/wslu-install | bash
     brew install asdf
     echo ". $(brew --prefix asdf)/libexec/asdf.sh" >> "$HOME/.bashrc"
     . "$(brew --prefix asdf)/libexec/asdf.sh"
@@ -27,7 +28,7 @@ wget https://packages.microsoft.com/config/debian/$(cat /etc/debian_version | cu
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 sudo apt-get update
-sudo apt-get install -y dotnet-sdk
+sudo apt-get install -y dotnet-sdk-9.0
 sudo apt update
 sudo apt install -y libpci3 libegl1 libgl1 dbus-x11
 sudo apt install firefox-esr
@@ -65,10 +66,7 @@ fi
 asdf install nodejs latest
 asdf global nodejs latest
 
-brew install postgresql
-
 brew install azure-cli
-
 brew install sqlcmd
 
 npm install -g azurite
@@ -86,6 +84,5 @@ fi
 
 sudo snap install code --classic
 sudo snap install postman
-sudo snap install azuredatastudio
 sudo snap install storage-explorer
 sudo snap install dbeaver-ce

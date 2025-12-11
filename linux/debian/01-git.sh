@@ -62,5 +62,3 @@ EOF
 fi
 
 cd "$projectsRoot"
-
-
