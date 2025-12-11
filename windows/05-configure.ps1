@@ -8,11 +8,11 @@ function AssociateFileExtensions ($Extensions, $OpenAppPath) {
 cd $PSScriptRoot
 . .\SetFileTypeAssociation.ps1
 
-$jetBrainsExtensions = @(".ps1",".sln",".csproj",".cs",".yaml")
+$riderExtensions = @(".ps1",".sln",".csproj",".cs",".yaml")
 $pyCharmExtensions = @(".py",".toml")
 $notePadPlusPlusExtensions = @(".txt",".json")
 
-AssociateFileExtensions $jetBrainsExtensions "$env:LOCALAPPDATA\Programs\Rider\bin\rider64.exe"
+AssociateFileExtensions $riderExtensions "$env:LOCALAPPDATA\Programs\Rider\bin\rider64.exe"
 AssociateFileExtensions $pyCharmExtensions "$env:LOCALAPPDATA\Programs\PyCharm\bin\pycharm64.exe"
 AssociateFileExtensions $notePadPlusPlusExtensions "$env:programFiles\Notepad++\notepad++.exe"
 
