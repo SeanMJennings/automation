@@ -10,14 +10,7 @@ winget install -e --id NordSecurity.NordPass
 winget install -e --id NordSecurity.NordVPN
 winget install -e --id=astral-sh.uv
 
-winget install -e --id GitHub.cli
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key
-$token = gh auth token
-dotnet nuget remove source github
-dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password $token --store-password-in-clear-text
-dotnet tool install -g Aspire.Cli --prerelease
-
+choco install gh -yr
 choco install python -yr
 choco install jetbrainstoolbox -yr
 choco install 7zip -yr
@@ -36,6 +29,13 @@ choco install docker-desktop -yr
 choco install dbeaver -yr
 choco install sql-server-management-studio -yr
 choco install sqlcmd -yr
+
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key
+$token = gh auth token
+dotnet nuget remove source github
+dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password $token --store-password-in-clear-text
+dotnet tool install -g Aspire.Cli --prerelease
 
 npm install -g azurite
 npm install -g npm-check-updates
