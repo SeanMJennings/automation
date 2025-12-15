@@ -12,8 +12,8 @@ $content = {(Get-Content "$projectsRoot\automation\windows\powershell\Microsoft.
 $content.Insert(0, "`$projectsRoot = `"$projectsRoot`"") 
 mkdir $env:UserProfile\Documents\PowerShell\ -force
 mkdir $env:UserProfile\Documents\WindowsPowerShell\ -force
-$content | Set-Content $env:UserProfile\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
-$content | Set-Content $env:UserProfile\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+$content | Set-Content $powershellCoreProfileLocation
+$content | Set-Content $windowsPowershellProfileLocation
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "Personal" -Value "$env:UserProfile\Documents"
 
 $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
@@ -26,4 +26,5 @@ foreach ($profile in $settings.profiles.list) {
 }
 
 $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
+
 write-host "`nPlease run .\automation\windows\03-clean.ps1"
