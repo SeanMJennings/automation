@@ -22,7 +22,8 @@ mkdir $sshdirectory -force
 ssh-keygen -f "$sshdirectory\id_rsa"
 
 write-host "`n$sshdirectory\id_rsa.pub has been generated" -fore green
-write-host "`nAdd the key to your github account" -fore red 
+write-host "`nAdd the key to your github account" -fore red
+Start-Process 'https://github.com/settings/ssh/new'
 read-host "`n`nThen press any key"
 
 Set-Location $projectsRoot
