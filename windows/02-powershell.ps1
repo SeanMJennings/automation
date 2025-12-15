@@ -25,6 +25,8 @@ foreach ($profile in $settings.profiles.list) {
     }
 }
 
+$pwshProfile = $settings.profiles.list | Where-Object { $_.name -eq 'PowerShell' } | Select-Object -First 1
+$settings.defaultProfile = $pwshProfile.guid
 $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
 
 write-host "`nPlease run .\automation\windows\03-clean.ps1"
