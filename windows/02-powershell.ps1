@@ -2,7 +2,6 @@ $projectsRoot = [System.Environment]::GetEnvironmentVariable('ProjectsRoot', 'Us
 Set-Location $projectsRoot
 
 winget install -e --id Microsoft.PowerShell #Powershell 7+
-git clone git@github.com:SeanMJennings/automation.git
 
 Copy-Item "$projectsRoot\automation\windows\powershell\*" (split-path $PROFILE) -Recurse -Force
 
@@ -26,7 +25,4 @@ foreach ($profile in $settings.profiles.list) {
 }
 
 $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
-
-& $PROFILE
-
 write-host "`nPlease run .\automation\windows\03-clean.ps1"

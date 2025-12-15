@@ -42,5 +42,9 @@ git config --global user.name $name
 git config --global user.email $email
 
 Invoke-Expression "& { $(Invoke-RestMethod https://aka.ms/install-artifacts-credprovider.ps1) } -AddNetfx" # azure artifacts cred provider whilst remote signed off
+
+Set-Location $projectsRoot
+git clone git@github.com:SeanMJennings/automation.git
+
 write-host "`nPlease change the execution policy back to RemoteSigned" -fore yellow
 write-host "`nPlease run .\automation\windows\02-powershell.ps1"
