@@ -2,7 +2,7 @@ winget install -e --id Google.GoogleDrive
 winget install -e --id Ditto.Ditto
 winget install -e --id Google.Chrome
 winget install -e --id Greenshot.Greenshot
-winget install -e --id WhatsApp.WhatsApp
+winget install -e --id 9NKSQGP7F2NH #WhatsApp
 winget install -e --id Postman.Postman
 winget install -e --id Microsoft.VisualStudio.2022.Professional --override "--add Microsoft.VisualStudio.Component.CoreEditor --add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.NetWeb --add Microsoft.VisualStudio.Workload.Azure --add Microsoft.VisualStudio.Workload.AzureBuildTools --includeRecommended --passive"
 winget install -e --id Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000" # for arduino c++ development
