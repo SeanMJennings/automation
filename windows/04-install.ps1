@@ -36,6 +36,8 @@ $token = gh auth token
 dotnet nuget remove source github
 dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password $token --store-password-in-clear-text
 dotnet tool install -g Aspire.Cli --prerelease
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
 
 npm install -g azurite
 npm install -g npm-check-updates
