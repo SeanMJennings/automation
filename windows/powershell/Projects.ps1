@@ -2,6 +2,7 @@ Add-Type -TypeDefinition @"
 public enum Project
 {
     None,
+    All,
     Automation,
     BeautyContest,
     CommonLibrary,

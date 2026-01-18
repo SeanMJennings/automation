@@ -30,6 +30,11 @@ function Pull ([Project] $project){
     }
 
     $dir = Get-Location
+    if ($project -eq [Project]::All) {
+        (Get-Projects).GetEnumerator() | Where-Object { $_.name -ne "None" -and $_.name -ne "All" } | % { Git-Pull $_ }
+        Set-Location $dir
+        return
+    }
     (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Git-Pull $_ }
     Set-Location $dir
 }
@@ -77,11 +82,16 @@ function Clone([Project] $project = [Project]::None) {
     function Git-Clone($targetProject) {
         Write-Host `nCloning $targetProject.Key -Fore Green
         Set-Location ~
-        git clone $targetProject.Value.Git 
+        git clone $targetProject.Value.Git
     }
 
     Clear-Host
     $dir = Get-Location
+    if ($project -eq [Project]::All) {
+        (Get-Projects).GetEnumerator() | Where-Object { $_.name -ne "None" -and $_.name -ne "All" } | % { Git-Clone $_ }
+        Set-Location $dir
+        return
+    }
     (Get-Projects).GetEnumerator() | Where-Object { $project -eq $_.name } | % { Git-Clone $_ }
     Set-Location $dir
 }
