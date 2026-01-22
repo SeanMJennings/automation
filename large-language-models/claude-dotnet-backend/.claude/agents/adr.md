@@ -139,14 +139,6 @@ assistant: "That's an important infrastructure decision. Let me use the adr agen
 [adr agent creates docs/adr/001-queue-infrastructure.md]
 ```
 
-**Invoked by docs-guardian:**
-```markdown
-[While documenting architecture, docs-guardian identifies undocumented decision]
-
-user: "Document the authentication system"
-docs-guardian: "I notice there's no ADR explaining why we chose JWT over sessions. Let me invoke the adr agent to create one."
-```
-
 ## ADR Format and Structure
 
 ADRs follow a standard format for consistency:
@@ -337,11 +329,7 @@ A: "This is a significant infrastructure decision. Let me use the adr agent to h
 
 # ADR-001: Email Provider Selection
 
-**Status**: Accepted
-
 **Date**: 2025-11-01
-
-**Decision Makers**: Engineering team
 
 **Tags**: infrastructure, email, third-party-service
 
@@ -458,11 +446,7 @@ A: "That's a foundational architectural decision. Let me use the adr agent to do
 
 # ADR-002: Monorepo Structure with pnpm Workspaces
 
-**Status**: Accepted
-
 **Date**: 2025-11-02
-
-**Decision Makers**: Engineering lead, team consensus
 
 **Tags**: architecture, monorepo, tooling
 
@@ -628,11 +612,7 @@ A: "That's a significant architectural decision that should have been documented
 
 # ADR-003: Database Selection - PostgreSQL
 
-**Status**: Accepted (Retroactive)
-
 **Date**: 2025-11-05 (Decision made: 2025-10-15)
-
-**Decision Makers**: Engineering team
 
 **Tags**: database, infrastructure, retroactive
 
@@ -729,11 +709,7 @@ We chose **PostgreSQL** as the primary database.
 
 # ADR-007: Caching Strategy with Redis
 
-**Status**: Accepted
-
 **Date**: 2025-12-01
-
-**Decision Makers**: Engineering team
 
 **Tags**: caching, redis, performance
 
@@ -855,15 +831,6 @@ The `adr` agent is successful when:
 → Update WIP.md with ADR reference
 ```
 
-### With docs-guardian
-
-```markdown
-[docs-guardian writing architecture docs]
-→ Discovers undocumented architectural decision
-→ Invoke adr agent to create retroactive ADR
-→ Reference ADR in architecture docs
-```
-
 ### With learn agent
 
 ```markdown
@@ -884,7 +851,7 @@ The `adr` agent creates Architecture Decision Records for significant architectu
 - Identifies when decisions merit ADRs (not everything does)
 - Documents context, alternatives, trade-offs, and consequences
 - Maintains ADR index and numbering
-- Integrates with wip-guardian, docs-guardian, and learn agents
+- Integrates with wip-guardian and learn agents
 - Prevents "why did we do it this way?" confusion
 - Provides architectural continuity as team evolves
 

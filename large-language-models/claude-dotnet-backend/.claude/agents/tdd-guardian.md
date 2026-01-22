@@ -198,7 +198,7 @@ public partial class PaymentSpecs
     }
 }
 
-// ❌ BAD - Implementation-focused,mocks all dependencies, doesn't split specs and steps
+// ❌ BAD - Implementation-focused, doesn't split specs and steps
 [TestFixture]
 public class PaymentProcessorTests
 {
