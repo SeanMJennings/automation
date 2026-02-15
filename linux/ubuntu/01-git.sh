@@ -2,6 +2,8 @@
 
 set -e
 
+sudo ufw enable
+
 projectsRoot="/home/seanjennings/repos"
 mkdir -p "$projectsRoot"
 echo "export ProjectsRoot=$projectsRoot" >> "$HOME/.bashrc"
