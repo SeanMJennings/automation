@@ -51,3 +51,6 @@ sudo apt install -y snap
 sudo snap install postman
 sudo snap install storage-explorer
 sudo snap install dbeaver-ce --stable --classic
+
+read -p "Computer will now be restarted to finish installation. Press any key"
+sudo systemctl reboot
