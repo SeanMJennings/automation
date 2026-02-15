@@ -50,10 +50,9 @@ sudo apt-get update
 sudo apt-get install -y wget apt-transport-https
 sudo apt-get install -y dotnet-sdk-10.0
 sudo apt update
-sudo apt install gh -y
+sudo apt install -y gh
 
 gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key --web
-
 token=$(gh auth token)
 dotnet nuget remove source github 2>/dev/null || true
 dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password "$token" --store-password-in-clear-text
@@ -68,7 +67,8 @@ brew install sqlcmd
 curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
 AZ_REPO=$(lsb_release -cs)
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ noble main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-sudo apt-get update && sudo apt-get install azure-cli
+sudo apt-get update
+sudo apt-get install azure-cli
 
 sudo apt-get -y install nunit-console
 sudo apt install -y nodejs
