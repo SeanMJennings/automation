@@ -24,7 +24,7 @@ read -p "Please add ssh key to GitHub and then press enter"
 ssh -T git@github.com
 
 git config --global core.compression 0
-git config --global init.defaultBranch main
+git config --global init.defaultBranch trunk
 
 read -p "Please enter your name for git: " name
 git config --global user.name "$name"

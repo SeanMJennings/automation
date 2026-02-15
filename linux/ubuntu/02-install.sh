@@ -50,4 +50,4 @@ sudo rm /etc/apt/preferences.d/nosnap.pref
 sudo apt install -y snap
 sudo snap install postman
 sudo snap install storage-explorer
-sudo snap install dbeaver-ce
+sudo snap install dbeaver-ce --stable --classic
