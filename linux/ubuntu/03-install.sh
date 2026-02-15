@@ -9,7 +9,7 @@ sudo apt install -y python3
 sudo apt install -y python3-pip
 sudo apt install -y python3-dev python3-venv build-essential
 
-sudo apt install ca-certificates curl
+sudo apt install -y ca-certificates
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -17,14 +17,16 @@ echo -e "Types: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: $(.
     /etc/apt/keyrings/docker.asc" | sudo tee /etc/apt/sources.list.d/docker.sources
 sudo apt update
 sudo sed -i '1a Architectures: amd64' /etc/apt/sources.list.d/docker.sources
+curl -L -o docker-desktop-amd64.deb "https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64"
+sudo apt-get update
+sudo apt install -y ./docker-desktop-amd64.deb
+rm docker-desktop-amd64.deb
 
 sudo apt install libfuse2
 URL=$(curl -s 'https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release' \
 | grep -oP '"linux":\{[^}]*"link":"\K[^"]+')
-
 FILE=$(basename "$URL")
 DIR="${FILE%.tar.gz}"
-
 wget -c "$URL"
 tar -xzf "$FILE"
 sudo mv "$DIR" /opt/
