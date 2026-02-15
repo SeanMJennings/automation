@@ -2,7 +2,7 @@
 
 set -e
 
-projectsRoot="/mnt/c/Users/seanj/repos"
+projectsRoot="/home/seanjennings/repos"
 mkdir -p "$projectsRoot"
 echo "export ProjectsRoot=$projectsRoot" >> "$HOME/.bashrc"
 export ProjectsRoot="$projectsRoot"
@@ -14,35 +14,16 @@ sshDirectory="$HOME/.ssh"
 mkdir -p "$sshDirectory"
 chmod 700 "$sshDirectory"
 
-if [ ! -f "$sshDirectory/id_rsa" ]; then
-    ssh-keygen -t rsa -b 4096 -f "$sshDirectory/id_rsa" -N ""
-fi
-
-cat "$sshDirectory/id_rsa.pub"
-echo ""
-read -p "Press any key after adding the key to GitHub..."
-
+read -p "Please enter your email address for git: " email
+ssh-keygen -t ed25519 -C $email
 eval "$(ssh-agent -s)"
-ssh-add "$sshDirectory/id_rsa"
-
-if [ ! -f "$sshDirectory/config" ]; then
-    cat > "$sshDirectory/config" << 'EOF'
-Host github.com
-    HostName github.com
-    User git
-    IdentityFile ~/.ssh/id_rsa
-    AddKeysToAgent yes
-EOF
-    chmod 600 "$sshDirectory/config"
-fi
-
-ssh -T git@github.com || true
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
 
 git config --global core.compression 0
 git config --global init.defaultBranch main
 
 read -p "Please enter your name for git: " name
-read -p "Please enter your email address for git: " email
 git config --global user.name "$name"
 git config --global user.email "$email"
 
