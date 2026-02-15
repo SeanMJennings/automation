@@ -3,7 +3,23 @@
 set -e
 
 sudo apt update
+sudo apt upgrade
 sudo apt install curl
+sudo apt install -y python3
+sudo apt install -y python3-pip
+sudo apt install -y python3-dev python3-venv build-essential
+
+sudo apt install libfuse2
+URL=$(curl -s 'https://data.services.jetbrains.com/products/releases?code=TBA&latest=true&type=release' \
+| grep -oP '"linux":\{[^}]*"link":"\K[^"]+')
+
+FILE=$(basename "$URL")
+DIR="${FILE%.tar.gz}"
+
+wget -c "$URL"
+tar -xzf "$FILE"
+sudo mv "$DIR" /opt/
+rm -rf "$DIR" "$FILE"
 
 if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -18,6 +34,7 @@ else
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+sudo apt install -y copyq
 sudo apt-get update
 sudo apt-get install -y wget apt-transport-https
 sudo apt-get install -y dotnet-sdk-10.0
@@ -51,6 +68,9 @@ sudo apt install -y snap
 sudo snap install postman
 sudo snap install storage-explorer
 sudo snap install dbeaver-ce --stable --classic
+sudo snap install whatsapp-linux-app
+sudo snap install proton-mail
+sudo snap install proton-pass
 
 read -p "Computer will now be restarted to finish installation. Press any key"
 sudo systemctl reboot
