@@ -8,6 +8,7 @@ sudo apt install curl
 sudo apt install -y python3
 sudo apt install -y python3-pip
 sudo apt install -y python3-dev python3-venv build-essential
+sudo apt install xpad
 
 sudo apt install -y ca-certificates
 sudo install -m 0755 -d /etc/apt/keyrings
