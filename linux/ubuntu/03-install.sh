@@ -7,7 +7,6 @@ sudo apt upgrade
 sudo apt install -y python3
 sudo apt install -y python3-pip
 sudo apt install -y python3-dev python3-venv build-essential
-sudo apt install xpad
 
 sudo apt install -y ca-certificates
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -45,6 +44,7 @@ else
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+sudo apt install -y xpad
 sudo apt install -y copyq
 sudo apt-get update
 sudo apt-get install -y wget apt-transport-https
