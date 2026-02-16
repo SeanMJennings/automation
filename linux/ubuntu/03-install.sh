@@ -4,7 +4,6 @@ set -e
 
 sudo apt update
 sudo apt upgrade
-sudo apt install curl
 sudo apt install -y python3
 sudo apt install -y python3-pip
 sudo apt install -y python3-dev python3-venv build-essential

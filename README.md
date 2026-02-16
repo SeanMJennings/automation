@@ -8,7 +8,7 @@ Requires temporarily changing execution policy to run the script for Windows.
 
 ## Linux
 Specifically designed for me.
-Start with 01-git.sh and follow the instructions to set up development environment.
+Start with 01-antivirus.sh and follow the instructions to set up development environment.
 
 ## Large Language Models (LLMs)
 This repository also includes scripts to set up environments for working with Large Language Models (LLMs).

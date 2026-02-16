@@ -2,8 +2,6 @@
 
 set -e
 
-sudo ufw enable
-
 projectsRoot="/home/seanjennings/repos"
 mkdir -p "$projectsRoot"
 echo "export ProjectsRoot=$projectsRoot" >> "$HOME/.bashrc"
@@ -33,3 +31,5 @@ git config --global user.name "$name"
 git config --global user.email "$email"
 
 cd "$projectsRoot"
+
+read -p "Run 03-install.sh next: press any key to continue"

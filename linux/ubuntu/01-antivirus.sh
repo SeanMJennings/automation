@@ -2,6 +2,8 @@
 
 set -e
 
+sudo ufw enable
+
 sudo apt update
 sudo apt upgrade
 
@@ -15,3 +17,5 @@ chmod +x ~/clamscan.sh
                                                                                                                                                                                                                                                            
 (crontab -l 2>/dev/null; echo "0 15 * * * /home/seanjennings/clamscan.sh") | crontab -                                                                
 crontab -l
+
+read -p "Run 02-git.sh next: press any key to continue"
