@@ -46,11 +46,13 @@ fi
 
 sudo apt install -y xpad
 sudo apt install -y copyq
+sudo apt install -y wine64
 sudo apt-get update
 sudo apt-get install -y wget apt-transport-https
 sudo apt-get install -y dotnet-sdk-10.0
 sudo apt update
 sudo apt install -y gh
+sudo apt-get install zsh -y
 
 gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key --web
 token=$(gh auth token)
@@ -63,6 +65,7 @@ brew install unixodbc
 brew install freetds
 brew install azure-cli
 brew install sqlcmd
+brew install tmux
 
 curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
 AZ_REPO=$(lsb_release -cs)
@@ -91,6 +94,7 @@ sudo snap install whatsapp-linux-app
 sudo snap install proton-mail
 sudo snap install proton-pass
 sudo snap install zoom-client
+sudo snap install ghostty --edge --classic
 
 read -p "Computer will now be restarted to finish installation. Press any key"
 sudo systemctl reboot
