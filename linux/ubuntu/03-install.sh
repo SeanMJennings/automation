@@ -47,6 +47,7 @@ fi
 sudo apt install -y xpad
 sudo apt install -y copyq
 sudo apt install -y wine64
+sudo apt install -y flameshot
 sudo apt-get update
 sudo apt-get install -y wget apt-transport-https
 sudo apt-get install -y dotnet-sdk-10.0
