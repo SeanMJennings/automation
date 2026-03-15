@@ -96,6 +96,11 @@ sudo snap install proton-mail
 sudo snap install proton-pass
 sudo snap install zoom-client
 sudo snap install ghostty --edge --classic
+sudo snap install kubectl --classic
+
+sudo apt install -y flatpak gnome-software-plugin-flatpak
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak install -y io.kinvolk.Headlamp
 
 read -p "Computer will now be restarted to finish installation. Press any key"
 sudo systemctl reboot
