@@ -67,6 +67,7 @@ brew install freetds
 brew install azure-cli
 brew install sqlcmd
 brew install tmux
+brew install kind
 
 curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
 AZ_REPO=$(lsb_release -cs)
@@ -97,6 +98,8 @@ sudo snap install proton-pass
 sudo snap install zoom-client
 sudo snap install ghostty --edge --classic
 sudo snap install kubectl --classic
+
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 sudo apt install -y flatpak gnome-software-plugin-flatpak
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
