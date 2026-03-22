@@ -76,8 +76,9 @@ sudo apt-get update
 sudo apt-get install azure-cli
 
 sudo apt-get -y install nunit-console
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
-sudo apt install -y npm
+sudo npm install -y -g npm@latest
 
 npm install -g azurite
 npm install -g npm-check-updates
