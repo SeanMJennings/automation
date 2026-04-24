@@ -55,12 +55,13 @@ sudo apt update
 sudo apt install -y gh
 sudo apt-get install zsh -y
 
-gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key --web
+gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --web
 token=$(gh auth token)
 dotnet nuget remove source github 2>/dev/null || true
 dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password "$token" --store-password-in-clear-text
 dotnet tool install -g Aspire.Cli --prerelease
 dotnet tool install -g dotnet-reportgenerator-globaltool
+export PATH="$PATH:/home/seanjennings/.dotnet/tools"
 
 brew install nuget
 brew install unixodbc
@@ -70,22 +71,16 @@ brew install sqlcmd
 brew install tmux
 brew install kind
 
-curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-AZ_REPO=$(lsb_release -cs)
-echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ noble main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-sudo apt-get update
-sudo apt-get install azure-cli
-
 sudo apt-get -y install nunit-console
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -y -g npm@latest
 
-npm install -g azurite
-npm install -g npm-check-updates
-npm install -g serve
-npm install -g vite
-npm install -g azure-functions-core-tools
+sudo npm install -y -g azurite
+sudo npm install -y -g npm-check-updates
+sudo npm install -y -g serve
+sudo npm install -y -g vite
+sudo npm install -y -g azure-functions-core-tools
 
 curl -fsSL https://claude.ai/install.sh | bash
 
