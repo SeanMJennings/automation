@@ -15,7 +15,7 @@ printf '#!/bin/bash\nnice -n 15 clamscan --bell -i -r /home\n' > ~/clamscan.sh
                                                                                                                                                                                                                                                                            
 chmod +x ~/clamscan.sh                                                                                                                               
                                                                                                                                                                                                                                                            
-(crontab -l 2>/dev/null; echo "0 15 * * * /home/seanjennings/clamscan.sh") | crontab -                                                                
+(crontab -l 2>/dev/null; echo "0 15 * * * /home/sean-jennings/clamscan.sh") | crontab -                                                                
 crontab -l
 
 read -p "Run 02-git.sh next: press any key to continue"

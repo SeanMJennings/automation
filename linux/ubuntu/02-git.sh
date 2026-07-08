@@ -2,7 +2,7 @@
 
 set -e
 
-projectsRoot="/home/seanjennings/repos"
+projectsRoot="/home/sean-jennings/repos"
 mkdir -p "$projectsRoot"
 echo "export ProjectsRoot=$projectsRoot" >> "$HOME/.bashrc"
 export ProjectsRoot="$projectsRoot"
