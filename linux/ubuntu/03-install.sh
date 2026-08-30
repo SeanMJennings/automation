@@ -61,7 +61,7 @@ dotnet nuget remove source github 2>/dev/null || true
 dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json --name github --username SeanMJennings --password "$token" --store-password-in-clear-text
 dotnet tool install -g Aspire.Cli --prerelease
 dotnet tool install -g dotnet-reportgenerator-globaltool
-export PATH="$PATH:/home/sean-jennings/.dotnet/tools"
+export PATH="$PATH:/home/sean-jennings/.dotnet/tools" 
 
 brew install nuget
 brew install unixodbc
@@ -75,6 +75,9 @@ sudo apt-get -y install nunit-console
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -y -g npm@latest
+
+sudo curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.7/install.sh | bash
+brew install pnpm
 
 sudo npm install -y -g azurite
 sudo npm install -y -g npm-check-updates
