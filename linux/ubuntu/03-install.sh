@@ -78,6 +78,10 @@ sudo npm install -y -g npm@latest
 
 sudo curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.7/install.sh | bash
 brew install pnpm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+nvm install 26
 
 sudo npm install -y -g azurite
 sudo npm install -y -g npm-check-updates
