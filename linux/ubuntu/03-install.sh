@@ -54,6 +54,12 @@ sudo apt-get install -y dotnet-sdk-10.0
 sudo apt update
 sudo apt install -y gh
 sudo apt-get install zsh -y
+sudo apt install firefox
+sudo apt install xdg-utils
+export BROWSER=firefox
+if ! grep -q "export BROWSER=firefox" ~/.bashrc 2>/dev/null; then
+    echo 'export BROWSER=firefox' >> ~/.bashrc
+fi
 
 gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --web
 token=$(gh auth token)
