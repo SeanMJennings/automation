@@ -44,6 +44,11 @@ else
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+export DOTNET_EnableWriteXorExecute=0
+if ! grep -q "DOTNET_EnableWriteXorExecute" ~/.bashrc 2>/dev/null; then
+    echo 'export DOTNET_EnableWriteXorExecute=0' >> ~/.bashrc
+fi
+
 sudo apt install -y xpad
 sudo apt install -y copyq
 sudo apt install -y wine64
